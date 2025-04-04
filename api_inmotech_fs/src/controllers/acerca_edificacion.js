@@ -1,65 +1,65 @@
-import moduleRole from '../models/module_role.js';
+import moduleRole from '../models/acerca_edificacion.js';
 
-// Obtener todos los registros de module_role
-export async function getAllModuleRoles(req, res) {
+// Obtener todos los registros de acerca_edificacion
+export async function getAllAcercaEdificacion(req, res) {
         try {
-            const allModuleRoles = await moduleRole.findAll();
-            res.json(allModuleRoles);
+            const allAcercaEdificacion = await acercaEdificacion.findAll();
+            res.json(allAcercaEdificacion);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
 }
 
-// Obtener un registro de module_role por ID
-export async function getModuleRoleById(req, res) {
+// Obtener un registro de acerca_edificacion por ID
+export async function allAcercaEdificacionById(req, res) {
     try {
-        const moduleRole = await moduleRole.findByPk(req.params.id);
-        if (moduleRole) {
-            res.json(moduleRole);
+        const acercaEdificacion = await acercaEdificacion.findByPk(req.params.id);
+        if (acercaEdificacion) {
+            res.json(acercaEdificacion);
         } else {
-            res.status(404).json({ message: 'Registro module_role no encontrado' });
+            res.status(404).json({ message: 'Registro acerca_edificacion no encontrado' });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-// Crear un nuevo registro de module_role
-export async function createModuleRole(req, res) {
+// Crear un nuevo registro de acerca_edificacion
+export async function createAcercaEdificacion(req, res) {
     try {
-        const newModuleRole = await moduleRole.create(req.body);
-        res.status(201).json(newModuleRole);
+        const newAcercaEdificacion = await AcercaEdificacion.create(req.body);
+        res.status(201).json(newAcercaEdificacion);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-// Actualizar un registro de module_role
-export async function updateModuleRole(req, res) {
+// Actualizar un registro de acerca_edificacion
+export async function updateAcercaEdificacion(req, res) {
     try {
-        const updatedModuleRole = await moduleRole.update(req.body, {
-          where: { Module_role_id: req.params.id },
+        const updatedAcercaEdificacion = await AcercaEdificacion.update(req.body, {
+          where: { Acerca_edificacion_id: req.params.id },
         });
         if (updatedModuleRole[0]) {
-            res.json({ message: 'Registro module_role actualizado' });
+            res.json({ message: 'Registro acerca_edificacion actualizado' });
         } else {
-            res.status(404).json({ message: 'Registro module_role no encontrado' });
+            res.status(404).json({ message: 'Registro acerca_edificacion no encontrado' });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-// Eliminar un registro de module_role
-export async function deleteModuleRole(req, res) {
+// Eliminar un registro de acerca_edificacion
+export async function deleteAcercaEdificacion(req, res) {
     try {
-        const deletedModuleRole = await moduleRole.destroy({
-            where: { Module_role_id: req.params.id },
+        const deletedAcercaEdificacion = await acercaEdificacion.destroy({
+            where: { Acerca_edificacion_id: req.params.id },
         });
-        if (deletedModuleRole) {
-            res.json({ message: 'Registro module_role eliminado' });
+        if (deletedAcercaEdificacion) {
+            res.json({ message: 'Registro acerca_edificacion eliminado' });
         } else {
-            res.status(404).json({ message: 'Registro module_role no encontrado' });
+            res.status(404).json({ message: 'Registro acerca_edificacion no encontrado' });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
