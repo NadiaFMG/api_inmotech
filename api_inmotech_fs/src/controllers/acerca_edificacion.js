@@ -1,4 +1,4 @@
-import moduleRole from '../models/acerca_edificacion.js';
+import acercaEdificacion from '../models/acerca_edificacion.js';
 
 // Obtener todos los registros de acerca_edificacion
 export async function getAllAcercaEdificacion(req, res) {
