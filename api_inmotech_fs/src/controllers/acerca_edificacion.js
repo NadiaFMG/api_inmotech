@@ -1,21 +1,22 @@
+
 import acercaEdificacion from '../models/acerca_edificacion.js';
 
 // Obtener todos los registros de acerca_edificacion
 export async function getAllAcercaEdificacion(req, res) {
-        try {
-            const allAcercaEdificacion = await acercaEdificacion.findAll();
-            res.json(allAcercaEdificacion);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
+    try {
+        const allAcercaEdificacion = await acercaEdificacion.findAll();
+        res.json(allAcercaEdificacion);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 }
 
 // Obtener un registro de acerca_edificacion por ID
-export async function allAcercaEdificacionById(req, res) {
+export async function getAcercaEdificacionById(req, res) {
     try {
-        const acercaEdificacion = await acercaEdificacion.findByPk(req.params.id);
-        if (acercaEdificacion) {
-            res.json(acercaEdificacion);
+        const acercaEdificacionId = await acercaEdificacion.findByPk(req.params.id);
+        if (acercaEdificacionId) {
+            res.json(acercaEdificacionId);
         } else {
             res.status(404).json({ message: 'Registro acerca_edificacion no encontrado' });
         }
@@ -27,7 +28,7 @@ export async function allAcercaEdificacionById(req, res) {
 // Crear un nuevo registro de acerca_edificacion
 export async function createAcercaEdificacion(req, res) {
     try {
-        const newAcercaEdificacion = await AcercaEdificacion.create(req.body);
+        const newAcercaEdificacion = await acercaEdificacion.create(req.body);
         res.status(201).json(newAcercaEdificacion);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -37,10 +38,10 @@ export async function createAcercaEdificacion(req, res) {
 // Actualizar un registro de acerca_edificacion
 export async function updateAcercaEdificacion(req, res) {
     try {
-        const updatedAcercaEdificacion = await AcercaEdificacion.update(req.body, {
+        const updatedAcercaEdificacion = await acercaEdificacion.update(req.body, {
           where: { Acerca_edificacion_id: req.params.id },
         });
-        if (updatedModuleRole[0]) {
+        if (updatedAcercaEdificacion[0]) {
             res.json({ message: 'Registro acerca_edificacion actualizado' });
         } else {
             res.status(404).json({ message: 'Registro acerca_edificacion no encontrado' });

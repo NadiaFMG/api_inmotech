@@ -8,6 +8,7 @@ import moduleRoutes from './routes/module.js';
 import permitionsModuleRoleRoutes from './routes/permitions_module_role.js';
 import permitionsRoutes from './routes/permitions.js';
 import login from './routes/login.js';
+import acercaEdificacionRoutes from './routes/acerca_edificacion.js';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/module', moduleRoutes);
 app.use('/permitions-module-role', permitionsModuleRoleRoutes);
 app.use('/permitions', permitionsRoutes);
 app.use('/login', login);
+app.use('/acerca_edificacion', acercaEdificacionRoutes);
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
