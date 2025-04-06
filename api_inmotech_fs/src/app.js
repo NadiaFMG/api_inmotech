@@ -14,6 +14,7 @@ import OrganizacionParquederoRoutes from './routes/organizacion_parqueadero.js';
 import valor from './routes/valor.js';
 import municipio from './routes/municipio.js';
 import ndap from './routes/ndap.js';
+import vereda from './routes/vereda.js';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/organizacion_parqueadero', OrganizacionParquederoRoutes);
 app.use('/valor', valor);
 app.use('/municipio', municipio);
 app.use('/ndap', ndap);
+app.use('/vereda', vereda);
 
 // Manejo de errores global
 app.use((err, req, res, next) => {

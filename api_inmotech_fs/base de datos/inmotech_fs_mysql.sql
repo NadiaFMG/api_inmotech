@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-04-2025 a las 22:22:58
+-- Tiempo de generación: 06-04-2025 a las 22:28:35
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `inmotech_fs_development`
+-- Base de datos: `inmotech_fs.mysql`
 --
 
 -- --------------------------------------------------------
@@ -317,10 +317,18 @@ INSERT INTO `module_role` (`Module_role_id`, `Module_FK`, `Role_FK`, `createdAt`
 --
 
 CREATE TABLE `municipio` (
-  `Municipio_id` int(10) NOT NULL,
-  `Municipio` varchar(100) NOT NULL,
-  `Ndap_FK` int(10) DEFAULT NULL
+  `Municipio_id` int(11) NOT NULL,
+  `Ndap_FK` int(10) DEFAULT NULL,
+  `Municipio_nombre` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `Municipio_descripcion` text CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `municipio`
+--
+
+INSERT INTO `municipio` (`Municipio_id`, `Ndap_FK`, `Municipio_nombre`, `Municipio_descripcion`) VALUES
+(3, NULL, 'cota', 'Municipio cerca de ..');
 
 -- --------------------------------------------------------
 
@@ -329,9 +337,16 @@ CREATE TABLE `municipio` (
 --
 
 CREATE TABLE `ndap` (
-  `Ndap_id` int(10) NOT NULL,
+  `Ndap_id` int(11) NOT NULL,
   `Ndap_descripcion` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ndap`
+--
+
+INSERT INTO `ndap` (`Ndap_id`, `Ndap_descripcion`) VALUES
+(1, 'CARRERA 26');
 
 -- --------------------------------------------------------
 
@@ -618,11 +633,18 @@ INSERT INTO `user_status` (`User_status_id`, `User_status_name`, `User_status_de
 --
 
 CREATE TABLE `valor` (
-  `Valor_id` int(10) NOT NULL,
+  `Valor_id` int(11) NOT NULL,
   `Monto_IVA` decimal(19,0) NOT NULL,
   `Valor_neto` decimal(19,0) NOT NULL,
   `Valor_Total` decimal(19,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `valor`
+--
+
+INSERT INTO `valor` (`Valor_id`, `Monto_IVA`, `Valor_neto`, `Valor_Total`) VALUES
+(2, 36, 12, 20);
 
 -- --------------------------------------------------------
 
@@ -631,10 +653,17 @@ CREATE TABLE `valor` (
 --
 
 CREATE TABLE `vereda` (
-  `Vereda_id` int(10) NOT NULL,
+  `Vereda_id` int(11) NOT NULL,
   `Vereda_nombre` varchar(50) NOT NULL,
   `Municipio_FK` int(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `vereda`
+--
+
+INSERT INTO `vereda` (`Vereda_id`, `Vereda_nombre`, `Municipio_FK`) VALUES
+(2, 'mesa', 3);
 
 --
 -- Índices para tablas volcadas
@@ -993,6 +1022,30 @@ ALTER TABLE `estado_pago`
 --
 ALTER TABLE `imagenes_inmueble`
   MODIFY `Imagenes_inmueble_id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `municipio`
+--
+ALTER TABLE `municipio`
+  MODIFY `Municipio_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `ndap`
+--
+ALTER TABLE `ndap`
+  MODIFY `Ndap_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `valor`
+--
+ALTER TABLE `valor`
+  MODIFY `Valor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `vereda`
+--
+ALTER TABLE `vereda`
+  MODIFY `Vereda_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
