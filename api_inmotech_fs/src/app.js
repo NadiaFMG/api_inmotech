@@ -9,6 +9,8 @@ import permitionsModuleRoleRoutes from './routes/permitions_module_role.js';
 import permitionsRoutes from './routes/permitions.js';
 import login from './routes/login.js';
 import acercaEdificacionRoutes from './routes/acerca_edificacion.js';
+import AsignacionRoutes from './routes/asignacion.js';
+import OrganizacionParquederoRoutes from './routes/organizacion_parqueadero.js';
 
 const app = express();
 
@@ -24,6 +26,9 @@ app.use('/permitions-module-role', permitionsModuleRoleRoutes);
 app.use('/permitions', permitionsRoutes);
 app.use('/login', login);
 app.use('/acerca_edificacion', acercaEdificacionRoutes);
+app.use('/asignacion', AsignacionRoutes);
+app.use('/organizacion_parqueadero', OrganizacionParquederoRoutes);
+
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
