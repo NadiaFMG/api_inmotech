@@ -1,10 +1,10 @@
 // routes.js
 import express from 'express';
-import { login } from '../controllers/authController.js';
+import { loginApiUser } from '../controllers/authController.js';
 //Importa los otros controladores
 const router = express.Router();
 
-router.post('/login', login);
+router.post('/login', loginApiUser);
 
 //Agrega las otras rutas aqui.
 

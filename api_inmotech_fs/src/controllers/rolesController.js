@@ -30,6 +30,7 @@ export async function createRole(req, res) {
     const newRole = await role.create(req.body);
     res.status(201).json(newRole);
   } catch (error) {
+    
     res.status(500).json({ error: error.message });
   }
 }
