@@ -10,6 +10,15 @@ import permitionsModuleRoleRoutes from './routes/permitions_module_role.js';
 import permitionsRoutes from './routes/permitions.js';
 import login from './routes/login.js';
 
+//!estos son nuevos
+import acercaEdificacionRoutes from './routes/acerca_edificacion.js';
+import AsignacionRoutes from './routes/asignacion.js';
+import OrganizacionParquederoRoutes from './routes/organizacion_parqueadero.js';
+import valor from './routes/valor.js';
+import municipio from './routes/municipio.js';
+import ndap from './routes/ndap.js';
+// import vereda from './routes/vereda.js';
+
 //! las rutas que se van añadir toca verificar como se ve
 
 
@@ -28,6 +37,15 @@ app.use('/inmotech/module', moduleRoutes);
 app.use('/inmotech/permitions-module-role', permitionsModuleRoleRoutes);
 app.use('/inmotech/permitions', permitionsRoutes);
 app.use('/inmotech/login', login);
+
+//! estos son nuevos
+app.use('/acerca_edificacion', acercaEdificacionRoutes);
+app.use('/asignacion', AsignacionRoutes);
+app.use('/organizacion_parqueadero', OrganizacionParquederoRoutes);
+app.use('/valor', valor);
+app.use('/municipio', municipio);
+app.use('/ndap', ndap);
+// app.use('/vereda', vereda);
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
