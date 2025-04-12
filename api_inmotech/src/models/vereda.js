@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/index.js';
+import Municipio from './municipio.js';
 
 const vereda = sequelize.define('vereda', {
     Vereda_id: {
@@ -9,7 +10,7 @@ const vereda = sequelize.define('vereda', {
         allowNull: false,
     },
     Vereda_nombre: {
-        type: DataTypes.STRING(255), // Adjusted length as needed
+        type: DataTypes.STRING(255),
         allowNull: false,
         collate: 'utf8_general_ci',
         unique: true,
@@ -17,18 +18,18 @@ const vereda = sequelize.define('vereda', {
     Municipio_FK: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
+        references: {
+            model: 'municipio',
+            key: 'Municipio_id',
+        },
     },
-       // createdAt: {
-    //     allowNull: false,
-    //     type: DataTypes.DATE,
-    // },
-    // updatedAt: {
-    //     allowNull: false,
-    //     type: DataTypes.DATE,
-    // },
 }, {
     tableName: 'vereda',
-    timestamps: false
+    timestamps: false,
 });
 
+vereda.belongsTo(Municipio, { foreignKey: 'Municipio_FK', as: 'municipio' });
+Municipio.hasMany(vereda, { foreignKey: 'Municipio_FK', as: 'veredas' });
+
 export default vereda;
+

@@ -15,6 +15,11 @@ import valor from './routes/valor.js';
 import municipio from './routes/municipio.js';
 import ndap from './routes/ndap.js';
 import vereda from './routes/vereda.js';
+import BarrioCiudadCorregimientoVereda from './routes/barrio_ciudad_corregimiento_vereda.js';
+import barrio from './routes/barrio.js';
+import ciudad from './routes/ciudad.js';
+import corregimiento from './routes/corregimiento.js';
+
 
 const app = express();
 
@@ -36,6 +41,10 @@ app.use('/valor', valor);
 app.use('/municipio', municipio);
 app.use('/ndap', ndap);
 app.use('/vereda', vereda);
+app.use('/barrio_ciudad_corregimiento_vereda', BarrioCiudadCorregimientoVereda);
+app.use('/barrio', barrio);
+app.use('/ciudad', ciudad);
+app.use('/corregimiento', corregimiento);
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
