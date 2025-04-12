@@ -22,12 +22,16 @@ import corregimiento from './routes/corregimiento.js';
 import designador_cardinal from './routes/designador_cardinal.js';
 import direccion from './routes/direccion.js';
 import localizacion from './routes/localizacion.js';
+import division from './routes/division.js';
+import estado_pago from './routes/estado_pago.js';
+import document_identification from './routes/document_identification.js';
+
 
 const app = express();
 
 app.use(express.json());
 
-app.use('/user-status', userStatusRoutes);
+app.use('/user_status', userStatusRoutes);
 app.use('/users', usersRoutes);
 app.use('/profile', profileRoutes);
 app.use('/role', roleRoutes);
@@ -50,6 +54,10 @@ app.use('/corregimiento', corregimiento);
 app.use('/designador_cardinal', designador_cardinal);
 app.use('/direccion', direccion);
 app.use('/localizacion', localizacion);
+app.use('/division', division);
+app.use('/estado_pago', estado_pago);
+app.use('/document_identification', document_identification);
+
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
