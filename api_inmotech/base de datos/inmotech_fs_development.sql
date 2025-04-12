@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-04-2025 a las 22:28:35
+-- Tiempo de generación: 12-04-2025 a las 05:33:40
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `inmotech_fs.mysql`
+-- Base de datos: `inmotech_fs_development`
 --
 
 -- --------------------------------------------------------
@@ -56,6 +56,14 @@ CREATE TABLE `barrio` (
   `Nombre_barrio` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `barrio`
+--
+
+INSERT INTO `barrio` (`Barrio_id`, `Nombre_barrio`) VALUES
+(1, 'San pablo'),
+(2, 'San pedro');
+
 -- --------------------------------------------------------
 
 --
@@ -70,6 +78,19 @@ CREATE TABLE `barrio_ciudad_corregimiento_vereda` (
   `Vereda_Fk` int(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `barrio_ciudad_corregimiento_vereda`
+--
+
+INSERT INTO `barrio_ciudad_corregimiento_vereda` (`Barrio_ciudad_corregimiento_vereda_id`, `Barrio_FK`, `Ciudad_FK`, `Corregimiento_FK`, `Vereda_Fk`) VALUES
+(2, 2, 1, 1, NULL),
+(3, 2, 1, 1, NULL),
+(4, 2, 1, 1, NULL),
+(5, 2, 1, 1, NULL),
+(6, 2, 1, 1, NULL),
+(7, 2, 1, 1, NULL),
+(8, 2, 1, 1, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -81,6 +102,13 @@ CREATE TABLE `ciudad` (
   `Ciudad` varchar(50) NOT NULL,
   `Municipio_FK` int(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ciudad`
+--
+
+INSERT INTO `ciudad` (`Ciudad_id`, `Ciudad`, `Municipio_FK`) VALUES
+(1, 'Cali', 3);
 
 -- --------------------------------------------------------
 
@@ -94,6 +122,13 @@ CREATE TABLE `corregimiento` (
   `Municipio_FK` int(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `corregimiento`
+--
+
+INSERT INTO `corregimiento` (`Corregimiento_id`, `Corregimiento`, `Municipio_FK`) VALUES
+(1, 'La paz', 3);
+
 -- --------------------------------------------------------
 
 --
@@ -105,6 +140,13 @@ CREATE TABLE `designador_cardinal` (
   `Cardinalidad` varchar(10) NOT NULL,
   `Abreviacion` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `designador_cardinal`
+--
+
+INSERT INTO `designador_cardinal` (`Designador_cardinal_id`, `Cardinalidad`, `Abreviacion`) VALUES
+(1, '2', 'S');
 
 -- --------------------------------------------------------
 
@@ -124,6 +166,13 @@ CREATE TABLE `direccion` (
   `Localizacion_FK` int(10) DEFAULT NULL,
   `Barrio_ciudad_corregimiento_vereda_FK` int(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `direccion`
+--
+
+INSERT INTO `direccion` (`Direccion_id`, `Direccion`, `Tipo_via`, `Numero_via_principal`, `Numero_calle_transversal`, `Numero_edificacion`, `Descripcion_adicional`, `Designador_cardinal_FK`, `Localizacion_FK`, `Barrio_ciudad_corregimiento_vereda_FK`) VALUES
+(1, 1234, '1232', 87, 0, 8, 'amplio', 1, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -255,9 +304,16 @@ CREATE TABLE `inmueble` (
 --
 
 CREATE TABLE `localizacion` (
-  `Localizacion_id` int(10) NOT NULL,
+  `Localizacion_id` int(11) NOT NULL,
   `Localizacion_descripcion` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `localizacion`
+--
+
+INSERT INTO `localizacion` (`Localizacion_id`, `Localizacion_descripcion`) VALUES
+(1, 'Excelente ubicacion');
 
 -- --------------------------------------------------------
 
@@ -328,7 +384,7 @@ CREATE TABLE `municipio` (
 --
 
 INSERT INTO `municipio` (`Municipio_id`, `Ndap_FK`, `Municipio_nombre`, `Municipio_descripcion`) VALUES
-(3, NULL, 'cota', 'Municipio cerca de ..');
+(3, 0, 'cota', 'Municipio cerca de ..');
 
 -- --------------------------------------------------------
 
@@ -663,7 +719,7 @@ CREATE TABLE `vereda` (
 --
 
 INSERT INTO `vereda` (`Vereda_id`, `Vereda_nombre`, `Municipio_FK`) VALUES
-(2, 'mesa', 3);
+(3, 'marianitas', 3);
 
 --
 -- Índices para tablas volcadas
@@ -967,37 +1023,37 @@ ALTER TABLE `asignacion`
 -- AUTO_INCREMENT de la tabla `barrio`
 --
 ALTER TABLE `barrio`
-  MODIFY `Barrio_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Barrio_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `barrio_ciudad_corregimiento_vereda`
 --
 ALTER TABLE `barrio_ciudad_corregimiento_vereda`
-  MODIFY `Barrio_ciudad_corregimiento_vereda_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Barrio_ciudad_corregimiento_vereda_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `ciudad`
 --
 ALTER TABLE `ciudad`
-  MODIFY `Ciudad_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Ciudad_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `corregimiento`
 --
 ALTER TABLE `corregimiento`
-  MODIFY `Corregimiento_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Corregimiento_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `designador_cardinal`
 --
 ALTER TABLE `designador_cardinal`
-  MODIFY `Designador_cardinal_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Designador_cardinal_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `direccion`
 --
 ALTER TABLE `direccion`
-  MODIFY `Direccion_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Direccion_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `division`
@@ -1024,6 +1080,12 @@ ALTER TABLE `imagenes_inmueble`
   MODIFY `Imagenes_inmueble_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `localizacion`
+--
+ALTER TABLE `localizacion`
+  MODIFY `Localizacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT de la tabla `municipio`
 --
 ALTER TABLE `municipio`
@@ -1045,7 +1107,7 @@ ALTER TABLE `valor`
 -- AUTO_INCREMENT de la tabla `vereda`
 --
 ALTER TABLE `vereda`
-  MODIFY `Vereda_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Vereda_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas

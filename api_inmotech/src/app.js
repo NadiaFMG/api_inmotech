@@ -19,7 +19,9 @@ import BarrioCiudadCorregimientoVereda from './routes/barrio_ciudad_corregimient
 import barrio from './routes/barrio.js';
 import ciudad from './routes/ciudad.js';
 import corregimiento from './routes/corregimiento.js';
-
+import designador_cardinal from './routes/designador_cardinal.js';
+import direccion from './routes/direccion.js';
+import localizacion from './routes/localizacion.js';
 
 const app = express();
 
@@ -45,6 +47,9 @@ app.use('/barrio_ciudad_corregimiento_vereda', BarrioCiudadCorregimientoVereda);
 app.use('/barrio', barrio);
 app.use('/ciudad', ciudad);
 app.use('/corregimiento', corregimiento);
+app.use('/designador_cardinal', designador_cardinal);
+app.use('/direccion', direccion);
+app.use('/localizacion', localizacion);
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
