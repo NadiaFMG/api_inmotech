@@ -1,0 +1,112 @@
+-- lo siguiente que esta despues de este comentario es para los usuarios de la api
+-- Tabla de roles
+CREATE TABLE `role` (
+  `Role_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Role_name` VARCHAR(50) NOT NULL,
+  `Role_description` VARCHAR(255),
+  `Role_status` TINYINT(1) DEFAULT 1, -- 1=activo, 0=inactivo
+  `Role_priority` INT DEFAULT 0,
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de estados de usuario mejorada
+CREATE TABLE `user_status` (
+  `User_status_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `User_status_name` VARCHAR(50) NOT NULL,
+  `User_status_description` VARCHAR(255),
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de usuarios
+CREATE TABLE `users` (
+  `User_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `User_user` VARCHAR(100) NOT NULL,
+  `User_password` VARCHAR(255) NOT NULL,
+  `User_status_FK` INT NOT NULL,
+  `Role_FK` INT NOT NULL,
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (`User_status_FK`) REFERENCES `user_status`(`User_status_id`),
+  FOREIGN KEY (`Role_FK`) REFERENCES `role`(`Role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de módulos
+CREATE TABLE `module` (
+  `Module_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Module_name` VARCHAR(50) NOT NULL,
+  `Module_route` VARCHAR(100),
+  `Module_description` VARCHAR(255),
+  `Module_icon` VARCHAR(100),                -- Icono para mostrar en la interfaz (opcional)
+  `Module_status` TINYINT(1) DEFAULT 1,      -- 1=activo, 0=inactivo
+  `Module_order` INT DEFAULT 0,              -- Orden de aparición en menús
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de permisos
+CREATE TABLE `permitions` (
+  `Permitions_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Permitions_name` VARCHAR(50) NOT NULL,
+  `Permitions_description` VARCHAR(255),
+  `Permitions_status` TINYINT(1) DEFAULT 1,      -- 1=activo, 0=inactivo
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP, -- Fecha de creación
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Última actualización
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Relación entre módulos y roles
+CREATE TABLE `module_role` (
+  `Module_role_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Module_FK` INT NOT NULL,
+  `Role_FK` INT NOT NULL,
+  `Module_role_status` TINYINT(1) DEFAULT 1,      -- 1=activo, 0=inactivo
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP, -- Fecha de creación
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Última actualización
+  FOREIGN KEY (`Module_FK`) REFERENCES `module`(`Module_id`),
+  FOREIGN KEY (`Role_FK`) REFERENCES `role`(`Role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Relación entre permisos, módulos y roles
+CREATE TABLE `permitions_module_role` (
+  `Permitions_module_role_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Module_role_FK` INT NOT NULL,
+  `Permitions_FK` INT NOT NULL,
+  `Permitions_module_role_status` TINYINT(1) DEFAULT 1,      -- 1=activo, 0=inactivo
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,           -- Fecha de creación
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Última actualización
+  FOREIGN KEY (`Module_role_FK`) REFERENCES `module_role`(`Module_role_id`),
+  FOREIGN KEY (`Permitions_FK`) REFERENCES `permitions`(`Permitions_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Relaciones para la gestión de usuarios, roles, módulos y permisos
+
+-- users -> user_status
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_user_status_fk`
+    FOREIGN KEY (`User_status_FK`) REFERENCES `user_status` (`User_status_id`);
+
+-- users -> role
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_role_fk`
+    FOREIGN KEY (`Role_FK`) REFERENCES `role` (`Role_id`);
+
+-- module_role -> module
+ALTER TABLE `module_role`
+  ADD CONSTRAINT `module_role_module_fk`
+    FOREIGN KEY (`Module_FK`) REFERENCES `module` (`Module_id`);
+
+-- module_role -> role
+ALTER TABLE `module_role`
+  ADD CONSTRAINT `module_role_role_fk`
+    FOREIGN KEY (`Role_FK`) REFERENCES `role` (`Role_id`);
+
+-- permitions_module_role -> module_role
+ALTER TABLE `permitions_module_role`
+  ADD CONSTRAINT `permitions_module_role_module_role_fk`
+    FOREIGN KEY (`Module_role_FK`) REFERENCES `module_role` (`Module_role_id`);
+
+-- permitions_module_role -> permitions
+ALTER TABLE `permitions_module_role`
+  ADD CONSTRAINT `permitions_module_role_permitions_fk`
+    FOREIGN KEY (`Permitions_FK`) REFERENCES `permitions` (`Permitions_id`);
