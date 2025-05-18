@@ -194,20 +194,6 @@ CREATE TABLE `division` (
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `document_identification`
---
-
-CREATE TABLE `document_identification` (
-  `id_documento` int(11) NOT NULL,
-  `numero_documento` varchar(30) NOT NULL,
-  `fecha_expedicion` date NOT NULL,
-  `firstName` varchar(30) NOT NULL,
-  `lastName` varchar(30) NOT NULL,
-  `Tipo_documento_FK` int(11) NOT NULL,
-  `Sexo_FK` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -316,58 +302,6 @@ INSERT INTO `localizacion` (`Localizacion_id`, `Localizacion_descripcion`) VALUE
 (1, 'Excelente ubicacion');
 
 -- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `module`
---
-
-CREATE TABLE `module` (
-  `Module_id` int(11) NOT NULL,
-  `Module_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `Module_route` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `Module_description` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `module`
---
-
-INSERT INTO `module` (`Module_id`, `Module_name`, `Module_route`, `Module_description`, `createdAt`, `updatedAt`) VALUES
-(1, 'Usuarios', '/users', 'Módulo de gestión de usuarios', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 'Roles', '/roles', 'Módulo de gestión de roles', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(3, 'Permisos', '/permissions', 'Módulo de gestión de permisos', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(4, 'Reportes', '/reports', 'Módulo de generación de reportes', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(5, 'Configuración', '/settings', 'Módulo de configuración general', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `module_role`
---
-
-CREATE TABLE `module_role` (
-  `Module_role_id` int(11) NOT NULL,
-  `Module_FK` int(11) NOT NULL,
-  `Role_FK` int(11) NOT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `module_role`
---
-
-INSERT INTO `module_role` (`Module_role_id`, `Module_FK`, `Role_FK`, `createdAt`, `updatedAt`) VALUES
-(1, 1, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 2, 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(3, 3, 3, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(4, 4, 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(5, 5, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-
--- --------------------------------------------------------
-
 --
 -- Estructura de tabla para la tabla `municipio`
 --
@@ -451,88 +385,6 @@ CREATE TABLE `pago` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `permitions`
---
-
-CREATE TABLE `permitions` (
-  `Permitions_id` int(11) NOT NULL,
-  `Permitions_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `Permitions_description` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `permitions`
---
-
-INSERT INTO `permitions` (`Permitions_id`, `Permitions_name`, `Permitions_description`, `createdAt`, `updatedAt`) VALUES
-(1, 'Crear', 'Permite crear registros', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 'Editar', 'Permite editar registros', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(3, 'Consultar', 'Permite consultar registros', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(4, 'Eliminar', 'Permite eliminar registros', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(5, 'Imprimir', 'Permite imprimir registros', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(6, 'Descargar', 'Permite descargar registros', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `permitions_module_role`
---
-
-CREATE TABLE `permitions_module_role` (
-  `Permitions_module_role_id` int(11) NOT NULL,
-  `Module_role_FK` int(11) NOT NULL,
-  `Permitions_FK` int(11) NOT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `permitions_module_role`
---
-
-INSERT INTO `permitions_module_role` (`Permitions_module_role_id`, `Module_role_FK`, `Permitions_FK`, `createdAt`, `updatedAt`) VALUES
-(1, 1, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 1, 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(3, 2, 3, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(4, 2, 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(5, 3, 5, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(6, 3, 6, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `profile`
---
-
-CREATE TABLE `profile` (
-  `Profile_id` int(11) NOT NULL,
-  `Profile_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `Profile_phone` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `Profile_addres` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `Profile_email` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `Profile_photo` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `User_FK` int(11) NOT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `profile`
---
-
-INSERT INTO `profile` (`Profile_id`, `Profile_name`, `Profile_phone`, `Profile_addres`, `Profile_email`, `Profile_photo`, `User_FK`, `createdAt`, `updatedAt`) VALUES
-(1, 'Juan Perez', '1234567890', 'Calle 123', 'juan@example.com', 'foto1.jpg', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 'Maria Lopez', '9876543210', 'Calle 456', 'maria@example.com', 'foto2.jpg', 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(3, 'Carlos Ruiz', '1122334455', 'Calle 789', 'carlos@example.com', 'foto3.jpg', 3, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(4, 'Ana Torres', '6677889900', 'Calle 101', 'ana@example.com', 'foto4.jpg', 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(5, 'Pedro Gomez', '2233445566', 'Calle 202', 'pedro@example.com', 'foto5.jpg', 5, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(6, 'Laura Mendoza', '9988776655', 'Calle 303', 'laura@example.com', 'foto6.jpg', 6, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `resolucion_factura`
 --
 
@@ -555,29 +407,6 @@ CREATE TABLE `retenedor_iva` (
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `role`
---
-
-CREATE TABLE `role` (
-  `Role_id` int(11) NOT NULL,
-  `Role_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `Role_description` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `role`
---
-
-INSERT INTO `role` (`Role_id`, `Role_name`, `Role_description`, `createdAt`, `updatedAt`) VALUES
-(1, 'Admin', 'Administrador del sistema', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 'Editor', 'Puede editar contenido', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(3, 'Usuario', 'Usuario regular del sistema', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(4, 'Supervisor', 'Supervisa y gestiona usuarios', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-
--- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `sexo`
@@ -604,21 +433,6 @@ CREATE TABLE `suscripcion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tipo_documento`
---
-
-CREATE TABLE `tipo_documento` (
-  `Tipo_documento_id` int(11) NOT NULL,
-  `Tipo_documento_name` varchar(10) NOT NULL,
-  `Tipo_documento_acronym` varchar(5) NOT NULL,
-  `firstName` varchar(30) DEFAULT NULL,
-  `lastName` varchar(30) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
 --
 -- Estructura de tabla para la tabla `tipo_edificacion`
 --
@@ -627,61 +441,6 @@ CREATE TABLE `tipo_edificacion` (
   `Tipo_edificacion_id` int(10) NOT NULL,
   `Tipo_edificacion_descripcion` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `users`
---
-
-CREATE TABLE `users` (
-  `User_id` int(11) NOT NULL,
-  `User_user` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `User_password` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `User_status_FK` int(11) NOT NULL,
-  `Role_FK` int(11) NOT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
-  `Suscripcion_FK` int(10) NOT NULL,
-  `Inmueble_FK` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `users`
---
-
-INSERT INTO `users` (`User_id`, `User_user`, `User_password`, `User_status_FK`, `Role_FK`, `createdAt`, `updatedAt`, `Suscripcion_FK`, `Inmueble_FK`) VALUES
-(1, 'admin@email.com', '123456', 1, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0),
-(2, 'user1@email.com', 'password1', 1, 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0),
-(3, 'user2@email.com', 'password2', 2, 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0),
-(4, 'user3@email.com', 'password3', 3, 3, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0),
-(5, 'user4@email.com', 'password4', 4, 4, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0),
-(6, 'user5@email.com', 'password5', 1, 3, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `user_status`
---
-
-CREATE TABLE `user_status` (
-  `User_status_id` int(11) NOT NULL,
-  `User_status_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `User_status_description` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `user_status`
---
-
-INSERT INTO `user_status` (`User_status_id`, `User_status_name`, `User_status_description`, `createdAt`, `updatedAt`) VALUES
-(1, 'Activo', 'Usuario activo', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 'Inactivo', 'Usuario inactivo', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(3, 'Suspendido', 'Usuario suspendido temporalmente', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(4, 'Eliminado', 'Usuario eliminado del sistema', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-
 -- --------------------------------------------------------
 
 --
@@ -783,20 +542,6 @@ ALTER TABLE `direccion`
   ADD UNIQUE KEY `Localizacion_FK` (`Localizacion_FK`),
   ADD KEY `barrio_ciudad_corregimiento_vereda_FK` (`Barrio_ciudad_corregimiento_vereda_FK`);
 
---
--- Indices de la tabla `division`
---
-ALTER TABLE `division`
-  ADD PRIMARY KEY (`Division_id`);
-
---
--- Indices de la tabla `document_identification`
---
-ALTER TABLE `document_identification`
-  ADD PRIMARY KEY (`id_documento`),
-  ADD UNIQUE KEY `numero_documento` (`numero_documento`),
-  ADD KEY `Tipo_documento_FK` (`Tipo_documento_FK`),
-  ADD KEY `Sexo_FK` (`Sexo_FK`);
 
 --
 -- Indices de la tabla `estado_pago`
@@ -852,21 +597,6 @@ ALTER TABLE `inmueble`
 ALTER TABLE `localizacion`
   ADD PRIMARY KEY (`Localizacion_id`);
 
---
--- Indices de la tabla `module`
---
-ALTER TABLE `module`
-  ADD PRIMARY KEY (`Module_id`),
-  ADD UNIQUE KEY `Module_name` (`Module_name`),
-  ADD UNIQUE KEY `Module_route` (`Module_route`);
-
---
--- Indices de la tabla `module_role`
---
-ALTER TABLE `module_role`
-  ADD PRIMARY KEY (`Module_role_id`),
-  ADD KEY `Module_FK` (`Module_FK`),
-  ADD KEY `Role_FK` (`Role_FK`);
 
 --
 -- Indices de la tabla `municipio`
@@ -903,27 +633,6 @@ ALTER TABLE `pago`
   ADD KEY `Estado_pago_FK` (`Estado_pago_FK`),
   ADD KEY `Factura_FK` (`Factura_FK`);
 
---
--- Indices de la tabla `permitions`
---
-ALTER TABLE `permitions`
-  ADD PRIMARY KEY (`Permitions_id`),
-  ADD UNIQUE KEY `Permitions_name` (`Permitions_name`);
-
---
--- Indices de la tabla `permitions_module_role`
---
-ALTER TABLE `permitions_module_role`
-  ADD PRIMARY KEY (`Permitions_module_role_id`),
-  ADD KEY `Module_role_FK` (`Module_role_FK`),
-  ADD KEY `Permitions_FK` (`Permitions_FK`);
-
---
--- Indices de la tabla `profile`
---
-ALTER TABLE `profile`
-  ADD PRIMARY KEY (`Profile_id`),
-  ADD UNIQUE KEY `User_FK` (`User_FK`);
 
 --
 -- Indices de la tabla `resolucion_factura`
@@ -937,12 +646,6 @@ ALTER TABLE `resolucion_factura`
 ALTER TABLE `retenedor_iva`
   ADD PRIMARY KEY (`Retenedor_IVA_id`);
 
---
--- Indices de la tabla `role`
---
-ALTER TABLE `role`
-  ADD PRIMARY KEY (`Role_id`),
-  ADD UNIQUE KEY `Role_name` (`Role_name`);
 
 --
 -- Indices de la tabla `sexo`
@@ -959,12 +662,6 @@ ALTER TABLE `suscripcion`
   ADD UNIQUE KEY `Factura_FK` (`Factura_FK`),
   ADD UNIQUE KEY `Factura_FK_2` (`Factura_FK`);
 
---
--- Indices de la tabla `tipo_documento`
---
-ALTER TABLE `tipo_documento`
-  ADD PRIMARY KEY (`Tipo_documento_id`),
-  ADD UNIQUE KEY `Tipo_documento_acronym` (`Tipo_documento_acronym`);
 
 --
 -- Indices de la tabla `tipo_edificacion`
@@ -972,23 +669,6 @@ ALTER TABLE `tipo_documento`
 ALTER TABLE `tipo_edificacion`
   ADD PRIMARY KEY (`Tipo_edificacion_id`);
 
---
--- Indices de la tabla `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`User_id`),
-  ADD UNIQUE KEY `User_user` (`User_user`),
-  ADD KEY `User_status_FK` (`User_status_FK`),
-  ADD KEY `Role_FK` (`Role_FK`),
-  ADD KEY `Suscripcion_FK` (`Suscripcion_FK`),
-  ADD KEY `Inmueble_FK` (`Inmueble_FK`);
-
---
--- Indices de la tabla `user_status`
---
-ALTER TABLE `user_status`
-  ADD PRIMARY KEY (`User_status_id`),
-  ADD UNIQUE KEY `User_status_name` (`User_status_name`);
 
 --
 -- Indices de la tabla `valor`
@@ -1062,12 +742,6 @@ ALTER TABLE `division`
   MODIFY `Division_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `document_identification`
---
-ALTER TABLE `document_identification`
-  MODIFY `id_documento` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `estado_pago`
 --
 ALTER TABLE `estado_pago`
@@ -1124,3 +798,22 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+quiero que me des el codigo de inmueble teniendo en cuenta lo siguiente antes de crear la tabla inmueble creame la tabla tipo_edificacion y que este relacionado uno a uno.
+
+dame el codigo organizacion de parqueadero despues dame el codigo de asignacion y la relacion es de uno a uno.
+
+dame el codigo otras_caracteristicas y relacionalo con asignacion y que sea de uno a uno.
+
+otras_caracteristicas va relacionado con inmueble y su relacion es de uno a uno.
+
+aun no crees inmueble crea la tabla acerca_edificacion y relacionala con inmueble una relacion de una a uno.
+
+aun no crees inmueble crea la tabla Division y relacionala de uno a uno con inmueble.
+
+aun no crees inmueble crea la tabla imagenes_inmueble y relacionala de uno a uno con inmueble.
+
+ahora si crea inmueble con las relaciones. dame el codigo. quitale la propiedad Direccion_FK
+
+
+

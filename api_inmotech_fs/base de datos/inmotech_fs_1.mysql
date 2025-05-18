@@ -166,3 +166,253 @@ VALUES
 
 ----------------------------------------------------------------------------------------------------------------------
 
+-- usuarios de la plataforma
+-- Tabla de roles de la plataforma
+CREATE TABLE `platform_role` (
+  `Platform_role_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Role_name` VARCHAR(50) NOT NULL,
+  `Role_description` VARCHAR(255),
+  `Role_status` TINYINT(1) DEFAULT 1, -- 1=activo, 0=inactivo
+  `Role_priority` INT DEFAULT 0,
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de estados de usuario de la plataforma
+CREATE TABLE `platform_user_status` (
+  `Platform_user_status_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `User_status_name` VARCHAR(50) NOT NULL,
+  `User_status_description` VARCHAR(255),
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de usuarios de la plataforma
+CREATE TABLE `platform_user` (
+  `Platform_user_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Username` VARCHAR(100) NOT NULL,
+  `Password` VARCHAR(255) NOT NULL,
+  `Platform_user_status_FK` INT NOT NULL,
+  `Platform_role_FK` INT NOT NULL,
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`Platform_user_status_FK`) REFERENCES `platform_user_status`(`Platform_user_status_id`),
+  FOREIGN KEY (`Platform_role_FK`) REFERENCES `platform_role`(`Platform_role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de módulos de la plataforma
+CREATE TABLE `platform_module` (
+  `Platform_module_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Module_name` VARCHAR(50) NOT NULL,
+  `Module_route` VARCHAR(100),
+  `Module_description` VARCHAR(255),
+  `Module_icon` VARCHAR(100),
+  `Module_status` TINYINT(1) DEFAULT 1,
+  `Module_order` INT DEFAULT 0,
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de permisos de la plataforma
+CREATE TABLE `platform_permitions` (
+  `Platform_permitions_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Permitions_name` VARCHAR(50) NOT NULL,
+  `Permitions_description` VARCHAR(255),
+  `Permitions_status` TINYINT(1) DEFAULT 1,
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Relación entre módulos y roles de la plataforma
+CREATE TABLE `platform_module_role` (
+  `Platform_module_role_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Platform_module_FK` INT NOT NULL,
+  `Platform_role_FK` INT NOT NULL,
+  `Module_role_status` TINYINT(1) DEFAULT 1,
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`Platform_module_FK`) REFERENCES `platform_module`(`Platform_module_id`),
+  FOREIGN KEY (`Platform_role_FK`) REFERENCES `platform_role`(`Platform_role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Relación entre permisos, módulos y roles de la plataforma
+CREATE TABLE `platform_permitions_module_role` (
+  `Platform_permitions_module_role_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Platform_module_role_FK` INT NOT NULL,
+  `Platform_permitions_FK` INT NOT NULL,
+  `Permitions_module_role_status` TINYINT(1) DEFAULT 1,
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`Platform_module_role_FK`) REFERENCES `platform_module_role`(`Platform_module_role_id`),
+  FOREIGN KEY (`Platform_permitions_FK`) REFERENCES `platform_permitions`(`Platform_permitions_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de perfil de usuario de la plataforma (uno a uno con platform_user)
+CREATE TABLE `platform_profile` (
+  `Profile_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Profile_name` VARCHAR(20) NOT NULL,
+  `Profile_lastname` VARCHAR(30), 
+  `Profile_phone` VARCHAR(10) NOT NULL,
+  `Profile_addres` VARCHAR(30) NOT NULL,
+  `Profile_email` VARCHAR(30) NOT NULL,
+  `Profile_photo` VARCHAR(256) NOT NULL,
+  `Profile_birthdate` DATE,                   -- Fecha de nacimiento
+  `Profile_gender` VARCHAR(10),               -- Género (opcional)
+  `Profile_national_id` VARCHAR(20),          -- Documento de identidad (opcional)
+  `Profile_bio` TEXT,                         -- Biografía o descripción corta
+  `Profile_website` VARCHAR(100),             -- Sitio web personal
+  `Profile_social` VARCHAR(100),              -- Red social principal (opcional)
+  `Platform_user_FK` INT NOT NULL UNIQUE,
+  `createdAt` DATETIME NOT NULL,
+  `updatedAt` DATETIME NOT NULL,
+  FOREIGN KEY (`Platform_user_FK`) REFERENCES `platform_user`(`Platform_user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- documento de identidad
+CREATE TABLE `platform_identity_document` (
+  `Identity_document_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Document_number` VARCHAR(30) NOT NULL,
+  `Document_type` VARCHAR(30) NOT NULL,           -- Ej: DNI, Pasaporte, Cédula, etc.
+  `Issued_country` VARCHAR(50),                   -- País emisor (opcional)
+  `Issued_date` DATE,                             -- Fecha de emisión (opcional)
+  `Expiration_date` DATE,                         -- Fecha de vencimiento (opcional)
+  `Platform_profile_FK` INT NOT NULL UNIQUE,      -- Relación uno a uno con profile
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`Platform_profile_FK`) REFERENCES `platform_profile`(`Profile_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------------------------------------------------------------------------------
+--todo de inmueble
+
+-- Tabla tipo_edificacion
+CREATE TABLE `tipo_edificacion` (
+  `Tipo_edificacion_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Tipo_edificacion_categoria` VARCHAR(50),
+  `Tipo_edificacion_descripcion` VARCHAR(50) NOT NULL
+  `Tipo_edificacion_niveles` INT,
+  `Tipo_edificacion_activo` TINYINT(1) DEFAULT 1,
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla organizacion_parqueadero
+CREATE TABLE `organizacion_parqueadero` (
+  `Organizacion_parqueadero_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Tipo_parqueadero` VARCHAR(30) NOT NULL,
+  `Cantidad` INT NOT NULL,
+  `Cubierto` TINYINT(1) DEFAULT 0,
+  `Disponible` TINYINT(1) DEFAULT 1,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla asignacion (uno a uno con organizacion_parqueadero)
+CREATE TABLE `asignacion` (
+  `Asignacion_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Parqueaderos_asignados` JSON NOT NULL, -- Ejemplo: [{"numero": "P1", "identificacion": "A123"}, ...]
+  `Organizacion_parqueadero_FK` INT NOT NULL UNIQUE,
+  `Disponible` TINYINT(1) DEFAULT 1,
+  `Descripcion` VARCHAR(255),
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (`Organizacion_parqueadero_FK`) REFERENCES `organizacion_parqueadero`(`Organizacion_parqueadero_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla otras_caracteristicas (uno a uno con asignacion)
+CREATE TABLE `otras_caracteristicas` (
+  `Otras_caracteristicas_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Caracteristicas_descripcion` VARCHAR(30) NOT NULL,
+  `Deposito` INT NOT NULL,
+  `Lavanderia` TINYINT(1) NOT NULL,
+  `Gas` TINYINT(1) NOT NULL,
+  `Piso` INT,
+  `Mascotas_permitidas` TINYINT(1) DEFAULT 0,
+  `Tipo_inmueble` VARCHAR(30) NOT NULL,
+  `Amoblado` TINYINT(1) DEFAULT 0,
+   `Descripcion_adicional` VARCHAR(255),       -- Texto libre para otras características
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `Asignacion_FK` INT NOT NULL UNIQUE,
+  FOREIGN KEY (`Asignacion_FK`) REFERENCES `asignacion`(`Asignacion_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla acerca_edificacion (relación uno a uno con inmueble)
+CREATE TABLE `acerca_edificacion` (
+  `Acerca_edificacion_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `AcercaDeLaEdificacion` VARCHAR(100) NOT NULL,
+  `Estrato` INT NOT NULL
+  `Tipo_construccion` VARCHAR(50),
+  `Anio_construccion` INT,
+  `Estado_conservacion` VARCHAR(30),
+  `Zona_comun` TINYINT(1) DEFAULT 0,
+  `Descripcion_adicional` VARCHAR(255),
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla division (relación uno a uno con inmueble)
+CREATE TABLE `division` (
+  `Division_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Division` VARCHAR(50) NOT NULL,
+  `Balcon` VARCHAR(2) NOT NULL DEFAULT 'No',
+  `Baños` INT NOT NULL,
+  `Terraza` INT NOT NULL,
+  `Habitaciones` TINYINT NOT NULL,
+  `Garaje` INT NOT NULL,
+  `Ascensores` VARCHAR(2) NOT NULL,
+  `Area` VARCHAR(10) NOT NULL,
+  `Closets` INT,
+  `Estudio` TINYINT(1) DEFAULT 0,
+  `Sala` TINYINT(1) DEFAULT 1,
+  `Comedor` TINYINT(1) DEFAULT 1,
+  `Cocina` VARCHAR(30),
+  `Zona_lavanderia` TINYINT(1) DEFAULT 0,
+  `Deposito` TINYINT(1) DEFAULT 0,
+  `Descripcion_adicional` VARCHAR(255),
+  `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla imagenes_inmueble (relación uno a uno con inmueble)
+CREATE TABLE `imagenes_inmueble` (
+  `Imagenes_inmueble_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Imagenes` VARCHAR(255) NOT NULL,
+  `Nombre` VARCHAR(100) NOT NULL,
+  `URL` VARCHAR(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla inmueble con todas las relaciones uno a uno y sin Direccion_FK
+CREATE TABLE `inmueble` (
+  `Inmueble_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `Valor` INT NOT NULL,
+  `Area` INT NOT NULL,
+  `Descripcion_General` VARCHAR(255) NOT NULL,
+  `Antiguedad` INT NOT NULL,
+  `Motivo_VoA` VARCHAR(100) NOT NULL,
+  `Situacion_inmueble` VARCHAR(50) NOT NULL,
+  `Tipo_edificacion_FK` INT NOT NULL UNIQUE,
+  `Otras_caracteristicas_FK` INT NOT NULL UNIQUE,
+  `Acerca_edificacion_FK` INT NOT NULL UNIQUE,
+  `Division_FK` INT NOT NULL UNIQUE,
+  `Imagenes_inmueble_FK` INT NOT NULL UNIQUE,
+  `Codigo_interno` VARCHAR(30),
+  `Estado` VARCHAR(20) DEFAULT 'disponible',
+  `Fecha_publicacion` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `Fecha_actualizacion` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `Visitas` INT DEFAULT 0,
+  `Observaciones` VARCHAR(255),
+  `Platform_user_FK` INT NOT NULL,
+  FOREIGN KEY (`Tipo_edificacion_FK`) REFERENCES `tipo_edificacion`(`Tipo_edificacion_id`),
+  FOREIGN KEY (`Otras_caracteristicas_FK`) REFERENCES `otras_caracteristicas`(`Otras_caracteristicas_id`),
+  FOREIGN KEY (`Acerca_edificacion_FK`) REFERENCES `acerca_edificacion`(`Acerca_edificacion_id`),
+  FOREIGN KEY (`Division_FK`) REFERENCES `division`(`Division_id`),
+  FOREIGN KEY (`Imagenes_inmueble_FK`) REFERENCES `imagenes_inmueble`(`Imagenes_inmueble_id`),
+  FOREIGN KEY (`Platform_user_FK`) REFERENCES `platform_user`(`Platform_user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- relacion entre inmueble y user de la plataforma
+-- Agrega la relación de usuario a inmueble (uno a muchos: un usuario tiene muchos inmuebles)
+  ALTER TABLE `inmueble`
+    ADD COLUMN `Platform_user_FK` INT NOT NULL,
+    ADD CONSTRAINT `fk_inmueble_platform_user`
+    FOREIGN KEY (`Platform_user_FK`) REFERENCES `platform_user`(`Platform_user_id`);
