@@ -24,30 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `acerca_edificacion`
---
-
-CREATE TABLE `acerca_edificacion` (
-  `Acerca_edificacion_id` int(10) NOT NULL,
-  `AcercaDeLaEdificacion` varchar(10) NOT NULL,
-  `Estrato` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `asignacion`
---
-
-CREATE TABLE `asignacion` (
-  `Asignacion_id` int(10) NOT NULL,
-  `Parqueaderos_asignados` varchar(10) NOT NULL,
-  `Organizacion_parqueadero_FK` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `barrio`
 --
 
@@ -176,24 +152,6 @@ INSERT INTO `direccion` (`Direccion_id`, `Direccion`, `Tipo_via`, `Numero_via_pr
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `division`
---
-
-CREATE TABLE `division` (
-  `Division_id` int(10) NOT NULL,
-  `Division` varchar(10) NOT NULL,
-  `Balcon` varchar(2) NOT NULL DEFAULT 'No',
-  `Baños` int(1) NOT NULL,
-  `Terraza` int(2) NOT NULL,
-  `Habitaciones` tinyint(1) NOT NULL,
-  `Garaje` int(2) NOT NULL,
-  `Ascensores` varchar(2) NOT NULL,
-  `Area` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
 -- --------------------------------------------------------
 
 --
@@ -224,19 +182,6 @@ CREATE TABLE `factura` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `imagenes_inmueble`
---
-
-CREATE TABLE `imagenes_inmueble` (
-  `Imagenes_inmueble_id` int(10) NOT NULL,
-  `Imagenes` int(10) NOT NULL,
-  `Nombre` int(10) NOT NULL,
-  `URL` int(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `impuesto`
 --
 
@@ -259,28 +204,6 @@ CREATE TABLE `impuesto_valor` (
   `Valor_FK` int(10) DEFAULT NULL,
   `Retenedor_iva_FK` int(10) DEFAULT NULL,
   `Impuesto_FK` int(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `inmueble`
---
-
-CREATE TABLE `inmueble` (
-  `Inmueble_id` int(10) NOT NULL,
-  `Valor` int(10) NOT NULL,
-  `Area` int(10) NOT NULL,
-  `Descripcion_General` int(10) NOT NULL,
-  `Antiguedad` int(10) NOT NULL,
-  `Motivo_VoA` int(10) NOT NULL,
-  `Situacion_inmueble` varchar(10) NOT NULL,
-  `Tipo_edificacion_FK` int(10) NOT NULL,
-  `Otras_caracteristicas_FK` int(10) NOT NULL,
-  `Acerca_edificacion_FK` int(10) NOT NULL,
-  `Division_FK` int(10) NOT NULL,
-  `Imagenes_inmueble_FK` int(10) NOT NULL,
-  `Direccion_FK` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -339,34 +262,6 @@ INSERT INTO `ndap` (`Ndap_id`, `Ndap_descripcion`) VALUES
 (1, 'CARRERA 26');
 
 -- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `organizacion_parqueadero`
---
-
-CREATE TABLE `organizacion_parqueadero` (
-  `Organizacion_parqueadero_id` int(10) NOT NULL,
-  `Tipo_parqueadero` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `otras_caracteristicas`
---
-
-CREATE TABLE `otras_caracteristicas` (
-  `Otras_caracteristicas_id` int(10) NOT NULL,
-  `Caracteristicas_descripcion` varchar(30) NOT NULL,
-  `Deposito` int(10) NOT NULL,
-  `Lavanderia` int(1) NOT NULL,
-  `Gas` int(1) NOT NULL,
-  `Tipo_inmueble` int(10) NOT NULL,
-  `Asignacion_FK` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
 --
 -- Estructura de tabla para la tabla `pago`
 --
@@ -432,18 +327,6 @@ CREATE TABLE `suscripcion` (
   `Factura_FK` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
---
--- Estructura de tabla para la tabla `tipo_edificacion`
---
-
-CREATE TABLE `tipo_edificacion` (
-  `Tipo_edificacion_id` int(10) NOT NULL,
-  `Tipo_edificacion_descripcion` varchar(15) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `valor`
 --
 
@@ -578,18 +461,7 @@ ALTER TABLE `impuesto_valor`
   ADD KEY `Valor_FK` (`Valor_FK`),
   ADD KEY `Impuesto_FK` (`Impuesto_FK`);
 
---
--- Indices de la tabla `inmueble`
---
-ALTER TABLE `inmueble`
-  ADD PRIMARY KEY (`Inmueble_id`),
-  ADD UNIQUE KEY `Tipo_edificacion_FK` (`Tipo_edificacion_FK`),
-  ADD UNIQUE KEY `Tipo_edificacion_FK_2` (`Tipo_edificacion_FK`,`Otras_caracteristicas_FK`),
-  ADD UNIQUE KEY `Acerca_edificacion_FK` (`Acerca_edificacion_FK`),
-  ADD UNIQUE KEY `Division_FK` (`Division_FK`),
-  ADD UNIQUE KEY `Direccion_FK` (`Direccion_FK`),
-  ADD KEY `Otras_caracteristicas_FK` (`Otras_caracteristicas_FK`),
-  ADD KEY `Imagenes_inmueble_FK` (`Imagenes_inmueble_FK`);
+
 
 --
 -- Indices de la tabla `localizacion`
@@ -616,14 +488,6 @@ ALTER TABLE `ndap`
 --
 ALTER TABLE `organizacion_parqueadero`
   ADD PRIMARY KEY (`Organizacion_parqueadero_id`);
-
---
--- Indices de la tabla `otras_caracteristicas`
---
-ALTER TABLE `otras_caracteristicas`
-  ADD PRIMARY KEY (`Otras_caracteristicas_id`),
-  ADD UNIQUE KEY `Asignacion_FK` (`Asignacion_FK`),
-  ADD UNIQUE KEY `Asignacion_FK_2` (`Asignacion_FK`);
 
 --
 -- Indices de la tabla `pago`
@@ -664,13 +528,6 @@ ALTER TABLE `suscripcion`
 
 
 --
--- Indices de la tabla `tipo_edificacion`
---
-ALTER TABLE `tipo_edificacion`
-  ADD PRIMARY KEY (`Tipo_edificacion_id`);
-
-
---
 -- Indices de la tabla `valor`
 --
 ALTER TABLE `valor`
@@ -686,18 +543,6 @@ ALTER TABLE `vereda`
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
-
---
--- AUTO_INCREMENT de la tabla `acerca_edificacion`
---
-ALTER TABLE `acerca_edificacion`
-  MODIFY `Acerca_edificacion_id` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `asignacion`
---
-ALTER TABLE `asignacion`
-  MODIFY `Asignacion_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `barrio`
@@ -736,22 +581,10 @@ ALTER TABLE `direccion`
   MODIFY `Direccion_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `division`
---
-ALTER TABLE `division`
-  MODIFY `Division_id` int(10) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `estado_pago`
 --
 ALTER TABLE `estado_pago`
   MODIFY `Estado_pago_id` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `imagenes_inmueble`
---
-ALTER TABLE `imagenes_inmueble`
-  MODIFY `Imagenes_inmueble_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `localizacion`
@@ -798,22 +631,6 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-quiero que me des el codigo de inmueble teniendo en cuenta lo siguiente antes de crear la tabla inmueble creame la tabla tipo_edificacion y que este relacionado uno a uno.
-
-dame el codigo organizacion de parqueadero despues dame el codigo de asignacion y la relacion es de uno a uno.
-
-dame el codigo otras_caracteristicas y relacionalo con asignacion y que sea de uno a uno.
-
-otras_caracteristicas va relacionado con inmueble y su relacion es de uno a uno.
-
-aun no crees inmueble crea la tabla acerca_edificacion y relacionala con inmueble una relacion de una a uno.
-
-aun no crees inmueble crea la tabla Division y relacionala de uno a uno con inmueble.
-
-aun no crees inmueble crea la tabla imagenes_inmueble y relacionala de uno a uno con inmueble.
-
-ahora si crea inmueble con las relaciones. dame el codigo. quitale la propiedad Direccion_FK
 
 
 
