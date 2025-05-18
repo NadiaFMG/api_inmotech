@@ -289,7 +289,7 @@ CREATE TABLE `platform_identity_document` (
 CREATE TABLE `tipo_edificacion` (
   `Tipo_edificacion_id` INT AUTO_INCREMENT PRIMARY KEY,
   `Tipo_edificacion_categoria` VARCHAR(50),
-  `Tipo_edificacion_descripcion` VARCHAR(50) NOT NULL
+  `Tipo_edificacion_descripcion` VARCHAR(50) NOT NULL,
   `Tipo_edificacion_niveles` INT,
   `Tipo_edificacion_activo` TINYINT(1) DEFAULT 1,
   `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -302,7 +302,7 @@ CREATE TABLE `organizacion_parqueadero` (
   `Tipo_parqueadero` VARCHAR(30) NOT NULL,
   `Cantidad` INT NOT NULL,
   `Cubierto` TINYINT(1) DEFAULT 0,
-  `Disponible` TINYINT(1) DEFAULT 1,
+  `Disponible` TINYINT(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabla asignacion (uno a uno con organizacion_parqueadero)
@@ -313,7 +313,7 @@ CREATE TABLE `asignacion` (
   `Disponible` TINYINT(1) DEFAULT 1,
   `Descripcion` VARCHAR(255),
   `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (`Organizacion_parqueadero_FK`) REFERENCES `organizacion_parqueadero`(`Organizacion_parqueadero_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -328,9 +328,9 @@ CREATE TABLE `otras_caracteristicas` (
   `Mascotas_permitidas` TINYINT(1) DEFAULT 0,
   `Tipo_inmueble` VARCHAR(30) NOT NULL,
   `Amoblado` TINYINT(1) DEFAULT 0,
-   `Descripcion_adicional` VARCHAR(255),       -- Texto libre para otras características
+  `Descripcion_adicional` VARCHAR(255),
   `Created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `Updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Asignacion_FK` INT NOT NULL UNIQUE,
   FOREIGN KEY (`Asignacion_FK`) REFERENCES `asignacion`(`Asignacion_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -339,7 +339,7 @@ CREATE TABLE `otras_caracteristicas` (
 CREATE TABLE `acerca_edificacion` (
   `Acerca_edificacion_id` INT AUTO_INCREMENT PRIMARY KEY,
   `AcercaDeLaEdificacion` VARCHAR(100) NOT NULL,
-  `Estrato` INT NOT NULL
+  `Estrato` INT NOT NULL,
   `Tipo_construccion` VARCHAR(50),
   `Anio_construccion` INT,
   `Estado_conservacion` VARCHAR(30),
@@ -408,11 +408,3 @@ CREATE TABLE `inmueble` (
   FOREIGN KEY (`Imagenes_inmueble_FK`) REFERENCES `imagenes_inmueble`(`Imagenes_inmueble_id`),
   FOREIGN KEY (`Platform_user_FK`) REFERENCES `platform_user`(`Platform_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
--- relacion entre inmueble y user de la plataforma
--- Agrega la relación de usuario a inmueble (uno a muchos: un usuario tiene muchos inmuebles)
-  ALTER TABLE `inmueble`
-    ADD COLUMN `Platform_user_FK` INT NOT NULL,
-    ADD CONSTRAINT `fk_inmueble_platform_user`
-    FOREIGN KEY (`Platform_user_FK`) REFERENCES `platform_user`(`Platform_user_id`);
