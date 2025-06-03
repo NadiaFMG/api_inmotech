@@ -1,0 +1,11 @@
+* Carga y gestión de imágenes/videos: Las propiedades suelen tener múltiples fotos y, a veces, videos. La API debe poder manejar la carga, almacenamiento y optimización de estos archivos multimedia.
+ * Autenticación y autorización de usuarios: Para permitir que los propietarios publiquen sus inmuebles o que los agentes gestionen sus listados, la API necesitará un sistema robusto de autenticación y autorización (roles de usuario, permisos).
+ * Gestión de favoritos/listas de seguimiento: Los usuarios a menudo quieren guardar propiedades que les interesan. La API necesitaría endpoints para gestionar estas listas.
+ * Sistemas de notificación: Para alertar a los usuarios sobre nuevas propiedades que coincidan con sus criterios de búsqueda, o para notificar a los propietarios sobre nuevas consultas.
+ * Integración con pasarelas de pago: Si la revista ofrece opciones de publicación pagadas o servicios premium.
+ * Generación de informes y analíticas: Para que los propietarios o agentes puedan ver estadísticas sobre sus listados (vistas, contactos).
+ * Comentarios y valoraciones: Si la revista permite a los usuarios comentar o valorar propiedades o agentes.
+ * Comunicación interna (chats/mensajería): Si se facilita la comunicación directa entre interesados y propietarios/agentes.
+ * Integración con redes sociales: Para compartir listados fácilmente.
+ * Optimización para SEO: La API podría necesitar generar URLs amigables o proveer metadatos para mejorar la visibilidad en motores de búsqueda.
+En resumen, mientras que el CRUD es el núcleo de la API para gestionar los datos de los inmuebles, una revista de inmuebles exitosa y funcional requerirá una API mucho más rica en características y funcionalidades, que vaya más allá del CRUD básico para ofrecer una experiencia completa al usuario.

@@ -1,0 +1,68 @@
+Aquí te detallo los tipos de filtros que podrías implementar, basados en las tablas de tu esquema:
+
+1. Filtros por Ubicación
+Son cruciales para que los usuarios encuentren propiedades en las áreas de su interés.
+
+País/Región: Aunque no tienes una tabla de "país" explícita, ndap (Nivel Departamental/Provincial) podría ser el nivel más alto de ubicación, asumiendo que tu revista opera en Colombia o un país con una estructura similar.
+Departamento/Provincia: Basado en Ndap_id en la tabla municipio.
+Municipio: Municipio_nombre en la tabla municipio.
+Ciudad: Ciudad en la tabla ciudad.
+Corregimiento/Vereda: Corregimiento en corregimiento y Vereda_nombre en vereda.
+Barrio: Nombre_barrio en barrio.
+Búsqueda por Radio/Proximidad: Usando Latitud y Longitud de la tabla localizacion y un punto central definido por el usuario (e.g., "propiedades a 5km de mi ubicación actual" o "cerca de X punto de interés").
+Tipo de Vía y Número: Tipo_via, Numero_via_principal, Numero_calle_transversal, Numero_edificacion en direccion. (Útil para búsquedas muy específicas o para refinar resultados).
+Designador Cardinal: Cardinalidad en designador_cardinal.
+
+2. Filtros por Tipo de Inmueble y Características Generales
+Permiten acotar la búsqueda por la naturaleza de la propiedad.
+
+Tipo de Edificación: Tipo_edificacion_categoria o Tipo_edificacion_descripcion en tipo_edificacion (ej. "Apartamento", "Casa", "Oficina", "Local comercial", "Finca", etc.).
+Motivo de Transacción: Motivo_VoA en inmueble (ej. "Venta", "Arriendo", "Anticrético").
+Rango de Precio: Valor en inmueble (Mínimo, Máximo).
+Rango de Área: Area en inmueble (Mínimo, Máximo en m² o pie²).
+Antigüedad: Antiguedad en inmueble (ej. "Nueva", "Menos de 5 años", "5-10 años", "Más de 10 años", "A remodelar").
+Estado del Inmueble: Estado en inmueble (ej. "Disponible", "Vendido/Arrendado", "En proceso").
+Código Interno: Codigo_interno en inmueble (para búsquedas directas si el usuario conoce el código).
+
+3. Filtros por Detalles Específicos del Inmueble (División y Otras Características)
+Estos filtros son muy demandados por los usuarios para encontrar propiedades que se ajusten a sus necesidades.
+
+Número de Habitaciones: Habitaciones en division.
+Número de Baños: Baños en division.
+Tipo de Cocina: Cocina en division (ej. "Integral", "Abierta", "Semi-integral").
+Balcón/Terraza: Balcon y Terraza en division (sí/no, o número de terrazas).
+Garaje/Estacionamiento: Garaje en division (número de garajes) y Tipo_parqueadero, Cubierto, Cantidad en organizacion_parqueadero.
+Ascensores: Ascensores en division (sí/no).
+Closets: Closets en division (número).
+Estudio: Estudio en division (sí/no).
+Sala/Comedor: Sala y Comedor en division (sí/no).
+Zona de Lavandería: Zona_lavanderia en division (sí/no).
+Depósito: Deposito en division y otras_caracteristicas (sí/no, o número de depósitos).
+Lavandería (Comunal/Propia): Lavanderia en otras_caracteristicas.
+Gas: Gas en otras_caracteristicas (sí/no).
+Piso: Piso en otras_caracteristicas (número de piso).
+Mascotas Permitidas: Mascotas_permitidas en otras_caracteristicas (sí/no).
+Amoblado: Amoblado en otras_caracteristicas (sí/no).
+
+4. Filtros por Características de la Edificación/Conjunto
+Para inmuebles en edificios o conjuntos residenciales.
+
+Estrato: Estrato en acerca_edificacion.
+Tipo de Construcción: Tipo_construccion en acerca_edificacion.
+Año de Construcción: Anio_construccion en acerca_edificacion.
+Estado de Conservación: Estado_conservacion en acerca_edificacion (ej. "Excelente", "Bueno", "Necesita remodelación").
+Zona Común: Zona_comun en acerca_edificacion (sí/no).
+
+5. Filtros por "Quién publica" (Para Uso Interno o Destacado)
+Aunque no es un filtro de usuario final, podría ser útil para la administración o para destacar publicaciones.
+
+Publicado por: Platform_user_FK en inmueble. (Permite filtrar por propiedades de un anunciante específico).
+Tipo de Anunciante: Podrías agregar un campo o atributo en platform_user o platform_profile (ej. "Agencia", "Particular", "Constructora") para filtrar propiedades de un tipo de anunciante.
+Consideraciones al Implementar los Filtros:
+Indexación: Asegúrate de que las columnas que uses con mayor frecuencia en los filtros (Valor, Area, Habitaciones, Baños, FKs de ubicación, etc.) estén indexadas en tu base de datos para un rendimiento óptimo de las consultas.
+Parámetros de API: Define claramente cómo se pasarán estos filtros a tu API (ej. GET /inmuebles?min_precio=100000000&max_habitaciones=3&ciudad_id=123).
+Combinaciones Lógicas: Permite combinaciones AND por defecto (ej. "quiero un apartamento Y 3 habitaciones") y considera implementar OR para casos específicos (ej. "quiero un apartamento O una casa").
+Filtros de Rango: Para precios, áreas, antigüedad, etc., permite que los usuarios ingresen un valor mínimo, un valor máximo, o ambos.
+Filtros de Selección Múltiple: Para categorías como "Tipo de Edificación", permite que los usuarios seleccionen varias opciones (ej. "Apartamento" y "Casa").
+Interfaz de Usuario: Piensa en cómo se presentarán estos filtros en la interfaz de la revista (menús desplegables, sliders, checkboxes, campos de texto).
+Con la riqueza de datos que tu esquema ya proporciona, tienes una base fantástica para construir un sistema de filtros muy potente y útil para los usuarios de tu revista de inmuebles.

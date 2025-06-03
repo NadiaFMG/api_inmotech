@@ -1,0 +1,13 @@
+¡Claro! Existen varias alternativas gratuitas o con planes gratuitos que puedes integrar para la geolocalización y mapas en tu revista de inmuebles. Aquí te presento algunas opciones populares:
+
+OpenStreetMap (OSM): OpenStreetMap es un proyecto colaborativo para crear un mapa del mundo editable por la comunidad. Ofrece datos geoespaciales abiertos y gratuitos que puedes utilizar para diversas aplicaciones. Puedes usar librerías como Leaflet.js para trabajar con OSM.
+Leaflet: Leaflet es una librería de JavaScript de código abierto para crear mapas interactivos. Es ligera y fácil de usar, y te permite personalizar la apariencia del mapa.
+Mapbox: Mapbox ofrece una API con un nivel gratuito que incluye un número limitado de solicitudes. Es una plataforma potente y personalizable para mapas.
+Here Maps: Here ofrece una API con planes gratuitos para un número limitado de solicitudes por mes. Proporciona datos de ubicación detallados y servicios de enrutamiento.
+PositionStack: PositionStack ofrece servicios de geocodificación (convertir direcciones en coordenadas y viceversa) con un nivel gratuito.
+LocationIQ: LocationIQ es otra opción para geocodificación y mapas, con un nivel gratuito para un uso moderado. Adquiere datos de fuentes como OpenStreetMap.
+Además, te sugiero explorar:
+
+uMap: uMap es una herramienta en línea para crear mapas personalizados con capas de OpenStreetMap.
+GeoServer: GeoServer es un servidor de mapas de código abierto que te permite compartir datos geoespaciales.
+Recuerda revisar los términos de uso y los límites de cada servicio para asegurarte de que se ajustan a tus necesidades y presupuesto. Algunos servicios pueden requerir atribución.
