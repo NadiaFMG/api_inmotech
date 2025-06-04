@@ -931,9 +931,3 @@ WHERE
 ¡Aquí tienes todas las 10 combinaciones posibles de 3 grupos!
 
 Con esto, ya tienes un conjunto muy completo de consultas que cubren una amplia gama de escenarios de búsqueda. El siguiente paso serían las combinaciones de 4 grupos y, finalmente, la combinación de los 5 grupos (la consulta maestra).
-
-
-
-
-
-
