@@ -25,6 +25,10 @@ import localizacion from './routes/localizacion.js';
 import division from './routes/division.js';
 import estado_pago from './routes/estado_pago.js';
 import document_identification from './routes/document_identification.js';
+import tipoEdificacionRoutes from './routes/tipoEdificacionRoutes.js';
+import tipoDocumentoRoutes from './routes/tipoDocumentoRoutes.js'
+import imagenesInmuebleRoutes from './routes/imagenesInmuebleRoutes.js';
+
 
 
 const app = express();
@@ -57,7 +61,9 @@ app.use('/localizacion', localizacion);
 app.use('/division', division);
 app.use('/estado_pago', estado_pago);
 app.use('/document_identification', document_identification);
-
+app.use('/tipo_edificacion', tipoEdificacionRoutes);
+app.use('/tipo_documento', tipoDocumentoRoutes);
+app.use('/imagenes_inmueble', imagenesInmuebleRoutes);
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
