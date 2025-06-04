@@ -31,6 +31,7 @@ const userStatus = sequelize.define('user_status', {
 },
 {
     tableName: 'user_status'
+    
 });
 
 export default userStatus;

@@ -11,9 +11,9 @@ const municipio = sequelize.define('municipio', {
     Ndap_FK: {
         type: DataTypes.INTEGER(10),
         allowNull: true,
-        references: {         // Add this if Ndap_FK is a foreign key
-            model: 'ndap',  // Replace 'ndap' with the actual table name
-            key: 'Ndap_id'    // Replace 'Ndap_id' with the primary key of the ndap table
+        references: {         
+            model: 'ndap',  
+            key: 'Ndap_id'    
         }
     },
     Municipio_nombre: {
@@ -30,3 +30,4 @@ const municipio = sequelize.define('municipio', {
 });
 
 export default municipio;
+

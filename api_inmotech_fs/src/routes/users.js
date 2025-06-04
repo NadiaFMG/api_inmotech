@@ -10,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.get('/', /*authenticateToken,*/ getAllUsers);
-router.get('/:id', /*authenticateToken,*/ getUserById);
+router.get('/', authenticateToken, getAllUsers);
+router.get('/:id', authenticateToken, getUserById);
 router.post('/', createUser);
-router.put('/:id', /*authenticateToken,*/ updateUser);
-router.delete('/:id', /*authenticateToken,*/ deleteUser);
+router.put('/:id', authenticateToken, updateUser);
+router.delete('/:id', authenticateToken, deleteUser);
 
 export default router;

@@ -26,7 +26,6 @@ export async function getUserStatusById(req, res) {
 
 // Crear un nuevo estado de usuario
 export async function createUserStatus(req, res) {
-  
   try {
     const newUserStatus = await user_status.create(req.body);
     res.status(201).json(newUserStatus);

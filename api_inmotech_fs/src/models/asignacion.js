@@ -19,7 +19,7 @@ const asignacion = sequelize.define('asignacion', {
     type: DataTypes.INTEGER(10),
     allowNull: false,
     unique: true,
-
+  
   },
 }, {
   tableName: 'asignacion',

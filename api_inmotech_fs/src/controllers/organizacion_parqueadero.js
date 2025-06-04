@@ -1,3 +1,4 @@
+
 import OrganizacionParqueadero from '../models/organizacion_parqueadero.js';
 
 // Obtener todos los registros de organizacion_parquedero

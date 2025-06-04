@@ -1,3 +1,4 @@
+
 import acercaEdificacion from '../models/acerca_edificacion.js';
 
 // Obtener todos los registros de acerca_edificacion

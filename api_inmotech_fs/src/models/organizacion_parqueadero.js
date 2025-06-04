@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/index.js';
 
-
 const organizacionParqueadero = sequelize.define('organizacion_parqueadero', {
   Organizacion_parqueadero_id: {
     type: DataTypes.INTEGER(10),
@@ -21,6 +20,5 @@ const organizacionParqueadero = sequelize.define('organizacion_parqueadero', {
   // createdAt: 'fechaCreacion',
   // updatedAt: 'ultimaActualizacion'
 });
-
 
 export default organizacionParqueadero;
