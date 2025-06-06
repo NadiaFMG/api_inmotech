@@ -1,8 +1,8 @@
 // controllers/inmuebleControllers.js
 
-import Inmueble from '../models/inmueble.js';         // Asegúrate de que estas rutas sean correctas
-import PlatformUser from '../models/platform_user.js'; // Asegúrate de que estas rutas sean correctas
-import PlatformProfile from '../models/platform_profile.js'; // Asegúrate de que estas rutas sean correctas
+import Inmueble from '../models/inmueble.js';         // falta
+import PlatformUser from '../models/platform_user.js'; // falta
+import PlatformProfile from '../models/platform_profile.js'; //falta
 
 // --- 1. Obtener inmuebles publicados por un Anunciante Específico (Usuario de la Plataforma) ---
 /**

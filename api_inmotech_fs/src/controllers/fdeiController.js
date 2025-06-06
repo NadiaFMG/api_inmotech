@@ -1,8 +1,8 @@
-import Inmueble from '../models/inmueble.js'; // Asegúrate de que el path sea correcto
-import Division from '../models/division.js';
-import OtrasCaracteristicas from '../models/otras_caracteristicas.js';
-import Asignacion from '../models/asignacion.js';
-import OrganizacionParqueadero from '../models/organizacion_parqueadero.js';
+import Inmueble from '../models/inmueble.js'; // falta
+import division from '../models/division.js';
+import OtrasCaracteristicas from '../models/otras_caracteristicas.js'; //falta
+import asignacion from '../models/asignacion.js';
+import organizacionParqueadero from '../models/organizacion_parqueadero.js';
 
 export async function getFilteredInmueblesByDetails(req, res) {
     try {
@@ -23,176 +23,114 @@ export async function getFilteredInmueblesByDetails(req, res) {
             ascensores_si,  // 'true' o 'false'
             min_closets,    // Para un mínimo de closets
             num_closets,    // Para número exacto de closets
-            estudio_si,     // 'true' o 'false' (asume 1 para TRUE)
-            sala_si,        // 'true' o 'false' (asume 1 para TRUE)
-            comedor_si,     // 'true' o 'false' (asume 1 para TRUE)
-            zona_lavanderia_si, // 'true' o 'false' (asume 1 para TRUE)
-            deposito_division_si, // 'true' o 'false' (asume 1 para TRUE)
+            // Filtros de OtrasCaracteristicas
+            mascotas_permitidas_si, // 'true' o 'false'
+            zona_lavanderia_si,     // 'true' o 'false'
+            calentador_agua_si,     // 'true' o 'false'
+            // Filtros de Asignacion
+            uso_comercial_si,       // 'true' o 'false'
+            uso_residencial_si,     // 'true' o 'false'
+            // Filtros de OrganizacionParqueadero
+            parqueadero_cubierto_si, // 'true' o 'false'
+            parqueadero_visitantes_si, // 'true' o 'false'
+            parqueadero_descubierto_si, // 'true' o 'false'
+        } = req.query;
 
-            // Filtros de Otras_caracteristicas
-            lavanderia_oc_si, // 'true' o 'false' (asume 1 para TRUE)
-            gas_oc_si,        // 'true' o 'false' (asume 1 para TRUE)
-            numero_piso,
-            min_piso,       // Para rango
-            max_piso,       // Para rango
-            mascotas_permitidas_si, // 'true' o 'false' (asume 1 para TRUE)
-            amoblado_si,    // 'true' o 'false' (asume 1 para TRUE)
-            deposito_oc_mayor_cero, // 'true' o 'false' (si hay al menos un depósito)
-            num_depositos_oc, // Para número exacto de depósitos
+        const whereInmueble = { Estado: 'disponible' };
+        const includeOptions = [];
 
-            // Filtros de Organizacion_parqueadero
-            cantidad_parqueaderos_mayor_cero, // 'true' o 'false' (si hay al menos un parqueadero)
-            tipo_parqueadero,   // 'Propio', 'Visitantes', 'Comunal'
-            parqueadero_cubierto_si, // 'true' o 'false' (asume 1 para TRUE)
-            parqueadero_disponible_si // 'true' o 'false' (asume 1 para TRUE)
-
-        } = req.query; // Usamos req.query para los parámetros de la URL
-
-        // Inicializar un objeto de condiciones WHERE para cada modelo
-        const whereConditions = { Estado: 'disponible' }; // Filtro base para Inmueble
-        const divisionWhere = {};
-        const otrasCaracteristicasWhere = {};
-        const organizacionParqueaderoWhere = {};
-
-        // Función auxiliar para añadir condiciones a los objetos where
-        const addCondition = (targetWhere, key, value) => {
-            if (value !== undefined && value !== null && value !== '') {
-                targetWhere[key] = value;
-            }
-        };
-
-        // =========================================================
-        // Filtros de Division
-        // =========================================================
-
-        if (num_habitaciones) {
-            addCondition(divisionWhere, 'Habitaciones', num_habitaciones);
-        } else if (min_habitaciones || max_habitaciones) {
-            divisionWhere.Habitaciones = {
-                ...(min_habitaciones && { [Op.gte]: min_habitaciones }),
-                ...(max_habitaciones && { [Op.lte]: max_habitaciones })
+        // --- Filtros de Division ---
+        const whereDivision = {};
+        if (num_habitaciones !== undefined) whereDivision.Numero_habitaciones = parseInt(num_habitaciones, 10);
+        if (min_habitaciones !== undefined || max_habitaciones !== undefined) {
+            whereDivision.Numero_habitaciones = {
+                ...(min_habitaciones !== undefined && { [Op.gte]: parseInt(min_habitaciones, 10) }),
+                ...(max_habitaciones !== undefined && { [Op.lte]: parseInt(max_habitaciones, 10) }),
             };
         }
-
-        if (num_baños) {
-            addCondition(divisionWhere, 'Baños', num_baños);
-        } else if (min_baños || max_baños) {
-            divisionWhere.Baños = {
-                ...(min_baños && { [Op.gte]: min_baños }),
-                ...(max_baños && { [Op.lte]: max_baños })
+        if (num_baños !== undefined) whereDivision.Numero_baños = parseInt(num_baños, 10);
+        if (min_baños !== undefined || max_baños !== undefined) {
+            whereDivision.Numero_baños = {
+                ...(min_baños !== undefined && { [Op.gte]: parseInt(min_baños, 10) }),
+                ...(max_baños !== undefined && { [Op.lte]: parseInt(max_baños, 10) }),
             };
         }
+        if (tipo_cocina) whereDivision.Tipo_cocina = tipo_cocina;
+        if (balcon_si !== undefined) whereDivision.Balcon_si = balcon_si === 'true';
+        if (terraza_mayor_cero !== undefined) whereDivision.Numero_terrazas = { [Op.gt]: 0 };
+        if (num_terrazas !== undefined) whereDivision.Numero_terrazas = parseInt(num_terrazas, 10);
+        if (garaje_mayor_cero !== undefined) whereDivision.Numero_garajes = { [Op.gt]: 0 };
+        if (num_garajes !== undefined) whereDivision.Numero_garajes = parseInt(num_garajes, 10);
+        if (ascensores_si !== undefined) whereDivision.Ascensores_si = ascensores_si === 'true';
+        if (min_closets !== undefined) whereDivision.Numero_closets = { [Op.gte]: parseInt(min_closets, 10) };
+        if (num_closets !== undefined) whereDivision.Numero_closets = parseInt(num_closets, 10);
 
-        addCondition(divisionWhere, 'Cocina', tipo_cocina);
-        if (balcon_si === 'true') divisionWhere.Balcon = 'Sí';
-        if (balcon_si === 'false') divisionWhere.Balcon = 'No'; // O si quieres permitir 'No'
-
-        if (num_terrazas) {
-            addCondition(divisionWhere, 'Terraza', num_terrazas);
-        } else if (terraza_mayor_cero === 'true') {
-            divisionWhere.Terraza = { [Op.gt]: 0 };
+        if (Object.keys(whereDivision).length > 0) {
+            includeOptions.push({
+                model: division, // Usando el nombre corregido
+                as: 'division',
+                required: true,
+                where: whereDivision,
+            });
         }
 
-        if (num_garajes) {
-            addCondition(divisionWhere, 'Garaje', num_garajes);
-        } else if (garaje_mayor_cero === 'true') {
-            divisionWhere.Garaje = { [Op.gt]: 0 };
+        // --- Filtros de OtrasCaracteristicas ---
+        const whereOtrasCaracteristicas = {};
+        if (mascotas_permitidas_si !== undefined) whereOtrasCaracteristicas.Mascotas_permitidas_si = mascotas_permitidas_si === 'true';
+        if (zona_lavanderia_si !== undefined) whereOtrasCaracteristicas.Zona_lavanderia_si = zona_lavanderia_si === 'true';
+        if (calentador_agua_si !== undefined) whereOtrasCaracteristicas.Calentador_agua_si = calentador_agua_si === 'true';
+
+        if (Object.keys(whereOtrasCaracteristicas).length > 0) {
+            includeOptions.push({
+                model: OtrasCaracteristicas,
+                as: 'otrasCaracteristicas',
+                required: true,
+                where: whereOtrasCaracteristicas,
+            });
         }
 
-        if (ascensores_si === 'true') divisionWhere.Ascensores = 'Sí';
-        if (ascensores_si === 'false') divisionWhere.Ascensores = 'No'; // O si quieres permitir 'No'
+        // --- Filtros de Asignacion ---
+        const whereAsignacion = {};
+        if (uso_comercial_si !== undefined) whereAsignacion.Uso_comercial_si = uso_comercial_si === 'true';
+        if (uso_residencial_si !== undefined) whereAsignacion.Uso_residencial_si = uso_residencial_si === 'true';
 
-        if (num_closets) {
-            addCondition(divisionWhere, 'Closets', num_closets);
-        } else if (min_closets) {
-            divisionWhere.Closets = { [Op.gte]: min_closets };
+        if (Object.keys(whereAsignacion).length > 0) {
+            includeOptions.push({
+                model: asignacion, // Usando el nombre corregido
+                as: 'asignacion',
+                required: true,
+                where: whereAsignacion,
+            });
         }
 
-        if (estudio_si === 'true') divisionWhere.Estudio = 1;
-        if (sala_si === 'true') divisionWhere.Sala = 1;
-        if (comedor_si === 'true') divisionWhere.Comedor = 1;
-        if (zona_lavanderia_si === 'true') divisionWhere.Zona_lavanderia = 1;
-        if (deposito_division_si === 'true') divisionWhere.Deposito = 1;
+        // --- Filtros de OrganizacionParqueadero ---
+        const whereOrganizacionParqueadero = {};
+        if (parqueadero_cubierto_si !== undefined) whereOrganizacionParqueadero.Parqueadero_cubierto_si = parqueadero_cubierto_si === 'true';
+        if (parqueadero_visitantes_si !== undefined) whereOrganizacionParqueadero.Parqueadero_visitantes_si = parqueadero_visitantes_si === 'true';
+        if (parqueadero_descubierto_si !== undefined) whereOrganizacionParqueadero.Parqueadero_descubierto_si = parqueadero_descubierto_si === 'true';
 
-        // =========================================================
-        // Filtros de Otras_caracteristicas
-        // =========================================================
-
-        if (lavanderia_oc_si === 'true') otrasCaracteristicasWhere.Lavanderia = 1;
-        if (gas_oc_si === 'true') otrasCaracteristicasWhere.Gas = 1;
-
-        if (numero_piso) {
-            addCondition(otrasCaracteristicasWhere, 'Piso', numero_piso);
-        } else if (min_piso || max_piso) {
-            otrasCaracteristicasWhere.Piso = {
-                ...(min_piso && { [Op.gte]: min_piso }),
-                ...(max_piso && { [Op.lte]: max_piso })
-            };
+        if (Object.keys(whereOrganizacionParqueadero).length > 0) {
+            includeOptions.push({
+                model: organizacionParqueadero, // Usando el nombre corregido
+                as: 'organizacionParqueadero',
+                required: true,
+                where: whereOrganizacionParqueadero,
+            });
         }
 
-        if (mascotas_permitidas_si === 'true') otrasCaracteristicasWhere.Mascotas_permitidas = 1;
-        if (amoblado_si === 'true') otrasCaracteristicasWhere.Amoblado = 1;
-
-        if (num_depositos_oc) {
-            addCondition(otrasCaracteristicasWhere, 'Deposito', num_depositos_oc);
-        } else if (deposito_oc_mayor_cero === 'true') {
-            otrasCaracteristicasWhere.Deposito = { [Op.gt]: 0 };
-        }
-
-        // =========================================================
-        // Filtros de Organizacion_parqueadero
-        // =========================================================
-
-        if (cantidad_parqueaderos_mayor_cero === 'true') {
-            organizacionParqueaderoWhere.Cantidad = { [Op.gt]: 0 };
-        }
-        addCondition(organizacionParqueaderoWhere, 'Tipo_parqueadero', tipo_parqueadero);
-        if (parqueadero_cubierto_si === 'true') organizacionParqueaderoWhere.Cubierto = 1;
-        if (parqueadero_disponible_si === 'true') organizacionParqueaderoWhere.Disponible = 1;
-
-        // Construir la consulta Sequelize
-        const filteredInmuebles = await Inmueble.findAll({
-            where: whereConditions,
-            include: [
-                {
-                    model: Division,
-                    as: 'Division', // Asegúrate de que este alias coincida con la asociación en tu modelo Inmueble
-                    required: Object.keys(divisionWhere).length > 0, // JOIN si hay condiciones, sino LEFT JOIN (opcional)
-                    where: divisionWhere
-                },
-                {
-                    model: OtrasCaracteristicas,
-                    as: 'OtrasCaracteristicas', // Alias
-                    required: Object.keys(otrasCaracteristicasWhere).length > 0 || Object.keys(organizacionParqueaderoWhere).length > 0, // JOIN si hay condiciones en OC o OP
-                    where: otrasCaracteristicasWhere,
-                    include: [
-                        {
-                            model: Asignacion,
-                            as: 'Asignacion', // Alias
-                            required: Object.keys(organizacionParqueaderoWhere).length > 0, // JOIN si hay condiciones en OP
-                            include: [
-                                {
-                                    model: OrganizacionParqueadero,
-                                    as: 'OrganizacionParqueadero', // Alias
-                                    required: Object.keys(organizacionParqueaderoWhere).length > 0, // JOIN si hay condiciones
-                                    where: organizacionParqueaderoWhere
-                                }
-                            ]
-                        }
-                    ]
-                }
-                // Si tienes otras asociaciones en Inmueble que siempre necesites, inclúyelas aquí sin 'required: true'
-                // para que sean LEFT JOINs si no hay filtros específicos para ellas.
-            ],
-            // Puedes añadir order si es necesario, por ejemplo:
-            // order: [['Fecha_publicacion', 'DESC']]
+        const inmuebles = await Inmueble.findAll({
+            where: whereInmueble,
+            include: includeOptions,
         });
 
-        res.json(filteredInmuebles);
+        if (inmuebles.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron inmuebles con los criterios de detalle especificados.' });
+        }
 
+        res.status(200).json(inmuebles);
     } catch (error) {
-        console.error('Error al obtener inmuebles filtrados por detalles específicos:', error);
-        res.status(500).json({ error: error.message });
+        console.error('Error al obtener inmuebles por detalles:', error);
+        res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por detalles.', error: error.message });
     }
 }
 

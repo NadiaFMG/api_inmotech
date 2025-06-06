@@ -1,12 +1,12 @@
-import Inmueble from '../models/inmueble.js';
-import TipoEdificacion from '../models/tipo_edificacion.js';
-import AcercaEdificacion from '../models/acerca_edificacion.js';
-import Division from '../models/division.js';
-import OtrasCaracteristicas from '../models/otras_caracteristicas.js';
-import Asignacion from '../models/asignacion.js';
-import OrganizacionParqueadero from '../models/organizacion_parqueadero.js';
-import PlatformUser from '../models/platform_user.js';
-import PlatformProfile from '../models/platform_profile.js';
+import Inmueble from '../models/inmueble.js';  // falta
+import TipoEdificacion from '../models/tipoEdificacionModel.js';
+import Acerca_edificacion from '../models/acerca_edificacion.js';
+import division from '../models/division.js';
+import OtrasCaracteristicas from '../models/otras_caracteristicas.js'; // falta
+import asignacion from '../models/asignacion.js';
+import organizacionParqueadero from '../models/organizacion_parqueadero.js';
+import PlatformUser from '../models/platform_user.js'; //corregir (no se modifica por instrucción previa)
+import PlatformProfile from '../models/platform_profile.js'; //corregir (no se modifica por instrucción previa)
 import Direccion from '../models/direccion.js';
 import DesignadorCardinal from '../models/designador_cardinal.js';
 import Localizacion from '../models/localizacion.js';
@@ -14,481 +14,438 @@ import BarrioCiudadCorregimientoVereda from '../models/barrio_ciudad_corregimien
 import Barrio from '../models/barrio.js';
 import Ciudad from '../models/ciudad.js';
 import Corregimiento from '../models/corregimiento.js';
-import Vereda from '../models/vereda.js';
-import Municipio from '../models/municipio.js';
-import Ndap from '../models/ndap.js';
+import vereda from '../models/vereda.js';
+import municipio from '../models/municipio.js';
+import ndap from '../models/ndap.js'; 
 
 export async function getFilteredInmueblesFull(req, res) {
     try {
         const {
-            // GRUPO 1: Tipo de Inmueble y Características Generales
-            estado_inmueble, // 'disponible', 'vendido', 'alquilado'
-            tipo_edificacion_categoria,
-            motivo_transaccion, // 'Venta', 'Arriendo'
-            precio_min,
-            precio_max,
-            area_min,
-            area_max,
-            antiguedad, // 'Nueva', 'Menos de 5 años', '5-10 años', 'Mas de 10 años', o un número exacto
-            codigo_interno,
+            // GRUPO 1: Inmueble (Entidad Principal)
+            motivo_transaccion,     // Venta, Alquiler, etc.
+            min_precio, max_precio,
+            min_area_total, max_area_total,
+            antiguedad,             // Nuevo, Usado - 1 a 5 años, etc.
+            estado_inmueble,        // Disponible, Vendido, Alquilado
+            codigo_interno,         // Código único del inmueble
 
-            // GRUPO 2: Ubicación Geográfica
-            ndap_id,
-            municipio_id,
-            ubicacion_especifica_id,
-            tipo_ubicacion, // 'ciudad', 'corregimiento', 'vereda', 'barrio'
-            tipo_via,
-            numero_via_principal,
-            numero_calle_transversal,
-            numero_edificacion,
-            designador_cardinal_id,
-            latitud_centro,
-            longitud_centro,
-            radio_km,
+            // GRUPO 2: Tipo de Edificación
+            tipo_edificacion_categoria, // Casa, Apartamento, Oficina, Lote, etc.
 
-            // GRUPO 3: Características de la Edificación/Conjunto
-            estrato,
-            tipo_construccion,
-            anio_construccion_min,
-            anio_construccion_max,
-            estado_conservacion,
-            zona_comun_si, // 'true' o 'false'
+            // GRUPO 3: Detalles de la Edificación (Acerca_edificacion)
+            tipo_construccion,      // Tradicional, Prefabricada
+            material_predominante,  // Ladrillo, Concreto, Madera
+            niveles_construidos, min_niveles_construidos, max_niveles_construidos,
+            año_construccion, min_año_construccion, max_año_construccion,
+            remodelado_si,          // true/false
+            fecha_ultima_remodelacion, // Fecha exacta
+            material_piso_predominante, // Cerámica, Madera, Mármol, Porcelanato
 
-            // GRUPO 4: Quién Publica
-            platform_user_id,
-            tipo_anunciante, // 'natural', 'juridico'
+            // GRUUMPO 4: Divisiones (Division)
+            num_habitaciones, min_habitaciones, max_habitaciones,
+            num_baños, min_baños, max_baños,
+            tipo_cocina,            // Integral, Abierta, Cerrada
+            balcon_si,              // true/false
+            terraza_mayor_cero,     // true/false (si tiene al menos una terraza)
+            num_terrazas,           // Número exacto de terrazas
+            garaje_mayor_cero,      // true/false (si tiene al menos un garaje)
+            num_garajes,            // Número exacto de garajes
+            ascensores_si,          // true/false
+            min_closets,            // Mínimo de closets
+            num_closets,            // Número exacto de closets
 
-            // GRUPO 5: Detalles Específicos de Inmueble (División, Otras Características, Parqueadero)
-            num_habitaciones,
-            min_habitaciones,
-            max_habitaciones,
-            num_baños,
-            min_baños,
-            max_baños,
-            tipo_cocina,
-            balcon_si, // 'true' o 'false'
-            terraza_mayor_cero, // 'true' o 'false'
-            num_terrazas,
-            garaje_mayor_cero, // 'true' o 'false'
-            num_garajes,
-            ascensores_si, // 'true' o 'false'
-            min_closets,
-            num_closets,
-            estudio_si, // 'true' o 'false'
-            sala_si, // 'true' o 'false'
-            comedor_si, // 'true' o 'false'
-            zona_lavanderia_division_si, // 'true' o 'false'
-            deposito_division_si, // 'true' o 'false'
-            lavanderia_oc_si, // 'true' o 'false'
-            gas_oc_si, // 'true' o 'false'
-            numero_piso,
-            min_piso,
-            max_piso,
-            mascotas_permitidas_si, // 'true' o 'false'
-            amoblado_si, // 'true' o 'false'
-            deposito_oc_mayor_cero, // 'true' o 'false'
-            num_depositos_oc,
-            cantidad_parqueaderos_mayor_cero, // 'true' o 'false'
-            tipo_parqueadero,
-            parqueadero_cubierto_si, // 'true' o 'false'
-            parqueadero_disponible_si // 'true' o 'false'
+            // GRUPO 5: Otras Características (OtrasCaracteristicas)
+            mascotas_permitidas_si, // true/false
+            zona_lavanderia_si,     // true/false
+            calentador_agua_si,     // true/false
+
+            // GRUPO 6: Asignación (Asignacion)
+            uso_comercial_si,       // true/false
+            uso_residencial_si,     // true/false
+
+            // GRUPO 7: Organización Parqueadero (OrganizacionParqueadero)
+            parqueadero_cubierto_si,    // true/false
+            parqueadero_visitantes_si,  // true/false
+            parqueadero_descubierto_si, // true/false
+
+            // GRUPO 8: Ubicación (Direccion, BarrioCiudadCorregimientoVereda, Ciudad, Municipio, Ndap, etc.)
+            ndap_id,                // Departamento/Provincia
+            municipio_id,           // Municipio
+            ciudad_id,              // Ciudad
+            corregimiento_id,       // Corregimiento
+            vereda_id,              // Vereda
+            barrio_id,              // Barrio
+            latitud, longitud, radio_km, // Proximidad (usado con Localizacion)
+            numero, calle, bloque, adicional, designador_cardinal_id, // Dirección completa
+
+            // GRUPO 9: Publicador (PlatformUser, PlatformProfile)
+            platform_user_id,       // ID de un usuario específico
+            profile_type            // Tipo de perfil del anunciante (Agencia, Propietario)
         } = req.query;
 
-        // Inicializa objetos para las condiciones de cada modelo
-        const whereConditions = {}; // Condiciones para el modelo Inmueble directamente
-        const tipoEdificacionWhere = {};
-        const acercaEdificacionWhere = {};
-        const divisionWhere = {};
-        const otrasCaracteristicasWhere = {};
-        const organizacionParqueaderoWhere = {};
-        const platformUserWhere = {};
-        const platformProfileWhere = {};
-        const direccionWhere = {};
-        const designadorCardinalWhere = {};
-        const localizacionWhere = {};
-        const bccvWhere = {}; // Barrio_ciudad_corregimiento_vereda
-        const municipioWhere = {};
-        const ndapWhere = {};
+        const whereInmueble = { Estado: 'disponible' }; // Condición base para todos los inmuebles
+        const includeOptions = [];
+        let distanceSelect = null;
+        let havingCondition = null;
 
-        // Helper para agregar condiciones solo si el valor existe
-        const addCondition = (targetWhere, key, value) => {
-            if (value !== undefined && value !== null && value !== '') {
-                targetWhere[key] = value;
+        // =========================================================================
+        // 1. Filtros GRUPO 1: Inmueble (Entidad Principal)
+        // =========================================================================
+        if (motivo_transaccion) whereInmueble.Motivo_transaccion = motivo_transaccion;
+        if (min_precio !== undefined || max_precio !== undefined) {
+            whereInmueble.Precio = {
+                ...(min_precio !== undefined && { [Op.gte]: parseFloat(min_precio) }),
+                ...(max_precio !== undefined && { [Op.lte]: parseFloat(max_precio) }),
+            };
+        }
+        if (min_area_total !== undefined || max_area_total !== undefined) {
+            whereInmueble.Area_total = {
+                ...(min_area_total !== undefined && { [Op.gte]: parseFloat(min_area_total) }),
+                ...(max_area_total !== undefined && { [Op.lte]: parseFloat(max_area_total) }),
+            };
+        }
+        if (antiguedad) whereInmueble.Antiguedad = antiguedad;
+        if (estado_inmueble) whereInmueble.Estado = estado_inmueble; // Sobrescribe 'disponible' si se especifica otro estado
+        if (codigo_interno) whereInmueble.Codigo_interno = codigo_interno;
+
+        // =========================================================================
+        // 2. Filtros GRUPO 2: Tipo de Edificación
+        // =========================================================================
+        if (tipo_edificacion_categoria) {
+            includeOptions.push({
+                model: TipoEdificacion,
+                as: 'tipoEdificacion', // Asegúrate que este alias coincida con la asociación definida en tu modelo Inmueble
+                required: true, // INNER JOIN si se usa este filtro
+                where: { Tipo_edificacion_categoria: tipo_edificacion_categoria },
+            });
+        }
+
+        // =========================================================================
+        // 3. Filtros GRUPO 3: Detalles de la Edificación (Acerca_edificacion)
+        // =========================================================================
+        const whereAcercaEdificacion = {};
+        if (tipo_construccion) whereAcercaEdificacion.Tipo_construccion = tipo_construccion;
+        if (material_predominante) whereAcercaEdificacion.Material_predominante = material_predominante;
+        if (niveles_construidos !== undefined) whereAcercaEdificacion.Niveles_construidos = parseInt(niveles_construidos, 10);
+        if (min_niveles_construidos !== undefined || max_niveles_construidos !== undefined) {
+            whereAcercaEdificacion.Niveles_construidos = {
+                ...(min_niveles_construidos !== undefined && { [Op.gte]: parseInt(min_niveles_construidos, 10) }),
+                ...(max_niveles_construidos !== undefined && { [Op.lte]: parseInt(max_niveles_construidos, 10) }),
+            };
+        }
+        if (año_construccion !== undefined) whereAcercaEdificacion.Año_construccion = parseInt(año_construccion, 10);
+        if (min_año_construccion !== undefined || max_año_construccion !== undefined) {
+            whereAcercaEdificacion.Año_construccion = {
+                ...(min_año_construccion !== undefined && { [Op.gte]: parseInt(min_año_construccion, 10) }),
+                ...(max_año_construccion !== undefined && { [Op.lte]: parseInt(max_año_construccion, 10) }),
+            };
+        }
+        if (remodelado_si !== undefined) whereAcercaEdificacion.Remodelado_si = remodelado_si === 'true';
+        if (fecha_ultima_remodelacion) whereAcercaEdificacion.Fecha_ultima_remodelacion = fecha_ultima_remodelacion; // Considerar formato de fecha
+        if (material_piso_predominante) whereAcercaEdificacion.Material_piso_predominante = material_piso_predominante;
+
+        if (Object.keys(whereAcercaEdificacion).length > 0) {
+            includeOptions.push({
+                model: Acerca_edificacion, // Nombre de importación corregido
+                as: 'acercaEdificacion', // Asegúrate que este alias coincida con la asociación
+                required: true,
+                where: whereAcercaEdificacion,
+            });
+        }
+
+        // =========================================================================
+        // 4. Filtros GRUPO 4: Divisiones (Division)
+        // =========================================================================
+        const whereDivision = {};
+        if (num_habitaciones !== undefined) whereDivision.Numero_habitaciones = parseInt(num_habitaciones, 10);
+        if (min_habitaciones !== undefined || max_habitaciones !== undefined) {
+            whereDivision.Numero_habitaciones = {
+                ...(min_habitaciones !== undefined && { [Op.gte]: parseInt(min_habitaciones, 10) }),
+                ...(max_habitaciones !== undefined && { [Op.lte]: parseInt(max_habitaciones, 10) }),
+            };
+        }
+        if (num_baños !== undefined) whereDivision.Numero_baños = parseInt(num_baños, 10);
+        if (min_baños !== undefined || max_baños !== undefined) {
+            whereDivision.Numero_baños = {
+                ...(min_baños !== undefined && { [Op.gte]: parseInt(min_baños, 10) }),
+                ...(max_baños !== undefined && { [Op.lte]: parseInt(max_baños, 10) }),
+            };
+        }
+        if (tipo_cocina) whereDivision.Tipo_cocina = tipo_cocina;
+        if (balcon_si !== undefined) whereDivision.Balcon_si = balcon_si === 'true';
+        if (terraza_mayor_cero !== undefined) whereDivision.Numero_terrazas = { [Op.gt]: 0 };
+        if (num_terrazas !== undefined) whereDivision.Numero_terrazas = parseInt(num_terrazas, 10);
+        if (garaje_mayor_cero !== undefined) whereDivision.Numero_garajes = { [Op.gt]: 0 };
+        if (num_garajes !== undefined) whereDivision.Numero_garajes = parseInt(num_garajes, 10);
+        if (ascensores_si !== undefined) whereDivision.Ascensores_si = ascensores_si === 'true';
+        if (min_closets !== undefined) whereDivision.Numero_closets = { [Op.gte]: parseInt(min_closets, 10) };
+        if (num_closets !== undefined) whereDivision.Numero_closets = parseInt(num_closets, 10);
+
+        if (Object.keys(whereDivision).length > 0) {
+            includeOptions.push({
+                model: division, // Nombre de importación corregido
+                as: 'division', // Asegúrate que este alias coincida con la asociación
+                required: true,
+                where: whereDivision,
+            });
+        }
+
+        // =========================================================================
+        // 5. Filtros GRUPO 5: Otras Características (OtrasCaracteristicas)
+        // =========================================================================
+        const whereOtrasCaracteristicas = {};
+        if (mascotas_permitidas_si !== undefined) whereOtrasCaracteristicas.Mascotas_permitidas_si = mascotas_permitidas_si === 'true';
+        if (zona_lavanderia_si !== undefined) whereOtrasCaracteristicas.Zona_lavanderia_si = zona_lavanderia_si === 'true';
+        if (calentador_agua_si !== undefined) whereOtrasCaracteristicas.Calentador_agua_si = calentador_agua_si === 'true';
+
+        if (Object.keys(whereOtrasCaracteristicas).length > 0) {
+            includeOptions.push({
+                model: OtrasCaracteristicas,
+                as: 'otrasCaracteristicas', // Asegúrate que este alias coincida con la asociación
+                required: true,
+                where: whereOtrasCaracteristicas,
+            });
+        }
+
+        // =========================================================================
+        // 6. Filtros GRUPO 6: Asignación (Asignacion)
+        // =========================================================================
+        const whereAsignacion = {};
+        if (uso_comercial_si !== undefined) whereAsignacion.Uso_comercial_si = uso_comercial_si === 'true';
+        if (uso_residencial_si !== undefined) whereAsignacion.Uso_residencial_si = uso_residencial_si === 'true';
+
+        if (Object.keys(whereAsignacion).length > 0) {
+            includeOptions.push({
+                model: asignacion, // Nombre de importación corregido
+                as: 'asignacion', // Asegúrate que este alias coincida con la asociación
+                required: true,
+                where: whereAsignacion,
+            });
+        }
+
+        // =========================================================================
+        // 7. Filtros GRUPO 7: Organización Parqueadero (OrganizacionParqueadero)
+        // =========================================================================
+        const whereOrganizacionParqueadero = {};
+        if (parqueadero_cubierto_si !== undefined) whereOrganizacionParqueadero.Parqueadero_cubierto_si = parqueadero_cubierto_si === 'true';
+        if (parqueadero_visitantes_si !== undefined) whereOrganizacionParqueadero.Parqueadero_visitantes_si = parqueadero_visitantes_si === 'true';
+        if (parqueadero_descubierto_si !== undefined) whereOrganizacionParqueadero.Parqueadero_descubierto_si = parqueadero_descubierto_si === 'true';
+
+        if (Object.keys(whereOrganizacionParqueadero).length > 0) {
+            includeOptions.push({
+                model: organizacionParqueadero, // Nombre de importación corregido
+                as: 'organizacionParqueadero', // Asegúrate que este alias coincida con la asociación
+                required: true,
+                where: whereOrganizacionParqueadero,
+            });
+        }
+
+        // =========================================================================
+        // 8. Filtros GRUPO 8: Ubicación (Direccion, BarrioCiudadCorregimientoVereda, Ciudad, Municipio, Ndap, etc.)
+        // =========================================================================
+        const whereDireccion = {};
+        const includeDireccion = {
+            model: Direccion,
+            as: 'Direccion',
+            required: false,
+            include: []
+        };
+        const includeBarrioCiudadCorregimientoVereda = {
+            model: BarrioCiudadCorregimientoVereda,
+            as: 'BarrioCiudadCorregimientoVereda',
+            required: false,
+            include: []
+        };
+        let applyLocationFilters = false;
+
+        // Ubicación jerárquica
+        if (ndap_id) {
+            includeBarrioCiudadCorregimientoVereda.include.push({
+                model: Ciudad, as: 'Ciudad', required: false,
+                include: [{ model: municipio, as: 'Municipio', required: true, include: [{ model: ndap, as: 'Ndap', required: true, where: { Ndap_id: parseInt(ndap_id, 10) } }] }]
+            });
+            includeBarrioCiudadCorregimientoVereda.include.push({
+                model: Corregimiento, as: 'Corregimiento', required: false,
+                include: [{ model: municipio, as: 'Municipio', required: true, include: [{ model: ndap, as: 'Ndap', required: true, where: { Ndap_id: parseInt(ndap_id, 10) } }] }]
+            });
+            includeBarrioCiudadCorregimientoVereda.include.push({
+                model: vereda, as: 'Vereda', required: false,
+                include: [{ model: municipio, as: 'Municipio', required: true, include: [{ model: ndap, as: 'Ndap', required: true, where: { Ndap_id: parseInt(ndap_id, 10) } }] }]
+            });
+            applyLocationFilters = true;
+        }
+        if (municipio_id) {
+            includeBarrioCiudadCorregimientoVereda.include.push({
+                model: Ciudad, as: 'Ciudad', required: false,
+                include: [{ model: municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
+            });
+            includeBarrioCiudadCorregimientoVereda.include.push({
+                model: Corregimiento, as: 'Corregimiento', required: false,
+                include: [{ model: municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
+            });
+            includeBarrioCiudadCorregimientoVereda.include.push({
+                model: vereda, as: 'Vereda', required: false,
+                include: [{ model: municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
+            });
+            applyLocationFilters = true;
+        }
+        if (ciudad_id) {
+            includeBarrioCiudadCorregimientoVereda.include.push({ model: Ciudad, as: 'Ciudad', required: true, where: { Ciudad_id: parseInt(ciudad_id, 10) } });
+            applyLocationFilters = true;
+        }
+        if (corregimiento_id) {
+            includeBarrioCiudadCorregimientoVereda.include.push({ model: Corregimiento, as: 'Corregimiento', required: true, where: { Corregimiento_id: parseInt(corregimiento_id, 10) } });
+            applyLocationFilters = true;
+        }
+        if (vereda_id) {
+            includeBarrioCiudadCorregimientoVereda.include.push({ model: vereda, as: 'Vereda', required: true, where: { Vereda_id: parseInt(vereda_id, 10) } });
+            applyLocationFilters = true;
+        }
+        if (barrio_id) {
+            includeBarrioCiudadCorregimientoVereda.include.push({ model: Barrio, as: 'Barrio', required: true, where: { Barrio_id: parseInt(barrio_id, 10) } });
+            applyLocationFilters = true;
+        }
+
+        if (applyLocationFilters) {
+            includeDireccion.include.push(includeBarrioCiudadCorregimientoVereda);
+            includeDireccion.required = true;
+        }
+
+        // Proximidad (GPS)
+        let centerLat, centerLon, radius;
+        if (latitud && longitud && radio_km) {
+            centerLat = parseFloat(latitud);
+            centerLon = parseFloat(longitud);
+            radius = parseFloat(radio_km);
+
+            if (isNaN(centerLat) || isNaN(centerLon) || isNaN(radius) || radius <= 0) {
+                return res.status(400).json({ message: 'Latitud, longitud y radio_km deben ser números válidos y radio_km debe ser mayor que 0.' });
             }
+
+            // Asegurarse de incluir Localizacion
+            includeDireccion.include.push({
+                model: Localizacion,
+                as: 'Localizacion',
+                required: true,
+                attributes: [], // No necesitamos atributos de Localizacion en el resultado principal
+            });
+            includeDireccion.required = true; // Hacer Direccion requerida si hay filtro de proximidad
+            applyLocationFilters = true;
+        }
+
+        // Dirección completa (número, calle, etc.)
+        const whereDireccionDetails = {};
+        let applyFullAddressFilters = false;
+        if (numero) { whereDireccionDetails.Direccion_Numero = numero; applyFullAddressFilters = true; }
+        if (calle) { whereDireccionDetails.Direccion_Calle = { [Op.like]: `%${calle}%` }; applyFullAddressFilters = true; }
+        if (bloque) { whereDireccionDetails.Direccion_Bloque = { [Op.like]: `%${bloque}%` }; applyFullAddressFilters = true; }
+        if (adicional) { whereDireccionDetails.Direccion_Adicional = { [Op.like]: `%${adicional}%` }; applyFullAddressFilters = true; }
+        if (designador_cardinal_id) {
+            whereDireccionDetails.Designador_cardinal_FK = parseInt(designador_cardinal_id, 10);
+            includeDireccion.include.push({
+                model: DesignadorCardinal,
+                as: 'DesignadorCardinal',
+                required: true,
+            });
+            applyFullAddressFilters = true;
+        }
+
+        if (applyFullAddressFilters) {
+            if (Object.keys(whereDireccionDetails).length > 0) {
+                // Fusionar con el where existente de Direccion si ya hay
+                includeDireccion.where = { ...includeDireccion.where, ...whereDireccionDetails };
+            }
+            includeDireccion.required = true; // Hacer Direccion requerida si hay filtros de dirección
+            applyLocationFilters = true;
+        }
+
+        // Añadir el include de Direccion solo si se aplicó algún filtro de ubicación/dirección
+        if (applyLocationFilters) {
+            const existingDireccionIncludeIndex = includeOptions.findIndex(inc => inc.model === Direccion);
+            if (existingDireccionIncludeIndex === -1) {
+                includeOptions.push(includeDireccion);
+            } else {
+                // Si Direccion ya fue añadida (ej. por alguna sub-asociación), fusionar sus opciones
+                includeOptions[existingDireccionIncludeIndex] = {
+                    ...includeOptions[existingDireccionIncludeIndex],
+                    ...includeDireccion,
+                    include: [...(includeOptions[existingDireccionIncludeIndex].include || []), ...includeDireccion.include]
+                };
+            }
+        }
+
+
+        // =========================================================================
+        // 9. Filtros GRUPO 9: Publicador (PlatformUser, PlatformProfile)
+        // =========================================================================
+        let applyPublicadorFilters = false;
+        const publicadorInclude = {
+            model: PlatformUser,
+            as: 'publicador', // Asegúrate que este alias coincida con la asociación
+            required: false, // Será true si se aplican filtros de publicador
+            include: []
         };
 
-        // =========================================================
-        // GRUPO 1: Filtros por Tipo de Inmueble y Características Generales
-        // =========================================================
-        addCondition(whereConditions, 'Estado', estado_inmueble || 'disponible'); // Por defecto busca disponibles
-        addCondition(tipoEdificacionWhere, 'Tipo_edificacion_categoria', tipo_edificacion_categoria);
-        addCondition(whereConditions, 'Motivo_VoA', motivo_transaccion);
-        addCondition(whereConditions, 'Codigo_interno', codigo_interno);
-
-        if (precio_min || precio_max) {
-            whereConditions.Valor = {
-                ...(precio_min && { [Op.gte]: precio_min }),
-                ...(precio_max && { [Op.lte]: precio_max })
-            };
+        if (platform_user_id) {
+            publicadorInclude.where = { Platform_user_id: parseInt(platform_user_id, 10) };
+            publicadorInclude.required = true;
+            applyPublicadorFilters = true;
         }
 
-        if (area_min || area_max) {
-            whereConditions.Area = {
-                ...(area_min && { [Op.gte]: area_min }),
-                ...(area_max && { [Op.lte]: area_max })
-            };
-        }
-
-        if (antiguedad) {
-            switch (antiguedad) {
-                case 'Nueva':
-                    whereConditions.Antiguedad = 0;
-                    break;
-                case 'Menos de 5 años':
-                    whereConditions.Antiguedad = { [Op.gt]: 0, [Op.lte]: 5 };
-                    break;
-                case '5-10 años':
-                    whereConditions.Antiguedad = { [Op.gt]: 5, [Op.lte]: 10 };
-                    break;
-                case 'Mas de 10 años':
-                    whereConditions.Antiguedad = { [Op.gt]: 10 };
-                    break;
-                default:
-                    whereConditions.Antiguedad = parseInt(antiguedad, 10);
-                    break;
-            }
-        }
-
-        // =========================================================
-        // GRUPO 2: Filtros de Ubicación Geográfica
-        // =========================================================
-        addCondition(ndapWhere, 'Ndap_id', ndap_id);
-        addCondition(municipioWhere, 'Municipio_id', municipio_id);
-
-        if (ubicacion_especifica_id && tipo_ubicacion) {
-            switch (tipo_ubicacion) {
-                case 'ciudad':
-                    addCondition(bccvWhere, 'Ciudad_FK', ubicacion_especifica_id);
-                    break;
-                case 'corregimiento':
-                    addCondition(bccvWhere, 'Corregimiento_FK', ubicacion_especifica_id);
-                    break;
-                case 'vereda':
-                    addCondition(bccvWhere, 'Vereda_Fk', ubicacion_especifica_id);
-                    break;
-                case 'barrio':
-                    addCondition(bccvWhere, 'Barrio_FK', ubicacion_especifica_id);
-                    break;
-            }
-        }
-
-        if (tipo_via && numero_via_principal && numero_calle_transversal && numero_edificacion) {
-            addCondition(direccionWhere, 'Tipo_via', tipo_via);
-            addCondition(direccionWhere, 'Numero_via_principal', numero_via_principal);
-            addCondition(direccionWhere, 'Numero_calle_transversal', numero_calle_transversal);
-            addCondition(direccionWhere, 'Numero_edificacion', numero_edificacion);
-        }
-        addCondition(designadorCardinalWhere, 'Designador_cardinal_id', designador_cardinal_id);
-
-        // =========================================================
-        // GRUPO 3: Filtros por Características de la Edificación/Conjunto
-        // =========================================================
-        addCondition(acercaEdificacionWhere, 'Estrato', estrato);
-        addCondition(acercaEdificacionWhere, 'Tipo_construccion', tipo_construccion);
-
-        if (anio_construccion_min || anio_construccion_max) {
-            acercaEdificacionWhere.Anio_construccion = {
-                ...(anio_construccion_min && { [Op.gte]: anio_construccion_min }),
-                ...(anio_construccion_max && { [Op.lte]: anio_construccion_max })
-            };
-        }
-        addCondition(acercaEdificacionWhere, 'Estado_conservacion', estado_conservacion);
-        if (zona_comun_si === 'true') acercaEdificacionWhere.Zona_comun = 1;
-        if (zona_comun_si === 'false') acercaEdificacionWhere.Zona_comun = 0;
-
-
-        // =========================================================
-        // GRUPO 4: Filtros por "Quién publica"
-        // =========================================================
-        addCondition(platformUserWhere, 'Platform_user_id', platform_user_id);
-        addCondition(platformProfileWhere, 'Profile_type', tipo_anunciante);
-
-        // =========================================================
-        // GRUPO 5: Filtros por Detalles Específicos de Inmueble
-        // =========================================================
-        if (num_habitaciones) {
-            addCondition(divisionWhere, 'Habitaciones', num_habitaciones);
-        } else if (min_habitaciones || max_habitaciones) {
-            divisionWhere.Habitaciones = {
-                ...(min_habitaciones && { [Op.gte]: min_habitaciones }),
-                ...(max_habitaciones && { [Op.lte]: max_habitaciones })
-            };
-        }
-
-        if (num_baños) {
-            addCondition(divisionWhere, 'Baños', num_baños);
-        } else if (min_baños || max_baños) {
-            divisionWhere.Baños = {
-                ...(min_baños && { [Op.gte]: min_baños }),
-                ...(max_baños && { [Op.lte]: max_baños })
-            };
-        }
-
-        addCondition(divisionWhere, 'Cocina', tipo_cocina);
-        if (balcon_si === 'true') divisionWhere.Balcon = 'Sí';
-        if (balcon_si === 'false') divisionWhere.Balcon = 'No';
-
-        if (num_terrazas) {
-            addCondition(divisionWhere, 'Terraza', num_terrazas);
-        } else if (terraza_mayor_cero === 'true') {
-            divisionWhere.Terraza = { [Op.gt]: 0 };
-        }
-
-        if (num_garajes) {
-            addCondition(divisionWhere, 'Garaje', num_garajes);
-        } else if (garaje_mayor_cero === 'true') {
-            divisionWhere.Garaje = { [Op.gt]: 0 };
-        }
-
-        if (ascensores_si === 'true') divisionWhere.Ascensores = 'Sí';
-        if (ascensores_si === 'false') divisionWhere.Ascensores = 'No';
-
-        if (num_closets) {
-            addCondition(divisionWhere, 'Closets', num_closets);
-        } else if (min_closets) {
-            divisionWhere.Closets = { [Op.gte]: min_closets };
-        }
-
-        if (estudio_si === 'true') divisionWhere.Estudio = 1;
-        if (sala_si === 'true') divisionWhere.Sala = 1;
-        if (comedor_si === 'true') divisionWhere.Comedor = 1;
-        if (zona_lavanderia_division_si === 'true') divisionWhere.Zona_lavanderia = 1;
-        if (deposito_division_si === 'true') divisionWhere.Deposito = 1;
-
-        if (lavanderia_oc_si === 'true') otrasCaracteristicasWhere.Lavanderia = 1;
-        if (gas_oc_si === 'true') otrasCaracteristicasWhere.Gas = 1;
-
-        if (numero_piso) {
-            addCondition(otrasCaracteristicasWhere, 'Piso', numero_piso);
-        } else if (min_piso || max_piso) {
-            otrasCaracteristicasWhere.Piso = {
-                ...(min_piso && { [Op.gte]: min_piso }),
-                ...(max_piso && { [Op.lte]: max_piso })
-            };
-        }
-
-        if (mascotas_permitidas_si === 'true') otrasCaracteristicasWhere.Mascotas_permitidas = 1;
-        if (amoblado_si === 'true') otrasCaracteristicasWhere.Amoblado = 1;
-
-        if (num_depositos_oc) {
-            addCondition(otrasCaracteristicasWhere, 'Deposito', num_depositos_oc);
-        } else if (deposito_oc_mayor_cero === 'true') {
-            otrasCaracteristicasWhere.Deposito = { [Op.gt]: 0 };
-        }
-
-        if (cantidad_parqueaderos_mayor_cero === 'true') {
-            organizacionParqueaderoWhere.Cantidad = { [Op.gt]: 0 };
-        }
-        addCondition(organizacionParqueaderoWhere, 'Tipo_parqueadero', tipo_parqueadero);
-        if (parqueadero_cubierto_si === 'true') organizacionParqueaderoWhere.Cubierto = 1;
-        if (parqueadero_disponible_si === 'true') organizacionParqueaderoWhere.Disponible = 1;
-
-        // Configuración de las asociaciones con `required` dinámico
-        // Esto asegura que solo se unan las tablas si hay filtros específicos para ellas.
-        const includeAssociations = [
-            {
-                model: TipoEdificacion,
-                as: 'TipoEdificacion',
-                required: Object.keys(tipoEdificacionWhere).length > 0,
-                where: tipoEdificacionWhere
-            },
-            {
-                model: AcercaEdificacion,
-                as: 'AcercaEdificacion',
-                required: Object.keys(acercaEdificacionWhere).length > 0,
-                where: acercaEdificacionWhere
-            },
-            {
-                model: Division,
-                as: 'Division',
-                required: Object.keys(divisionWhere).length > 0,
-                where: divisionWhere
-            },
-            {
-                model: OtrasCaracteristicas,
-                as: 'OtrasCaracteristicas',
-                required: Object.keys(otrasCaracteristicasWhere).length > 0 || Object.keys(organizacionParqueaderoWhere).length > 0,
-                where: otrasCaracteristicasWhere,
-                include: [
-                    {
-                        model: Asignacion,
-                        as: 'Asignacion',
-                        required: Object.keys(organizacionParqueaderoWhere).length > 0,
-                        include: [
-                            {
-                                model: OrganizacionParqueadero,
-                                as: 'OrganizacionParqueadero',
-                                required: Object.keys(organizacionParqueaderoWhere).length > 0,
-                                where: organizacionParqueaderoWhere
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                model: PlatformUser,
-                as: 'PlatformUser',
-                required: Object.keys(platformUserWhere).length > 0 || Object.keys(platformProfileWhere).length > 0,
-                where: platformUserWhere,
-                include: [
-                    {
-                        model: PlatformProfile,
-                        as: 'PlatformProfile',
-                        required: Object.keys(platformProfileWhere).length > 0,
-                        where: platformProfileWhere
-                    }
-                ]
-            },
-            {
-                model: Direccion,
-                as: 'Direccion',
-                // Required si hay filtros de dirección, ubicación o radio
-                required: Object.keys(direccionWhere).length > 0 || Object.keys(designadorCardinalWhere).length > 0 || Object.keys(localizacionWhere).length > 0 || Object.keys(bccvWhere).length > 0 || Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0 || (latitud_centro && longitud_centro && radio_km),
-                where: direccionWhere,
-                include: [
-                    {
-                        model: DesignadorCardinal,
-                        as: 'DesignadorCardinal',
-                        required: Object.keys(designadorCardinalWhere).length > 0,
-                        where: designadorCardinalWhere
-                    },
-                    {
-                        model: Localizacion,
-                        as: 'Localizacion',
-                        required: (latitud_centro && longitud_centro && radio_km), // Solo requerido si se usa el filtro de radio
-                        where: localizacionWhere // Considerar si localizacionWhere necesita filtros propios
-                    },
-                    {
-                        model: BarrioCiudadCorregimientoVereda,
-                        as: 'BarrioCiudadCorregimientoVereda',
-                        required: Object.keys(bccvWhere).length > 0 || Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
-                        where: bccvWhere,
-                        include: [
-                            { model: Barrio, as: 'Barrio', required: false },
-                            {
-                                model: Ciudad,
-                                as: 'Ciudad',
-                                required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
-                                include: [
-                                    {
-                                        model: Municipio,
-                                        as: 'Municipio',
-                                        required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
-                                        where: municipioWhere,
-                                        include: [
-                                            {
-                                                model: Ndap,
-                                                as: 'Ndap',
-                                                required: Object.keys(ndapWhere).length > 0,
-                                                where: ndapWhere
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                model: Corregimiento,
-                                as: 'Corregimiento',
-                                required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
-                                include: [
-                                    {
-                                        model: Municipio,
-                                        as: 'Municipio',
-                                        required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
-                                        where: municipioWhere,
-                                        include: [
-                                            {
-                                                model: Ndap,
-                                                as: 'Ndap',
-                                                required: Object.keys(ndapWhere).length > 0,
-                                                where: ndapWhere
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                model: Vereda,
-                                as: 'Vereda',
-                                required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
-                                include: [
-                                    {
-                                        model: Municipio,
-                                        as: 'Municipio',
-                                        required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
-                                        where: municipioWhere,
-                                        include: [
-                                            {
-                                                model: Ndap,
-                                                as: 'Ndap',
-                                                required: Object.keys(ndapWhere).length > 0,
-                                                where: ndapWhere
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ];
-
-        let filteredInmuebles = await Inmueble.findAll({
-            where: whereConditions,
-            include: includeAssociations,
-            order: [
-                ['Fecha_publicacion', 'DESC'] // Orden predeterminado por fecha de publicación
-            ]
-        });
-
-        // Filtrado y ordenamiento por distancia si se proporcionan latitud, longitud y radio
-        if (latitud_centro && longitud_centro && radio_km) {
-            const centerLat = parseFloat(latitud_centro);
-            const centerLon = parseFloat(longitud_centro);
-            const radius = parseFloat(radio_km);
-
-            filteredInmuebles = filteredInmuebles.filter(inmueble => {
-                // Asegúrate de que los datos de localización existan para calcular la distancia
-                if (inmueble.Direccion?.Localizacion?.Latitud !== undefined && inmueble.Direccion?.Localizacion?.Longitud !== undefined) {
-                    const lat2 = inmueble.Direccion.Localizacion.Latitud;
-                    const lon2 = inmueble.Direccion.Localizacion.Longitud;
-
-                    const R = 6371; // Radio de la Tierra en kilómetros
-                    const dLat = (lat2 - centerLat) * (Math.PI / 180);
-                    const dLon = (lon2 - centerLon) * (Math.PI / 180);
-                    const a =
-                        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                        Math.cos(centerLat * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                    const distance = R * c;
-
-                    // Adjunta la distancia para usarla en el ordenamiento posterior
-                    inmueble.dataValues.distancia_km = distance;
-                    return distance <= radius;
-                }
-                return false;
+        if (profile_type) {
+            publicadorInclude.include.push({
+                model: PlatformProfile,
+                as: 'perfilPublicador', // Asegúrate que este alias coincida con la asociación
+                required: true,
+                where: { Profile_type: profile_type }
             });
-
-            // Ordenar por distancia (los más cercanos primero)
-            filteredInmuebles.sort((a, b) => a.dataValues.distancia_km - b.dataValues.distancia_km);
+            publicadorInclude.required = true; // Si filtramos por perfil, el publicador es requerido
+            applyPublicadorFilters = true;
         }
 
-        res.json(filteredInmuebles);
+        if (applyPublicadorFilters) {
+            includeOptions.push(publicadorInclude);
+        }
+
+        // =========================================================================
+        // Ejecutar la consulta final
+        // =========================================================================
+        const findOptions = {
+            where: whereInmueble,
+            include: includeOptions,
+        };
+
+        // Si hay filtro de proximidad, añadir el cálculo de distancia y el 'having'
+        if (latitud && longitud && radio_km) {
+            // Sequelize literal para calcular la distancia (Haversine formula)
+            findOptions.attributes = {
+                include: [
+                    [
+                        sequelize.literal(`
+                            6371 * acos(
+                                cos(radians(${centerLat})) * cos(radians("Direccion->Localizacion"."Latitud")) *
+                                cos(radians("Direccion->Localizacion"."Longitud") - radians(${centerLon})) +
+                                sin(radians(${centerLat})) * sin(radians("Direccion->Localizacion"."Latitud"))
+                            )
+                        `),
+                        'distancia_km'
+                    ]
+                ]
+            };
+            findOptions.having = sequelize.literal(`distancia_km <= ${radius}`);
+            findOptions.order = [[sequelize.literal('distancia_km'), 'ASC']];
+        }
+
+        const inmuebles = await Inmueble.findAll(findOptions);
+
+        if (inmuebles.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron inmuebles con los criterios de búsqueda especificados.' });
+        }
+
+        res.status(200).json(inmuebles);
 
     } catch (error) {
         console.error('Error al obtener inmuebles con filtros completos:', error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles con filtros completos.', error: error.message });
     }
 }

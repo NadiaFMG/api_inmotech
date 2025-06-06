@@ -1,8 +1,7 @@
 // controllers/inmuebleGeneralFiltersController.js
 
-import Inmueble from '../models/inmueble.js';         // Asegúrate de que esta ruta sea correcta
-import TipoEdificacion from '../models/tipo_edificacion.js'; // Asegúrate de que esta ruta sea correcta
-import { Op } from 'sequelize'; // Para usar operadores como Op.gte, Op.lte, Op.or, etc.
+import Inmueble from '../models/inmueble.js';         // Asegúrate de que esta ruta sea correcta //NO ESTA EL MODELO
+import TipoEdificacion from '../models/tipoEdificacionModel.js'; 
 
 /**
  * @function getInmueblesByEdificacionType

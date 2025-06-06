@@ -1,6 +1,6 @@
 import Inmueble from '../models/inmueble.js';
-import TipoEdificacion from '../models/tipo_edificacion.js';
-import AcercaEdificacion from '../models/acerca_edificacion.js';
+import TipoEdificacion from '../models/tipoEdificacionModel.js';
+import AcercaEdificacion from '../models/acerca_edificacion.js'; //en el modelo esta como Acerca_edificacion
 import Direccion from '../models/direccion.js';
 import DesignadorCardinal from '../models/designador_cardinal.js';
 import Localizacion from '../models/localizacion.js';
@@ -8,15 +8,15 @@ import BarrioCiudadCorregimientoVereda from '../models/barrio_ciudad_corregimien
 import Barrio from '../models/barrio.js';
 import Ciudad from '../models/ciudad.js';
 import Corregimiento from '../models/corregimiento.js';
-import Vereda from '../models/vereda.js';
-import Municipio from '../models/municipio.js';
-import Ndap from '../models/ndap.js';
-import PlatformUser from '../models/platform_user.js';
-import PlatformProfile from '../models/platform_profile.js';
-import Division from '../models/division.js';
-import OtrasCaracteristicas from '../models/otras_caracteristicas.js';
-import Asignacion from '../models/asignacion.js';
-import OrganizacionParqueadero from '../models/organizacion_parqueadero.js';
+import Vereda from '../models/vereda.js'; //en el modelo esta como vereda
+import Municipio from '../models/municipio.js'; //en el modelo esta como municipio
+import Ndap from '../models/ndap.js'; //en el modelo esta como ndap
+import PlatformUser from '../models/platform_user.js'; //corregir
+import PlatformProfile from '../models/platform_profile.js'; //corregir
+import Division from '../models/division.js'; //en el modelo esta como division
+import OtrasCaracteristicas from '../models/otras_caracteristicas.js'; //no esta el modelo
+import Asignacion from '../models/asignacion.js'; //en el modelo esta como asignacion
+import OrganizacionParqueadero from '../models/organizacion_parqueadero.js'; //en el modelo esta como organizacionParqueadero
 
 
 export async function getFilteredInmueblesG1G2G3(req, res) {

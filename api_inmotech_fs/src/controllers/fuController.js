@@ -1,17 +1,14 @@
-// controllers/inmuebleLocationFiltersController.js
-
-import Inmueble from '../models/inmueble.js';
+import Inmueble from '../models/inmueble.js'; //falta su modelo
 import Direccion from '../models/direccion.js';
 import BarrioCiudadCorregimientoVereda from '../models/barrio_ciudad_corregimiento_vereda.js';
 import Barrio from '../models/barrio.js';
 import Ciudad from '../models/ciudad.js';
 import Corregimiento from '../models/corregimiento.js';
-import Vereda from '../models/vereda.js';
-import Municipio from '../models/municipio.js';
-import Ndap from '../models/ndap.js'; // Ndap = Departamento/Provincia
+import vereda from '../models/vereda.js';
+import municipio from '../models/municipio.js';
+import ndap from '../models/ndap.js';
 import DesignadorCardinal from '../models/designador_cardinal.js';
 import Localizacion from '../models/localizacion.js';
-import { Op, Sequelize } from 'sequelize'; // Op para operadores de Sequelize, Sequelize para funciones de SQL como literal, col, fn, etc.
 
 // --- 1. Inmuebles por Departamento/Provincia (Ndap_id) ---
 export async function getInmueblesByDepartment(req, res) {
@@ -23,37 +20,58 @@ export async function getInmueblesByDepartment(req, res) {
     }
     const parsedNdapId = parseInt(ndap_id, 10);
     if (isNaN(parsedNdapId)) {
-      return res.status(400).json({ message: 'El ID del departamento debe ser un número válido.' });
+      return res.status(400).json({ message: 'El ID del departamento (Ndap_id) debe ser un número válido.' });
     }
 
     const inmuebles = await Inmueble.findAll({
-      where: { Estado: 'disponible' },
-      include: [{
-        model: Direccion, as: 'direccionInfo',
-        include: [{
-          model: BarrioCiudadCorregimientoVereda, as: 'bccvInfo',
-          include: [{
-            model: Ciudad, as: 'ciudadInfo', required: false,
-            include: [{ model: Municipio, as: 'municipioInfo', required: true, where: { '$municipioInfo.Ndap_FK$': parsedNdapId } }]
-          }, {
-            model: Corregimiento, as: 'corregimientoInfo', required: false,
-            include: [{ model: Municipio, as: 'municipioInfo', required: true, where: { '$municipioInfo.Ndap_FK$': parsedNdapId } }]
-          }, {
-            model: Vereda, as: 'veredaInfo', required: false,
-            include: [{ model: Municipio, as: 'municipioInfo', required: true, where: { '$municipioInfo.Ndap_FK$': parsedNdapId } }]
-          }]
-        }]
-      }]
+      where: {
+        Estado: 'disponible',
+        '$Direccion.BarrioCiudadCorregimientoVereda.Ciudad.Municipio.ndap.Ndap_id$': parsedNdapId,
+      },
+      include: [
+        {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          include: [
+            {
+              model: BarrioCiudadCorregimientoVereda,
+              as: 'BarrioCiudadCorregimientoVereda',
+              required: true,
+              include: [
+                {
+                  model: Ciudad,
+                  as: 'Ciudad',
+                  required: false, // Puedes cambiar a true si la ciudad es obligatoria para el filtro
+                  include: [{ model: municipio, as: 'Municipio', required: true, include: [{ model: ndap, as: 'Ndap', required: true }] }],
+                },
+                {
+                  model: Corregimiento,
+                  as: 'Corregimiento',
+                  required: false, // Opcional, si los corregimientos tienen municipios
+                  include: [{ model: municipio, as: 'Municipio', required: false, include: [{ model: ndap, as: 'Ndap', required: true }] }],
+                },
+                {
+                  model: vereda,
+                  as: 'Vereda',
+                  required: false, // Opcional, si las veredas tienen municipios
+                  include: [{ model: municipio, as: 'Municipio', required: false, include: [{ model: ndap, as: 'Ndap', required: true }] }],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles disponibles en el departamento especificado.' });
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles en el departamento/provincia especificado.' });
     }
+
+    res.status(200).json(inmuebles);
   } catch (error) {
     console.error('Error al obtener inmuebles por departamento:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por departamento.', error: error.message });
   }
 }
 
@@ -71,33 +89,43 @@ export async function getInmueblesByMunicipality(req, res) {
     }
 
     const inmuebles = await Inmueble.findAll({
-      where: { Estado: 'disponible' },
-      include: [{
-        model: Direccion, as: 'direccionInfo',
-        include: [{
-          model: BarrioCiudadCorregimientoVereda, as: 'bccvInfo',
-          include: [{
-            model: Ciudad, as: 'ciudadInfo', required: false,
-            where: { '$ciudadInfo.Municipio_FK$': parsedMunicipioId }
-          }, {
-            model: Corregimiento, as: 'corregimientoInfo', required: false,
-            where: { '$corregimientoInfo.Municipio_FK$': parsedMunicipioId }
-          }, {
-            model: Vereda, as: 'veredaInfo', required: false,
-            where: { '$veredaInfo.Municipio_FK$': parsedMunicipioId }
-          }]
-        }]
-      }]
+      where: {
+        Estado: 'disponible',
+        [Op.or]: [ // Usamos Op.or para buscar en Ciudad, Corregimiento o Vereda
+          { '$Direccion.BarrioCiudadCorregimientoVereda.Ciudad.municipio.Municipio_id$': parsedMunicipioId },
+          { '$Direccion.BarrioCiudadCorregimientoVereda.Corregimiento.municipio.Municipio_id$': parsedMunicipioId },
+          { '$Direccion.BarrioCiudadCorregimientoVereda.vereda.municipio.Municipio_id$': parsedMunicipioId },
+        ],
+      },
+      include: [
+        {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          include: [
+            {
+              model: BarrioCiudadCorregimientoVereda,
+              as: 'BarrioCiudadCorregimientoVereda',
+              required: true,
+              include: [
+                { model: Ciudad, as: 'Ciudad', required: false, include: [{ model: municipio, as: 'Municipio', required: true }] },
+                { model: Corregimiento, as: 'Corregimiento', required: false, include: [{ model: municipio, as: 'Municipio', required: true }] },
+                { model: vereda, as: 'Vereda', required: false, include: [{ model: municipio, as: 'Municipio', required: true }] },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles disponibles en el municipio especificado.' });
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles en el municipio especificado.' });
     }
+
+    res.status(200).json(inmuebles);
   } catch (error) {
     console.error('Error al obtener inmuebles por municipio:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por municipio.', error: error.message });
   }
 }
 
@@ -115,27 +143,41 @@ export async function getInmueblesByCity(req, res) {
     }
 
     const inmuebles = await Inmueble.findAll({
-      where: { Estado: 'disponible' },
-      include: [{
-        model: Direccion, as: 'direccionInfo',
-        include: [{
-          model: BarrioCiudadCorregimientoVereda, as: 'bccvInfo',
-          include: [{
-            model: Ciudad, as: 'ciudadInfo',
-            where: { Ciudad_id: parsedCiudadId }
-          }]
-        }]
-      }]
+      where: {
+        Estado: 'disponible',
+        '$Direccion.BarrioCiudadCorregimientoVereda.Ciudad.Ciudad_id$': parsedCiudadId,
+      },
+      include: [
+        {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          include: [
+            {
+              model: BarrioCiudadCorregimientoVereda,
+              as: 'BarrioCiudadCorregimientoVereda',
+              required: true,
+              include: [
+                {
+                  model: Ciudad,
+                  as: 'Ciudad',
+                  required: true, // La ciudad es obligatoria para este filtro
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles disponibles en la ciudad especificada.' });
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles en la ciudad especificada.' });
     }
+
+    res.status(200).json(inmuebles);
   } catch (error) {
     console.error('Error al obtener inmuebles por ciudad:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por ciudad.', error: error.message });
   }
 }
 
@@ -153,27 +195,41 @@ export async function getInmueblesByCorregimiento(req, res) {
     }
 
     const inmuebles = await Inmueble.findAll({
-      where: { Estado: 'disponible' },
-      include: [{
-        model: Direccion, as: 'direccionInfo',
-        include: [{
-          model: BarrioCiudadCorregimientoVereda, as: 'bccvInfo',
-          include: [{
-            model: Corregimiento, as: 'corregimientoInfo',
-            where: { Corregimiento_id: parsedCorregimientoId }
-          }]
-        }]
-      }]
+      where: {
+        Estado: 'disponible',
+        '$Direccion.BarrioCiudadCorregimientoVereda.Corregimiento.Corregimiento_id$': parsedCorregimientoId,
+      },
+      include: [
+        {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          include: [
+            {
+              model: BarrioCiudadCorregimientoVereda,
+              as: 'BarrioCiudadCorregimientoVereda',
+              required: true,
+              include: [
+                {
+                  model: Corregimiento,
+                  as: 'Corregimiento',
+                  required: true, // El corregimiento es obligatorio para este filtro
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles disponibles en el corregimiento especificado.' });
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles en el corregimiento especificado.' });
     }
+
+    res.status(200).json(inmuebles);
   } catch (error) {
     console.error('Error al obtener inmuebles por corregimiento:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por corregimiento.', error: error.message });
   }
 }
 
@@ -191,27 +247,41 @@ export async function getInmueblesByVereda(req, res) {
     }
 
     const inmuebles = await Inmueble.findAll({
-      where: { Estado: 'disponible' },
-      include: [{
-        model: Direccion, as: 'direccionInfo',
-        include: [{
-          model: BarrioCiudadCorregimientoVereda, as: 'bccvInfo',
-          include: [{
-            model: Vereda, as: 'veredaInfo',
-            where: { Vereda_id: parsedVeredaId }
-          }]
-        }]
-      }]
+      where: {
+        Estado: 'disponible',
+        '$Direccion.BarrioCiudadCorregimientoVereda.vereda.Vereda_id$': parsedVeredaId,
+      },
+      include: [
+        {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          include: [
+            {
+              model: BarrioCiudadCorregimientoVereda,
+              as: 'BarrioCiudadCorregimientoVereda',
+              required: true,
+              include: [
+                {
+                  model: vereda,
+                  as: 'Vereda',
+                  required: true, // La vereda es obligatoria para este filtro
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles disponibles en la vereda especificada.' });
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles en la vereda especificada.' });
     }
+
+    res.status(200).json(inmuebles);
   } catch (error) {
     console.error('Error al obtener inmuebles por vereda:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por vereda.', error: error.message });
   }
 }
 
@@ -229,123 +299,170 @@ export async function getInmueblesByBarrio(req, res) {
     }
 
     const inmuebles = await Inmueble.findAll({
-      where: { Estado: 'disponible' },
-      include: [{
-        model: Direccion, as: 'direccionInfo',
-        include: [{
-          model: BarrioCiudadCorregimientoVereda, as: 'bccvInfo',
-          include: [{
-            model: Barrio, as: 'barrioInfo',
-            where: { Barrio_id: parsedBarrioId }
-          }]
-        }]
-      }]
+      where: {
+        Estado: 'disponible',
+        '$Direccion.BarrioCiudadCorregimientoVereda.Barrio.Barrio_id$': parsedBarrioId,
+      },
+      include: [
+        {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          include: [
+            {
+              model: BarrioCiudadCorregimientoVereda,
+              as: 'BarrioCiudadCorregimientoVereda',
+              required: true,
+              include: [
+                {
+                  model: Barrio,
+                  as: 'Barrio',
+                  required: true, // El barrio es obligatorio para este filtro
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles disponibles en el barrio especificado.' });
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles en el barrio especificado.' });
     }
+
+    res.status(200).json(inmuebles);
   } catch (error) {
     console.error('Error al obtener inmuebles por barrio:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por barrio.', error: error.message });
   }
 }
 
-// --- 7. Búsqueda por Radio/Proximidad (Latitud/Longitud) ---
+// --- 7. Inmuebles por Proximidad (usando latitud y longitud) ---
 export async function getInmueblesByProximity(req, res) {
   try {
-    const { latitud_centro, longitud_centro, radio_km } = req.query;
+    const { latitud, longitud, radio_km } = req.query;
 
-    if (!latitud_centro || !longitud_centro || !radio_km) {
-      return res.status(400).json({ message: 'Latitud, longitud del centro y radio en kilómetros son requeridos.' });
+    if (!latitud || !longitud || !radio_km) {
+      return res.status(400).json({ message: 'Latitud, longitud y radio_km son requeridos para la búsqueda por proximidad.' });
     }
 
-    const latitud = parseFloat(latitud_centro);
-    const longitud = parseFloat(longitud_centro);
-    const radio = parseFloat(radio_km);
+    const parsedLatitud = parseFloat(latitud);
+    const parsedLongitud = parseFloat(longitud);
+    const parsedRadioKm = parseFloat(radio_km);
 
-    if (isNaN(latitud) || isNaN(longitud) || isNaN(radio) || radio <= 0) {
-      return res.status(400).json({ message: 'Latitud, longitud y radio deben ser números válidos y el radio debe ser positivo.' });
+    if (isNaN(parsedLatitud) || isNaN(parsedLongitud) || isNaN(parsedRadioKm) || parsedRadioKm <= 0) {
+      return res.status(400).json({ message: 'Latitud, longitud y radio_km deben ser números válidos y radio_km debe ser mayor que 0.' });
     }
 
-    // Fórmula de Haversine para calcular la distancia en km
-    const distanceFormula = Sequelize.literal(`
-      (6371 * acos(
-        cos(radians(${latitud})) * cos(radians(Localizacion.Latitud)) * cos(radians(Localizacion.Longitud) - radians(${longitud}))
-        + sin(radians(${latitud})) * sin(radians(Localizacion.Latitud))
-      ))
-    `);
+    // Calcular la distancia en kilómetros (fórmula de Haversine simplificada para pequeñas distancias)
+    // Esto es una aproximación, para producción se recomienda PostGIS o funciones geoespaciales de la base de datos
+    const distanceSql = `
+        6371 * acos(
+            cos(radians(${parsedLatitud})) * cos(radians("Direccion->Localizacion"."Latitud")) *
+            cos(radians("Direccion->Localizacion"."Longitud") - radians(${parsedLongitud})) +
+            sin(radians(${parsedLatitud})) * sin(radians("Direccion->Localizacion"."Latitud"))
+        )
+    `;
 
     const inmuebles = await Inmueble.findAll({
-      where: { Estado: 'disponible' },
       attributes: {
-        include: [
-          [distanceFormula, 'distancia_km']
-        ]
+        include: [[sequelize.literal(distanceSql), 'distancia_km']]
       },
-      include: [{
-        model: Direccion, as: 'direccionInfo',
-        include: [{
-          model: Localizacion, as: 'localizacionInfo', // Alias de la relación en el modelo Direccion
-          where: {
-            Latitud: { [Op.ne]: null },
-            Longitud: { [Op.ne]: null }
-          },
-          required: true // INNER JOIN, solo si tienen lat/lon
-        }]
-      }],
-      having: Sequelize.literal(`distancia_km <= ${radio}`),
-      order: [[Sequelize.literal('distancia_km'), 'ASC']]
+      where: {
+        Estado: 'disponible',
+      },
+      include: [
+        {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          include: [
+            {
+              model: Localizacion,
+              as: 'Localizacion',
+              required: true,
+              attributes: [], // No necesitamos atributos de Localizacion en el resultado principal
+            },
+          ],
+        },
+      ],
+      having: sequelize.literal(`distancia_km <= ${parsedRadioKm}`),
+      order: [[sequelize.literal('distancia_km'), 'ASC']],
     });
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles disponibles dentro del radio especificado.' });
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles dentro del radio especificado.' });
     }
+
+    res.status(200).json(inmuebles);
   } catch (error) {
     console.error('Error al obtener inmuebles por proximidad:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por proximidad.', error: error.message });
   }
 }
 
-// --- 8. Inmuebles por Tipo de Vía y Número Específico ---
+// --- 8. Inmuebles por Dirección Completa (Número, Calle, etc.) ---
 export async function getInmueblesByFullAddress(req, res) {
   try {
-    const { tipo_via, numero_via_principal, numero_calle_transversal, numero_edificacion } = req.query;
+    const { numero, calle, bloque, adicional, longitud, latitud, designador_cardinal_id } = req.query;
 
-    if (!tipo_via || !numero_via_principal || !numero_calle_transversal || !numero_edificacion) {
-      return res.status(400).json({ message: 'Tipo de vía, número de vía principal, número de calle transversal y número de edificación son requeridos.' });
+    if (!numero && !calle && !bloque && !adicional && !longitud && !latitud && !designador_cardinal_id) {
+      return res.status(400).json({ message: 'Se requiere al menos un parámetro de dirección para la búsqueda por dirección completa.' });
+    }
+
+    const whereConditions = {};
+    if (numero) whereConditions.Direccion_Numero = numero;
+    if (calle) whereConditions.Direccion_Calle = { [Op.like]: `%${calle}%` };
+    if (bloque) whereConditions.Direccion_Bloque = { [Op.like]: `%${bloque}%` };
+    if (adicional) whereConditions.Direccion_Adicional = { [Op.like]: `%${adicional}%` };
+    if (designador_cardinal_id) whereConditions.Designador_cardinal_FK = designador_cardinal_id;
+
+    const includeLocalizacion = {};
+    if (longitud) includeLocalizacion.Longitud = parseFloat(longitud);
+    if (latitud) includeLocalizacion.Latitud = parseFloat(latitud);
+
+    const includeOptions = [
+      {
+        model: Direccion,
+        as: 'Direccion',
+        required: true,
+        where: whereConditions,
+        include: [
+          {
+            model: DesignadorCardinal,
+            as: 'DesignadorCardinal',
+            required: designador_cardinal_id ? true : false,
+          },
+        ],
+      },
+    ];
+
+    if (Object.keys(includeLocalizacion).length > 0) {
+      includeOptions[0].include.push({
+        model: Localizacion,
+        as: 'Localizacion',
+        required: true,
+        where: includeLocalizacion,
+      });
     }
 
     const inmuebles = await Inmueble.findAll({
       where: { Estado: 'disponible' },
-      include: [{
-        model: Direccion, as: 'direccionInfo',
-        where: {
-          Tipo_via: tipo_via,
-          Numero_via_principal: numero_via_principal,
-          Numero_calle_transversal: numero_calle_transversal,
-          Numero_edificacion: numero_edificacion,
-        },
-        required: true
-      }]
+      include: includeOptions,
     });
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles disponibles con la dirección especificada.' });
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles con la dirección especificada.' });
     }
+
+    res.status(200).json(inmuebles);
   } catch (error) {
     console.error('Error al obtener inmuebles por dirección completa:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por dirección completa.', error: error.message });
   }
 }
 
-// --- 9. Inmuebles por Designador Cardinal (Designador_cardinal_id) ---
+// --- 9. Inmuebles por Designador Cardinal (Norte, Sur, Este, Oeste) ---
 export async function getInmueblesByCardinalDesignator(req, res) {
   try {
     const { designador_cardinal_id } = req.query;
@@ -353,282 +470,246 @@ export async function getInmueblesByCardinalDesignator(req, res) {
     if (!designador_cardinal_id) {
       return res.status(400).json({ message: 'El ID del designador cardinal es requerido.' });
     }
-    const parsedCardinalId = parseInt(designador_cardinal_id, 10);
-    if (isNaN(parsedCardinalId)) {
+    const parsedDesignadorCardinalId = parseInt(designador_cardinal_id, 10);
+    if (isNaN(parsedDesignadorCardinalId)) {
       return res.status(400).json({ message: 'El ID del designador cardinal debe ser un número válido.' });
     }
 
     const inmuebles = await Inmueble.findAll({
-      where: { Estado: 'disponible' },
-      include: [{
-        model: Direccion, as: 'direccionInfo',
-        include: [{
-          model: DesignadorCardinal, as: 'designadorCardinalInfo',
-          where: { Designador_cardinal_id: parsedCardinalId }
-        }]
-      }]
+      where: {
+        Estado: 'disponible',
+        '$Direccion.DesignadorCardinal.Designador_cardinal_id$': parsedDesignadorCardinalId,
+      },
+      include: [
+        {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          include: [
+            {
+              model: DesignadorCardinal,
+              as: 'DesignadorCardinal',
+              required: true, // El designador cardinal es obligatorio para este filtro
+            },
+          ],
+        },
+      ],
     });
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles disponibles con el designador cardinal especificado.' });
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles con el designador cardinal especificado.' });
     }
+
+    res.status(200).json(inmuebles);
   } catch (error) {
     console.error('Error al obtener inmuebles por designador cardinal:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles por designador cardinal.', error: error.message });
   }
 }
 
-// --- 10. Consulta SQL Unificada para Filtros de Ubicación de Inmuebles ---
+// --- 10. Función unificada para todos los filtros de ubicación ---
 export async function getInmueblesWithUnifiedLocationFilters(req, res) {
   try {
     const {
-      estado_inmueble,
-      ndap_id,
-      municipio_id,
-      ubicacion_especifica_id, // Puede ser Ciudad, Corregimiento, Vereda, Barrio
-      tipo_ubicacion,           // 'ciudad', 'corregimiento', 'vereda', 'barrio'
-      tipo_via,
-      numero_via_principal,
-      numero_calle_transversal,
-      numero_edificacion,
-      designador_cardinal_id,
-      latitud_centro,
-      longitud_centro,
-      radio_km,
+      ndap_id, municipio_id, ciudad_id, corregimiento_id, vereda_id, barrio_id,
+      latitud, longitud, radio_km,
+      numero, calle, bloque, adicional, designador_cardinal_id
     } = req.query;
 
-    const whereConditions = {};
-    let includeConditions = [
-      {
+    const whereConditions = { Estado: 'disponible' };
+    const includeOptions = [];
+
+    // Lógica para filtros de ubicación jerárquica (ndap, municipio, Ciudad, Corregimiento, vereda, Barrio)
+    if (ndap_id || municipio_id || ciudad_id || corregimiento_id || vereda_id || barrio_id) {
+      const direccionInclude = {
         model: Direccion,
-        as: 'direccionInfo',
-        required: true, // INNER JOIN: todo inmueble debe tener una dirección
-        include: [
-          {
-            model: BarrioCiudadCorregimientoVereda,
-            as: 'bccvInfo',
-            required: true,
-            include: [
-              { model: Barrio, as: 'barrioInfo', required: false },
-              { model: Ciudad, as: 'ciudadInfo', required: false },
-              { model: Corregimiento, as: 'corregimientoInfo', required: false },
-              { model: Vereda, as: 'veredaInfo', required: false },
-            ],
-          },
-          { model: DesignadorCardinal, as: 'designadorCardinalInfo', required: false },
-          { model: Localizacion, as: 'localizacionInfo', required: false },
-        ],
-      },
-      // JOINs a Municipio y Ndap se manejan en el nivel superior para aplicar filtros
-      // de forma más flexible, o dentro de las inclusiones de bccvInfo.
-      // Para la consulta unificada, es más limpio hacer los joins necesarios de manera explícita
-      // y luego usar Sequelize.literal o acceder a través de los alias.
-    ];
-
-    // Para la jerarquía de ubicación, necesitamos joins más complejos
-    // Creamos una inclusión para Municipio y Ndap de forma flexible
-    const municipioInclude = {
-      model: Municipio,
-      as: 'municipioInfo',
-      required: false, // LEFT JOIN
-      include: [
-        { model: Ndap, as: 'departamentoInfo', required: false } // LEFT JOIN
-      ]
-    };
-    // Añadimos municipio a las inclusiones de ciudad, corregimiento, vereda dentro de bccvInfo
-    // Esto se complica mucho con Sequelize al hacer includes anidados de esta forma para un OR en el JOIN
-    // La mejor estrategia para la UNIFICADA es quizás usar `sequelize.literal` o raw queries
-    // para las condiciones de JOIN complejas que involucran OR, o refactorizar el modelo de Bccv
-    // para tener una FK directa a Municipio.
-
-    // Aclaremos los joins para la unificada:
-    // Inmueble -> Direccion -> BarrioCiudadCorregimientoVereda (bccv)
-    // bccv -> Barrio (LEFT)
-    // bccv -> Ciudad (LEFT) -> Municipio (LEFT) -> Ndap (LEFT)
-    // bccv -> Corregimiento (LEFT) -> Municipio (LEFT) -> Ndap (LEFT)
-    // bccv -> Vereda (LEFT) -> Municipio (LEFT) -> Ndap (LEFT)
-
-    // Para manejar esto en Sequelize sin generar JOINs cartesianos o complejos,
-    // es mejor tener las relaciones directas donde sea posible.
-
-    // Reiniciaremos las inclusiones para la consulta unificada para manejar la complejidad.
-    // Esto es un desafío en Sequelize con la estructura de bccv vinculada a Ciudad, Corregimiento, Vereda,
-    // que a su vez se vinculan a Municipio. La forma más limpia es hacer los JOINS directamente
-    // en la consulta SQL y usar `Sequelize.literal` para las condiciones.
-
-    // --- Filtro base: Estado del inmueble (opcional, por defecto 'disponible') ---
-    if (estado_inmueble) {
-      if (typeof estado_inmueble !== 'string' || estado_inmueble.trim() === '') {
-        return res.status(400).json({ message: 'El estado del inmueble debe ser una cadena no vacía.' });
-      }
-      whereConditions.Estado = estado_inmueble;
-    } else {
-      whereConditions.Estado = 'disponible';
-    }
-
-    // --- Filtro por Departamento (Ndap_id) ---
-    if (ndap_id) {
-      const parsedNdapId = parseInt(ndap_id, 10);
-      if (isNaN(parsedNdapId)) {
-        return res.status(400).json({ message: 'El ID del departamento debe ser un número válido.' });
-      }
-      // Necesitamos asegurar que el JOIN a Ndap se realice para esta condición
-      includeConditions[0].include[0].include.push(
-        { model: Ciudad, as: 'ciudadInfo', required: false, include: [{ model: Municipio, as: 'municipioInfo', required: true, where: { '$direccionInfo.bccvInfo.ciudadInfo.municipioInfo.Ndap_FK$': parsedNdapId } }] },
-        { model: Corregimiento, as: 'corregimientoInfo', required: false, include: [{ model: Municipio, as: 'municipioInfo', required: true, where: { '$direccionInfo.bccvInfo.corregimientoInfo.municipioInfo.Ndap_FK$': parsedNdapId } }] },
-        { model: Vereda, as: 'veredaInfo', required: false, include: [{ model: Municipio, as: 'municipioInfo', required: true, where: { '$direccionInfo.bccvInfo.veredaInfo.municipioInfo.Ndap_FK$': parsedNdapId } }] }
-      );
-    }
-
-    // --- Filtro por Municipio (Municipio_id) ---
-    if (municipio_id) {
-      const parsedMunicipioId = parseInt(municipio_id, 10);
-      if (isNaN(parsedMunicipioId)) {
-        return res.status(400).json({ message: 'El ID del municipio debe ser un número válido.' });
-      }
-      // Añadimos condiciones directamente a las relaciones de ciudad, corregimiento, vereda
-      includeConditions[0].include[0].include.push(
-        { model: Ciudad, as: 'ciudadInfo', required: false, where: { '$direccionInfo.bccvInfo.ciudadInfo.Municipio_FK$': parsedMunicipioId } },
-        { model: Corregimiento, as: 'corregimientoInfo', required: false, where: { '$direccionInfo.bccvInfo.corregimientoInfo.Municipio_FK$': parsedMunicipioId } },
-        { model: Vereda, as: 'veredaInfo', required: false, where: { '$direccionInfo.bccvInfo.veredaInfo.Municipio_FK$': parsedMunicipioId } }
-      );
-    }
-
-    // --- Filtro por Ubicación Específica (Ciudad, Corregimiento, Vereda, Barrio) ---
-    if (ubicacion_especifica_id && tipo_ubicacion) {
-      const parsedUbicacionId = parseInt(ubicacion_especifica_id, 10);
-      if (isNaN(parsedUbicacionId)) {
-        return res.status(400).json({ message: 'El ID de la ubicación específica debe ser un número válido.' });
-      }
-
-      let specificLocationCondition = {};
-      switch (tipo_ubicacion.toLowerCase()) {
-        case 'ciudad':
-          specificLocationCondition = { model: Ciudad, as: 'ciudadInfo', where: { Ciudad_id: parsedUbicacionId }, required: true };
-          break;
-        case 'corregimiento':
-          specificLocationCondition = { model: Corregimiento, as: 'corregimientoInfo', where: { Corregimiento_id: parsedUbicacionId }, required: true };
-          break;
-        case 'vereda':
-          specificLocationCondition = { model: Vereda, as: 'veredaInfo', where: { Vereda_id: parsedUbicacionId }, required: true };
-          break;
-        case 'barrio':
-          specificLocationCondition = { model: Barrio, as: 'barrioInfo', where: { Barrio_id: parsedUbicacionId }, required: true };
-          break;
-        default:
-          return res.status(400).json({ message: 'Tipo de ubicación no reconocido.' });
-      }
-      // Añadir la condición de ubicación específica a la inclusión de bccvInfo
-      includeConditions[0].include[0].include.push(specificLocationCondition);
-    }
-
-    // --- Filtro por Tipo de Vía y Número Específico ---
-    if (tipo_via || numero_via_principal || numero_calle_transversal || numero_edificacion) {
-      if (!tipo_via || !numero_via_principal || !numero_calle_transversal || !numero_edificacion) {
-        return res.status(400).json({ message: 'Para el filtro de dirección completa, todos los campos (tipo de vía, números) son requeridos.' });
-      }
-      includeConditions[0].where = {
-        Tipo_via: tipo_via,
-        Numero_via_principal: numero_via_principal,
-        Numero_calle_transversal: numero_calle_transversal,
-        Numero_edificacion: numero_edificacion,
+        as: 'Direccion',
+        required: true,
+        include: [{
+          model: BarrioCiudadCorregimientoVereda,
+          as: 'BarrioCiudadCorregimientoVereda',
+          required: true,
+          include: []
+        }]
       };
-      includeConditions[0].required = true; // INNER JOIN para asegurar que la dirección coincida
-    }
 
-    // --- Filtro por Designador Cardinal (Designador_cardinal_id) ---
-    if (designador_cardinal_id) {
-      const parsedCardinalId = parseInt(designador_cardinal_id, 10);
-      if (isNaN(parsedCardinalId)) {
-        return res.status(400).json({ message: 'El ID del designador cardinal debe ser un número válido.' });
+      if (ndap_id) {
+        direccionInclude.include[0].include.push(
+          {
+            model: Ciudad,
+            as: 'Ciudad',
+            required: false,
+            include: [{ model: municipio, as: 'Municipio', required: true, where: { Ndap_FK: parseInt(ndap_id, 10) } }]
+          },
+          {
+            model: Corregimiento,
+            as: 'Corregimiento',
+            required: false,
+            include: [{ model: municipio, as: 'Municipio', required: true, where: { Ndap_FK: parseInt(ndap_id, 10) } }]
+          },
+          {
+            model: vereda,
+            as: 'Vereda',
+            required: false,
+            include: [{ model: municipio, as: 'Municipio', required: true, where: { Ndap_FK: parseInt(ndap_id, 10) } }]
+          }
+        );
       }
-      // Añadimos la condición directamente a la inclusión de DesignadorCardinal
-      includeConditions[0].include[1].where = { Designador_cardinal_id: parsedCardinalId };
-      includeConditions[0].include[1].required = true; // INNER JOIN
+      if (municipio_id) {
+        direccionInclude.include[0].include.push(
+          {
+            model: Ciudad,
+            as: 'Ciudad',
+            required: false,
+            include: [{ model: municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
+          },
+          {
+            model: Corregimiento,
+            as: 'Corregimiento',
+            required: false,
+            include: [{ model: municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
+          },
+          {
+            model: vereda,
+            as: 'Vereda',
+            required: false,
+            include: [{ model: municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
+          }
+        );
+      }
+      if (ciudad_id) {
+        direccionInclude.include[0].include.push({
+          model: Ciudad,
+          as: 'Ciudad',
+          required: true,
+          where: { Ciudad_id: parseInt(ciudad_id, 10) }
+        });
+      }
+      if (corregimiento_id) {
+        direccionInclude.include[0].include.push({
+          model: Corregimiento,
+          as: 'Corregimiento',
+          required: true,
+          where: { Corregimiento_id: parseInt(corregimiento_id, 10) }
+        });
+      }
+      if (vereda_id) {
+        direccionInclude.include[0].include.push({
+          model: vereda,
+          as: 'Vereda',
+          required: true,
+          where: { Vereda_id: parseInt(vereda_id, 10) }
+        });
+      }
+      if (barrio_id) {
+        direccionInclude.include[0].include.push({
+          model: Barrio,
+          as: 'Barrio',
+          required: true,
+          where: { Barrio_id: parseInt(barrio_id, 10) }
+        });
+      }
+      includeOptions.push(direccionInclude);
     }
 
+    // Lógica para filtro por proximidad (latitud, longitud, radio_km)
+    let distanceSelect = null;
     let havingCondition = null;
-    let orderConditions = [['Fecha_publicacion', 'DESC']]; // Orden por defecto
+    if (latitud && longitud && radio_km) {
+      const parsedLatitud = parseFloat(latitud);
+      const parsedLongitud = parseFloat(longitud);
+      const parsedRadioKm = parseFloat(radio_km);
 
-    // --- Filtro por Radio/Proximidad (Latitud/Longitud) ---
-    if (latitud_centro && longitud_centro && radio_km) {
-      const latitud = parseFloat(latitud_centro);
-      const longitud = parseFloat(longitud_centro);
-      const radio = parseFloat(radio_km);
-
-      if (isNaN(latitud) || isNaN(longitud) || isNaN(radio) || radio <= 0) {
-        return res.status(400).json({ message: 'Latitud, longitud del centro y radio deben ser números válidos y el radio debe ser positivo para la búsqueda por proximidad.' });
+      if (isNaN(parsedLatitud) || isNaN(parsedLongitud) || isNaN(parsedRadioKm) || parsedRadioKm <= 0) {
+        return res.status(400).json({ message: 'Latitud, longitud y radio_km deben ser números válidos y radio_km debe ser mayor que 0.' });
       }
 
-      // Asegurar que Localizacion esté incluido y sus campos no sean nulos
-      const localizacionIncludeIndex = includeConditions[0].include.findIndex(inc => inc.model === Localizacion);
-      if (localizacionIncludeIndex !== -1) {
-          includeConditions[0].include[localizacionIncludeIndex].required = true;
-          includeConditions[0].include[localizacionIncludeIndex].where = {
-              Latitud: { [Op.ne]: null },
-              Longitud: { [Op.ne]: null }
-          };
+      distanceSelect = `
+          6371 * acos(
+              cos(radians(${parsedLatitud})) * cos(radians("Direccion->Localizacion"."Latitud")) *
+              cos(radians("Direccion->Localizacion"."Longitud") - radians(${parsedLongitud})) +
+              sin(radians(${parsedLatitud})) * sin(radians("Direccion->Localizacion"."Latitud"))
+          )
+      `;
+      havingCondition = sequelize.literal(`distancia_km <= ${parsedRadioKm}`);
+
+      // Asegurarse de que Direccion y Localizacion estén incluidos
+      let existingDireccionInclude = includeOptions.find(inc => inc.model === Direccion);
+      if (!existingDireccionInclude) {
+        existingDireccionInclude = {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          include: []
+        };
+        includeOptions.push(existingDireccionInclude);
+      }
+      existingDireccionInclude.include.push({
+        model: Localizacion,
+        as: 'Localizacion',
+        required: true,
+        attributes: [],
+      });
+    }
+
+    // Lógica para filtro por dirección completa (numero, calle, etc.)
+    const fullAddressConditions = {};
+    let needsDireccionIncludeForAddress = false;
+    if (numero) { fullAddressConditions.Direccion_Numero = numero; needsDireccionIncludeForAddress = true; }
+    if (calle) { fullAddressConditions.Direccion_Calle = { [Op.like]: `%${calle}%` }; needsDireccionIncludeForAddress = true; }
+    if (bloque) { fullAddressConditions.Direccion_Bloque = { [Op.like]: `%${bloque}%` }; needsDireccionIncludeForAddress = true; }
+    if (adicional) { fullAddressConditions.Direccion_Adicional = { [Op.like]: `%${adicional}%` }; needsDireccionIncludeForAddress = true; }
+    if (designador_cardinal_id) { fullAddressConditions.Designador_cardinal_FK = parseInt(designador_cardinal_id, 10); needsDireccionIncludeForAddress = true; }
+
+    if (needsDireccionIncludeForAddress) {
+      let existingDireccionInclude = includeOptions.find(inc => inc.model === Direccion);
+      if (!existingDireccionInclude) {
+        existingDireccionInclude = {
+          model: Direccion,
+          as: 'Direccion',
+          required: true,
+          where: fullAddressConditions,
+          include: []
+        };
+        includeOptions.push(existingDireccionInclude);
       } else {
-          // Si por alguna razón no está, lo añadimos
-          includeConditions[0].include.push({
-              model: Localizacion,
-              as: 'localizacionInfo',
-              required: true,
-              where: { Latitud: { [Op.ne]: null }, Longitud: { [Op.ne]: null } }
-          });
+        // Fusionar condiciones si ya existe la inclusión de Dirección
+        existingDireccionInclude.where = { ...existingDireccionInclude.where, ...fullAddressConditions };
       }
 
-      const distanceFormula = Sequelize.literal(`
-        (6371 * acos(
-          cos(radians(${latitud})) * cos(radians("direccionInfo"."localizacionInfo"."Latitud")) * cos(radians("direccionInfo"."localizacionInfo"."Longitud") - radians(${longitud}))
-          + sin(radians(${latitud})) * sin(radians("direccionInfo"."localizacionInfo"."Latitud"))
-        ))
-      `);
-
-      havingCondition = Sequelize.literal(`distancia_km <= ${radio}`);
-      orderConditions = [[Sequelize.literal('distancia_km'), 'ASC'], ...orderConditions]; // Ordena por distancia y luego por fecha
+      if (designador_cardinal_id) {
+        existingDireccionInclude.include.push({
+          model: DesignadorCardinal,
+          as: 'DesignadorCardinal',
+          required: true,
+        });
+      }
     }
 
-    const inmuebles = await Inmueble.findAll({
+    const findOptions = {
       where: whereConditions,
-      attributes: {
-        include: [
-          // Incluye información de dirección y ubicación para la salida
-          [Sequelize.col('direccionInfo.Direccion'), 'DireccionCompleta'],
-          [Sequelize.col('direccionInfo.Tipo_via'), 'Tipo_via'],
-          [Sequelize.col('direccionInfo.Numero_via_principal'), 'Numero_via_principal'],
-          [Sequelize.col('direccionInfo.Numero_calle_transversal'), 'Numero_calle_transversal'],
-          [Sequelize.col('direccionInfo.Numero_edificacion'), 'Numero_edificacion'],
-          [Sequelize.col('direccionInfo.Descripcion_adicional'), 'DireccionAdicional'],
-          [Sequelize.col('direccionInfo.designadorCardinalInfo.Cardinalidad'), 'DesignadorCardinal_Abreviacion'],
-          [Sequelize.col('direccionInfo.localizacionInfo.Latitud'), 'Latitud'],
-          [Sequelize.col('direccionInfo.localizacionInfo.Longitud'), 'Longitud'],
-          [Sequelize.col('direccionInfo.localizacionInfo.Localizacion_descripcion'), 'DescripcionLocalizacion'],
-          [Sequelize.literal(`COALESCE(
-              "direccionInfo"."bccvInfo"."barrioInfo"."Nombre_barrio",
-              "direccionInfo"."bccvInfo"."ciudadInfo"."Ciudad",
-              "direccionInfo"."bccvInfo"."corregimientoInfo"."Corregimiento",
-              "direccionInfo"."bccvInfo"."veredaInfo"."Vereda_nombre"
-            )`), 'NombreUbicacionEspecifica'],
-          // Para municipio y departamento, se necesitan joins más complejos o subconsultas si no hay una relación directa y limpia desde Inmueble.
-          // Aquí estamos asumiendo que el municipio y ndap se pueden inferir de ciudad/corregimiento/vereda.
-        ]
-      },
-      include: includeConditions,
-      having: havingCondition,
-      order: orderConditions,
-    });
+      include: includeOptions,
+    };
 
-    if (inmuebles.length > 0) {
-      res.json(inmuebles);
-    } else {
-      res.status(404).json({ message: 'No se encontraron inmuebles que coincidan con los filtros de ubicación especificados.' });
+    if (distanceSelect) {
+      findOptions.attributes = {
+        include: [[sequelize.literal(distanceSelect), 'distancia_km']]
+      };
+      findOptions.having = havingCondition;
+      findOptions.order = [[sequelize.literal('distancia_km'), 'ASC']];
     }
+
+    const inmuebles = await Inmueble.findAll(findOptions);
+
+    if (inmuebles.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron inmuebles con los filtros de ubicación especificados.' });
+    }
+
+    res.status(200).json(inmuebles);
+
   } catch (error) {
     console.error('Error al obtener inmuebles con filtros de ubicación unificados:', error);
-    res.status(500).json({ error: 'Error interno del servidor.' });
+    res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles con filtros de ubicación unificados.', error: error.message });
   }
 }
 

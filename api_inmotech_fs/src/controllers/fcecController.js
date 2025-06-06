@@ -4,25 +4,25 @@
 // Es CRÍTICO que todas las asociaciones (belongsTo, hasOne, etc.)
 // estén definidas en tus modelos con los 'as' aliases correspondientes.
 // =========================================================================
-import Inmueble from '../models/inmueble.js';
-import Division from '../models/division.js';
-import OtrasCaracteristicas from '../models/otras_caracteristicas.js';
-import Asignacion from '../models/asignacion.js';
-import OrganizacionParqueadero from '../models/organizacion_parqueadero.js';
-import AcercaEdificacion from '../models/acerca_edificacion.js';
-import TipoEdificacion from '../models/tipo_edificacion.js';
+import Inmueble from '../models/inmueble.js'; falta
+import Division from '../models/division.js'; //division
+import OtrasCaracteristicas from '../models/otras_caracteristicas.js'; //falta
+import Asignacion from '../models/asignacion.js'; //asignacion
+import OrganizacionParqueadero from '../models/organizacion_parqueadero.js'; //organizacionParqueadero
+import AcercaEdificacion from '../models/acerca_edificacion.js'; //Acerca_edificacion
+import TipoEdificacion from '../models/tipoEdificacionModel.js';
 import Direccion from '../models/direccion.js';
 import BarrioCiudadCorregimientoVereda from '../models/barrio_ciudad_corregimiento_vereda.js';
 import Barrio from '../models/barrio.js';
 import Ciudad from '../models/ciudad.js';
 import Corregimiento from '../models/corregimiento.js';
-import Vereda from '../models/vereda.js';
-import Municipio from '../models/municipio.js';
-import Ndap from '../models/ndap.js';
+import Vereda from '../models/vereda.js'; //vereda
+import Municipio from '../models/municipio.js'; //municipio
+import Ndap from '../models/ndap.js'; //ndap
 import DesignadorCardinal from '../models/designador_cardinal.js';
 import Localizacion from '../models/localizacion.js';
-import PlatformUser from '../models/platform_user.js';
-import PlatformProfile from '../models/platform_profile.js';
+import PlatformUser from '../models/platform_user.js'; //falta
+import PlatformProfile from '../models/platform_profile.js'; //falta
 
 // =========================================================================
 // FUNCIONES AUXILIARES
