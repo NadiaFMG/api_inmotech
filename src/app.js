@@ -28,7 +28,8 @@ import document_identification from './routes/document_identification.js';
 import tipoEdificacionRoutes from './routes/tipoEdificacionRoutes.js';
 import tipoDocumentoRoutes from './routes/tipoDocumentoRoutes.js'
 import imagenesInmuebleRoutes from './routes/imagenesInmuebleRoutes.js';
-
+import resolucionFacturaRoutes from './routes/resolucion_facturaRoutes.js';
+import impuestoRoutes from './routes/impuestoRoute.js';
 
 
 const app = express();
@@ -64,6 +65,8 @@ app.use('/document_identification', document_identification);
 app.use('/tipo_edificacion', tipoEdificacionRoutes);
 app.use('/tipo_documento', tipoDocumentoRoutes);
 app.use('/imagenes_inmueble', imagenesInmuebleRoutes);
+app.use('/resolucion_factura', resolucionFacturaRoutes); 
+app.use('/impuesto', impuestoRoutes);
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
@@ -72,3 +75,9 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
+
+
+
+
+
+
