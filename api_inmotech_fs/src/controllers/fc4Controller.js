@@ -1,18 +1,18 @@
 import Inmueble from '../models/inmueble.js'; //FALTA MODELO
-import Division from '../models/division.js'; //division
-import OtrasCaracteristicas from '../models/otras_caracteristicas.js'; //falta modelo
-import Asignacion from '../models/asignacion.js'; //asignacion
-import OrganizacionParqueadero from '../models/organizacion_parqueadero.js'; //organizacionParqueadero
-import AcercaEdificacion from '../models/acerca_edificacion.js'; //Acerca_edificacion
+import division from '../models/division.js';
+import otras_caracteristicas from '../models/otras_caracteristicas.js'; //falta modelo
+import asignacion from '../models/asignacion.js';
+import organizacionParqueadero from '../models/organizacion_parqueadero.js';
+import Acerca_edificacion from '../models/acerca_edificacion.js';
 import TipoEdificacion from '../models/tipoEdificacionModel.js';
 import Direccion from '../models/direccion.js';
 import BarrioCiudadCorregimientoVereda from '../models/barrio_ciudad_corregimiento_vereda.js';
 import Barrio from '../models/barrio.js';
 import Ciudad from '../models/ciudad.js';
 import Corregimiento from '../models/corregimiento.js';
-import Vereda from '../models/vereda.js'; //vereda
-import Municipio from '../models/municipio.js'; //municipio
-import Ndap from '../models/ndap.js'; //ndap
+import vereda from '../models/vereda.js';
+import municipio from '../models/municipio.js';
+import ndap from '../models/ndap.js';
 import DesignadorCardinal from '../models/designador_cardinal.js';
 import Localizacion from '../models/localizacion.js';
 import PlatformUser from '../models/platform_user.js'; //arreglar esto
@@ -284,24 +284,24 @@ export async function getFilteredInmueblesCombinedWithoutPublisher(req, res) {
         // Configuración de las asociaciones con `required` dinámico
         const includeAssociations = [
             {
-                model: Division,
+                model: division, // Corregido a 'division'
                 as: 'Division',
                 required: Object.keys(divisionWhere).length > 0,
                 where: divisionWhere
             },
             {
-                model: OtrasCaracteristicas,
+                model: otras_caracteristicas, // Corregido a 'otras_caracteristicas'
                 as: 'OtrasCaracteristicas',
                 required: Object.keys(otrasCaracteristicasWhere).length > 0 || Object.keys(organizacionParqueaderoWhere).length > 0,
                 where: otrasCaracteristicasWhere,
                 include: [
                     {
-                        model: Asignacion,
+                        model: asignacion, // Corregido a 'asignacion'
                         as: 'Asignacion',
                         required: Object.keys(organizacionParqueaderoWhere).length > 0,
                         include: [
                             {
-                                model: OrganizacionParqueadero,
+                                model: organizacionParqueadero, // Corregido a 'organizacionParqueadero'
                                 as: 'OrganizacionParqueadero',
                                 required: Object.keys(organizacionParqueaderoWhere).length > 0,
                                 where: organizacionParqueaderoWhere
@@ -311,7 +311,7 @@ export async function getFilteredInmueblesCombinedWithoutPublisher(req, res) {
                 ]
             },
             {
-                model: AcercaEdificacion,
+                model: Acerca_edificacion, // Corregido a 'Acerca_edificacion'
                 as: 'AcercaEdificacion',
                 required: Object.keys(acercaEdificacionWhere).length > 0,
                 where: acercaEdificacionWhere
@@ -341,13 +341,13 @@ export async function getFilteredInmueblesCombinedWithoutPublisher(req, res) {
                                 required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                 include: [
                                     {
-                                        model: Municipio,
+                                        model: municipio, // Corregido a 'municipio'
                                         as: 'Municipio',
                                         required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                         where: municipioWhere,
                                         include: [
                                             {
-                                                model: Ndap,
+                                                model: ndap, // Corregido a 'ndap'
                                                 as: 'Ndap',
                                                 required: Object.keys(ndapWhere).length > 0,
                                                 where: ndapWhere
@@ -362,13 +362,13 @@ export async function getFilteredInmueblesCombinedWithoutPublisher(req, res) {
                                 required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                 include: [
                                     {
-                                        model: Municipio,
+                                        model: municipio, // Corregido a 'municipio'
                                         as: 'Municipio',
                                         required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                         where: municipioWhere,
                                         include: [
                                             {
-                                                model: Ndap,
+                                                model: ndap, // Corregido a 'ndap'
                                                 as: 'Ndap',
                                                 required: Object.keys(ndapWhere).length > 0,
                                                 where: ndapWhere
@@ -378,18 +378,18 @@ export async function getFilteredInmueblesCombinedWithoutPublisher(req, res) {
                                 ]
                             },
                             {
-                                model: Vereda,
+                                model: vereda, // Corregido a 'vereda'
                                 as: 'Vereda',
                                 required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                 include: [
                                     {
-                                        model: Municipio,
+                                        model: municipio, // Corregido a 'municipio'
                                         as: 'Municipio',
                                         required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                         where: municipioWhere,
                                         include: [
                                             {
-                                                model: Ndap,
+                                                model: ndap, // Corregido a 'ndap'
                                                 as: 'Ndap',
                                                 required: Object.keys(ndapWhere).length > 0,
                                                 where: ndapWhere
@@ -1046,24 +1046,24 @@ export async function getFilteredInmueblesCombinedWithoutBuildingFeatures(req, r
         // Configuración de las asociaciones con `required` dinámico
         const includeAssociations = [
             {
-                model: Division,
+                model: division, //123 aqui
                 as: 'Division',
                 required: Object.keys(divisionWhere).length > 0,
                 where: divisionWhere
             },
             {
-                model: OtrasCaracteristicas,
+                model: otras_caracteristicas, //123 aqui
                 as: 'OtrasCaracteristicas',
                 required: Object.keys(otrasCaracteristicasWhere).length > 0 || Object.keys(organizacionParqueaderoWhere).length > 0,
                 where: otrasCaracteristicasWhere,
                 include: [
                     {
-                        model: Asignacion,
+                        model: asignacion, //123 aqui
                         as: 'Asignacion',
                         required: Object.keys(organizacionParqueaderoWhere).length > 0,
                         include: [
                             {
-                                model: OrganizacionParqueadero,
+                                model: organizacionParqueadero, //123 aqui
                                 as: 'OrganizacionParqueadero',
                                 required: Object.keys(organizacionParqueaderoWhere).length > 0,
                                 where: organizacionParqueaderoWhere
@@ -1111,13 +1111,13 @@ export async function getFilteredInmueblesCombinedWithoutBuildingFeatures(req, r
                                 required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                 include: [
                                     {
-                                        model: Municipio,
+                                        model: municipio, //123 aqui
                                         as: 'Municipio',
                                         required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                         where: municipioWhere,
                                         include: [
                                             {
-                                                model: Ndap,
+                                                model: ndap, //123 aqui
                                                 as: 'Ndap',
                                                 required: Object.keys(ndapWhere).length > 0,
                                                 where: ndapWhere
@@ -1132,13 +1132,13 @@ export async function getFilteredInmueblesCombinedWithoutBuildingFeatures(req, r
                                 required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                 include: [
                                     {
-                                        model: Municipio,
+                                        model: municipio, //123 aqui
                                         as: 'Municipio',
                                         required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                         where: municipioWhere,
                                         include: [
                                             {
-                                                model: Ndap,
+                                                model: ndap, //123 aqui
                                                 as: 'Ndap',
                                                 required: Object.keys(ndapWhere).length > 0,
                                                 where: ndapWhere
@@ -1148,18 +1148,18 @@ export async function getFilteredInmueblesCombinedWithoutBuildingFeatures(req, r
                                 ]
                             },
                             {
-                                model: Vereda,
+                                model: vereda, //123 aqui
                                 as: 'Vereda',
                                 required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                 include: [
                                     {
-                                        model: Municipio,
+                                        model: municipio, //123 aqui
                                         as: 'Municipio',
                                         required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                         where: municipioWhere,
                                         include: [
                                             {
-                                                model: Ndap,
+                                                model: ndap, //123 aqui
                                                 as: 'Ndap',
                                                 required: Object.keys(ndapWhere).length > 0,
                                                 where: ndapWhere
@@ -1222,8 +1222,36 @@ export async function getFilteredInmueblesCombinedWithoutBuildingFeatures(req, r
 
             // Ordenar por distancia si se usa el filtro de radio
             filteredInmuebles.sort((a, b) => {
-                const distA = 6371 * Math.acos(Math.cos(centerLat * (Math.PI / 180)) * Math.cos(a.Direccion.Localizacion.Latitud * (Math.PI / 180)) * Math.cos(a.Direccion.Localizacion.Longitud * (Math.PI / 180) - centerLon * (Math.PI / 180)) + Math.sin(centerLat * (Math.PI / 180)) * Math.sin(a.Direccion.Localizacion.Latitud * (Math.PI / 180)));
-                const distB = 6371 * Math.acos(Math.cos(centerLat * (Math.PI / 180)) * Math.cos(b.Direccion.Localizacion.Latitud * (Math.PI / 180)) * Math.cos(b.Direccion.Localizacion.Longitud * (Math.PI / 180) - centerLon * (Math.PI / 180)) + Math.sin(centerLat * (Math.PI / 180)) * Math.sin(b.Direccion.Localizacion.Latitud * (Math.PI / 180)));
+                const R = 6371;
+                const toRadians = (deg) => deg * (Math.PI / 180);
+
+                const latA = a.Direccion?.Localizacion?.Latitud;
+                const lonA = a.Direccion?.Localizacion?.Longitud;
+                const latB = b.Direccion?.Localizacion?.Latitud;
+                const lonB = b.Direccion?.Localizacion?.Longitud;
+
+                // Handle cases where location data might be missing after filter, though 'required' should prevent it
+                if (latA === undefined || lonA === undefined) return 1;
+                if (latB === undefined || lonB === undefined) return -1;
+
+                const dLatA = toRadians(latA - centerLat);
+                const dLonA = toRadians(lonA - centerLon);
+                const aValA =
+                    Math.sin(dLatA / 2) * Math.sin(dLatA / 2) +
+                    Math.cos(toRadians(centerLat)) * Math.cos(toRadians(latA)) *
+                    Math.sin(dLonA / 2) * Math.sin(dLonA / 2);
+                const cValA = 2 * Math.atan2(Math.sqrt(aValA), Math.sqrt(1 - aValA));
+                const distA = R * cValA;
+
+                const dLatB = toRadians(latB - centerLat);
+                const dLonB = toRadians(lonB - centerLon);
+                const aValB =
+                    Math.sin(dLatB / 2) * Math.sin(dLatB / 2) +
+                    Math.cos(toRadians(centerLat)) * Math.cos(toRadians(latB)) *
+                    Math.sin(dLonB / 2) * Math.sin(dLonB / 2);
+                const cValB = 2 * Math.atan2(Math.sqrt(aValB), Math.sqrt(1 - aValB));
+                const distB = R * cValB;
+
                 return distA - distB;
             });
         }
@@ -1460,24 +1488,24 @@ export async function getFilteredInmueblesCombinedWithoutGeneralCharacteristics(
         // Configuración de las asociaciones con `required` dinámico
         const includeAssociations = [
             {
-                model: Division,
+                model: division,
                 as: 'Division',
                 required: Object.keys(divisionWhere).length > 0,
                 where: divisionWhere
             },
             {
-                model: OtrasCaracteristicas,
+                model: otras_caracteristicas,
                 as: 'OtrasCaracteristicas',
                 required: Object.keys(otrasCaracteristicasWhere).length > 0 || Object.keys(organizacionParqueaderoWhere).length > 0,
                 where: otrasCaracteristicasWhere,
                 include: [
                     {
-                        model: Asignacion,
+                        model: asignacion,
                         as: 'Asignacion',
                         required: Object.keys(organizacionParqueaderoWhere).length > 0,
                         include: [
                             {
-                                model: OrganizacionParqueadero,
+                                model: organizacionParqueadero,
                                 as: 'OrganizacionParqueadero',
                                 required: Object.keys(organizacionParqueaderoWhere).length > 0,
                                 where: organizacionParqueaderoWhere
@@ -1487,7 +1515,7 @@ export async function getFilteredInmueblesCombinedWithoutGeneralCharacteristics(
                 ]
             },
             {
-                model: AcercaEdificacion,
+                model: Acerca_edificacion,
                 as: 'AcercaEdificacion',
                 required: Object.keys(acercaEdificacionWhere).length > 0,
                 where: acercaEdificacionWhere
@@ -1525,13 +1553,13 @@ export async function getFilteredInmueblesCombinedWithoutGeneralCharacteristics(
                                 required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                 include: [
                                     {
-                                        model: Municipio,
+                                        model: municipio,
                                         as: 'Municipio',
                                         required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                         where: municipioWhere,
                                         include: [
                                             {
-                                                model: Ndap,
+                                                model: ndap,
                                                 as: 'Ndap',
                                                 required: Object.keys(ndapWhere).length > 0,
                                                 where: ndapWhere
@@ -1546,13 +1574,13 @@ export async function getFilteredInmueblesCombinedWithoutGeneralCharacteristics(
                                 required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                 include: [
                                     {
-                                        model: Municipio,
+                                        model: municipio,
                                         as: 'Municipio',
                                         required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                         where: municipioWhere,
                                         include: [
                                             {
-                                                model: Ndap,
+                                                model: ndap,
                                                 as: 'Ndap',
                                                 required: Object.keys(ndapWhere).length > 0,
                                                 where: ndapWhere
@@ -1562,18 +1590,18 @@ export async function getFilteredInmueblesCombinedWithoutGeneralCharacteristics(
                                 ]
                             },
                             {
-                                model: Vereda,
+                                model: vereda,
                                 as: 'Vereda',
                                 required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                 include: [
                                     {
-                                        model: Municipio,
+                                        model: municipio,
                                         as: 'Municipio',
                                         required: Object.keys(municipioWhere).length > 0 || Object.keys(ndapWhere).length > 0,
                                         where: municipioWhere,
                                         include: [
                                             {
-                                                model: Ndap,
+                                                model: ndap,
                                                 as: 'Ndap',
                                                 required: Object.keys(ndapWhere).length > 0,
                                                 where: ndapWhere
@@ -1877,24 +1905,24 @@ export async function getFilteredInmueblesCombinedWithoutLocation(req, res) {
         // Configuración de las asociaciones con `required` dinámico
         const includeAssociations = [
             {
-                model: Division,
+                model: division,
                 as: 'Division',
                 required: Object.keys(divisionWhere).length > 0,
                 where: divisionWhere
             },
             {
-                model: OtrasCaracteristicas,
+                model: otras_caracteristicas,
                 as: 'OtrasCaracteristicas',
                 required: Object.keys(otrasCaracteristicasWhere).length > 0 || Object.keys(organizacionParqueaderoWhere).length > 0,
                 where: otrasCaracteristicasWhere,
                 include: [
                     {
-                        model: Asignacion,
+                        model: asignacion,
                         as: 'Asignacion',
                         required: Object.keys(organizacionParqueaderoWhere).length > 0,
                         include: [
                             {
-                                model: OrganizacionParqueadero,
+                                model: organizacionParqueadero,
                                 as: 'OrganizacionParqueadero',
                                 required: Object.keys(organizacionParqueaderoWhere).length > 0,
                                 where: organizacionParqueaderoWhere
@@ -1904,7 +1932,7 @@ export async function getFilteredInmueblesCombinedWithoutLocation(req, res) {
                 ]
             },
             {
-                model: AcercaEdificacion,
+                model: Acerca_edificacion,
                 as: 'AcercaEdificacion',
                 required: Object.keys(acercaEdificacionWhere).length > 0,
                 where: acercaEdificacionWhere
