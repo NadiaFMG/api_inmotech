@@ -1,29 +1,40 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../database/index.js';
+'use strict';
+const { Model } = require('sequelize');
 
-const ndap = sequelize.define('ndap', {
+module.exports = (sequelize, DataTypes) => {
+  class Ndap extends Model {
+    static associate(models) {
+      Ndap.hasMany(models.Municipio, { foreignKey: 'Ndap_FK', sourceKey: 'Ndap_id' });
+    }
+  }
+  Ndap.init({
     Ndap_id: {
-        type: DataTypes.INTEGER(11),
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
+      type: DataTypes.INTEGER(11),
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
     },
     Ndap_descripcion: {
-        type: DataTypes.STRING(255), // Adjust length as needed
-        allowNull: false,
-        collate: 'utf8_general_ci',
+      type: DataTypes.STRING(50),
+      allowNull: false,
     },
-    // createdAt: {
-    //     allowNull: false,
-    //     type: DataTypes.DATE,
-    // },
-    // updatedAt: {
-    //     allowNull: false,
-    //     type: DataTypes.DATE,
-    // },
-}, {
+    Activo: {
+      type: DataTypes.TINYINT(1),
+      defaultValue: 1,
+    },
+    Created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    Updated_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    }
+  }, {
+    sequelize,
+    modelName: 'Ndap',
     tableName: 'ndap',
     timestamps: false
-});
-
-export default ndap;
+  });
+  return Ndap;
+};

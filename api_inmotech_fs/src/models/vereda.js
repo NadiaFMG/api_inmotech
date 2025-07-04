@@ -1,35 +1,45 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../database/index.js';
-import Municipio from './municipio.js';
+'use strict';
+const { Model } = require('sequelize');
 
-const vereda = sequelize.define('vereda', {
+module.exports = (sequelize, DataTypes) => {
+  class Vereda extends Model {
+    static associate(models) {
+      Vereda.belongsTo(models.Municipio, { foreignKey: 'Municipio_FK', targetKey: 'Municipio_id' });
+      Vereda.hasMany(models.BarrioCiudadCorregimientoVereda, { foreignKey: 'Vereda_Fk', sourceKey: 'Vereda_id' });
+    }
+  }
+  Vereda.init({
     Vereda_id: {
-        type: DataTypes.INTEGER(11),
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
+      type: DataTypes.INTEGER(11),
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
     },
     Vereda_nombre: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
-        collate: 'utf8_general_ci',
-        unique: true,
+      type: DataTypes.STRING(50),
+      allowNull: false,
     },
     Municipio_FK: {
-        type: DataTypes.INTEGER(11),
-        allowNull: false,
-        references: {
-            model: 'municipio',
-            key: 'Municipio_id',
-        },
+      type: DataTypes.INTEGER(11),
+      allowNull: true,
     },
-}, {
+    Activo: {
+      type: DataTypes.TINYINT(1),
+      defaultValue: 1,
+    },
+    Created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    Updated_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    }
+  }, {
+    sequelize,
+    modelName: 'Vereda',
     tableName: 'vereda',
-    timestamps: false,
-});
-
-vereda.belongsTo(Municipio, { foreignKey: 'Municipio_FK', as: 'municipio' });
-Municipio.hasMany(vereda, { foreignKey: 'Municipio_FK', as: 'veredas' });
-
-export default vereda;
-
+    timestamps: false
+  });
+  return Vereda;
+};

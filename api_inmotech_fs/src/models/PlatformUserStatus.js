@@ -3,7 +3,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class PlatformUserStatus extends Model {
     static associate(models) {
-      PlatformUserStatus.hasMany(models.platform_user, {
+      PlatformUserStatus.hasMany(models.PlatformUser, {
         foreignKey: 'Platform_user_status_FK',
         as: 'platform_users'
       });
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'platform_user_status',
+    modelName: 'PlatformUserStatus', // <-- Corregido aquí
     tableName: 'platform_user_status',
     timestamps: false,
     charset: 'utf8mb4',

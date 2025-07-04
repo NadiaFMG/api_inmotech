@@ -1,96 +1,54 @@
-import Inmueble from '../models/inmueble.js';  // falta
-import TipoEdificacion from '../models/tipoEdificacionModel.js';
-import Acerca_edificacion from '../models/acerca_edificacion.js';
-import division from '../models/division.js';
-import OtrasCaracteristicas from '../models/otras_caracteristicas.js'; // falta
-import asignacion from '../models/asignacion.js';
-import organizacionParqueadero from '../models/organizacion_parqueadero.js';
-import PlatformUser from '../models/platform_user.js'; //corregir (no se modifica por instrucción previa)
-import PlatformProfile from '../models/platform_profile.js'; //corregir (no se modifica por instrucción previa)
-import Direccion from '../models/direccion.js';
-import DesignadorCardinal from '../models/designador_cardinal.js';
-import Localizacion from '../models/localizacion.js';
-import BarrioCiudadCorregimientoVereda from '../models/barrio_ciudad_corregimiento_vereda.js';
-import Barrio from '../models/barrio.js';
-import Ciudad from '../models/ciudad.js';
-import Corregimiento from '../models/corregimiento.js';
-import vereda from '../models/vereda.js';
-import municipio from '../models/municipio.js';
-import ndap from '../models/ndap.js'; 
+const db = require('../models');
+const { Op, sequelize } = require('sequelize');
 
-export async function getFilteredInmueblesFull(req, res) {
+const Inmueble = db.Inmueble;
+const TipoEdificacion = db.TipoEdificacion;
+const Acerca_edificacion = db.AcercaEdificacion;
+const Division = db.Division;
+const OtrasCaracteristicas = db.OtrasCaracteristicas;
+const Asignacion = db.Asignacion;
+const OrganizacionParqueadero = db.OrganizacionParqueadero;
+const PlatformUser = db.PlatformUser;
+const PlatformProfile = db.PlatformProfile;
+const Direccion = db.Direccion;
+const DesignadorCardinal = db.DesignadorCardinal;
+const Localizacion = db.Localizacion;
+const BarrioCiudadCorregimientoVereda = db.BarrioCiudadCorregimientoVereda;
+const Barrio = db.Barrio;
+const Ciudad = db.Ciudad;
+const Corregimiento = db.Corregimiento;
+const Vereda = db.Vereda;
+const Municipio = db.Municipio;
+const Ndap = db.Ndap;
+
+const InmuebleController = {
+async getFilteredInmueblesFull  (req, res) {
     try {
         const {
-            // GRUPO 1: Inmueble (Entidad Principal)
-            motivo_transaccion,     // Venta, Alquiler, etc.
-            min_precio, max_precio,
-            min_area_total, max_area_total,
-            antiguedad,             // Nuevo, Usado - 1 a 5 años, etc.
-            estado_inmueble,        // Disponible, Vendido, Alquilado
-            codigo_interno,         // Código único del inmueble
-
-            // GRUPO 2: Tipo de Edificación
-            tipo_edificacion_categoria, // Casa, Apartamento, Oficina, Lote, etc.
-
-            // GRUPO 3: Detalles de la Edificación (Acerca_edificacion)
-            tipo_construccion,      // Tradicional, Prefabricada
-            material_predominante,  // Ladrillo, Concreto, Madera
-            niveles_construidos, min_niveles_construidos, max_niveles_construidos,
+            motivo_transaccion, min_precio, max_precio, min_area_total, max_area_total,
+            antiguedad, estado_inmueble, codigo_interno,
+            tipo_edificacion_categoria,
+            tipo_construccion, material_predominante, niveles_construidos, min_niveles_construidos, max_niveles_construidos,
             año_construccion, min_año_construccion, max_año_construccion,
-            remodelado_si,          // true/false
-            fecha_ultima_remodelacion, // Fecha exacta
-            material_piso_predominante, // Cerámica, Madera, Mármol, Porcelanato
-
-            // GRUUMPO 4: Divisiones (Division)
+            remodelado_si, fecha_ultima_remodelacion, material_piso_predominante,
             num_habitaciones, min_habitaciones, max_habitaciones,
             num_baños, min_baños, max_baños,
-            tipo_cocina,            // Integral, Abierta, Cerrada
-            balcon_si,              // true/false
-            terraza_mayor_cero,     // true/false (si tiene al menos una terraza)
-            num_terrazas,           // Número exacto de terrazas
-            garaje_mayor_cero,      // true/false (si tiene al menos un garaje)
-            num_garajes,            // Número exacto de garajes
-            ascensores_si,          // true/false
-            min_closets,            // Mínimo de closets
-            num_closets,            // Número exacto de closets
-
-            // GRUPO 5: Otras Características (OtrasCaracteristicas)
-            mascotas_permitidas_si, // true/false
-            zona_lavanderia_si,     // true/false
-            calentador_agua_si,     // true/false
-
-            // GRUPO 6: Asignación (Asignacion)
-            uso_comercial_si,       // true/false
-            uso_residencial_si,     // true/false
-
-            // GRUPO 7: Organización Parqueadero (OrganizacionParqueadero)
-            parqueadero_cubierto_si,    // true/false
-            parqueadero_visitantes_si,  // true/false
-            parqueadero_descubierto_si, // true/false
-
-            // GRUPO 8: Ubicación (Direccion, BarrioCiudadCorregimientoVereda, Ciudad, Municipio, Ndap, etc.)
-            ndap_id,                // Departamento/Provincia
-            municipio_id,           // Municipio
-            ciudad_id,              // Ciudad
-            corregimiento_id,       // Corregimiento
-            vereda_id,              // Vereda
-            barrio_id,              // Barrio
-            latitud, longitud, radio_km, // Proximidad (usado con Localizacion)
-            numero, calle, bloque, adicional, designador_cardinal_id, // Dirección completa
-
-            // GRUPO 9: Publicador (PlatformUser, PlatformProfile)
-            platform_user_id,       // ID de un usuario específico
-            profile_type            // Tipo de perfil del anunciante (Agencia, Propietario)
+            tipo_cocina, balcon_si, terraza_mayor_cero, num_terrazas, garaje_mayor_cero, num_garajes,
+            ascensores_si, min_closets, num_closets,
+            mascotas_permitidas_si, zona_lavanderia_si, calentador_agua_si,
+            uso_comercial_si, uso_residencial_si,
+            parqueadero_cubierto_si, parqueadero_visitantes_si, parqueadero_descubierto_si,
+            ndap_id, municipio_id, ciudad_id, corregimiento_id, vereda_id, barrio_id,
+            latitud, longitud, radio_km,
+            numero, calle, bloque, adicional, designador_cardinal_id,
+            platform_user_id, profile_type
         } = req.query;
 
-        const whereInmueble = { Estado: 'disponible' }; // Condición base para todos los inmuebles
+        const whereInmueble = { Estado: 'disponible' };
         const includeOptions = [];
-        let distanceSelect = null;
-        let havingCondition = null;
+        let centerLat, centerLon, radius;
 
-        // =========================================================================
-        // 1. Filtros GRUPO 1: Inmueble (Entidad Principal)
-        // =========================================================================
+        // Grupo 1
         if (motivo_transaccion) whereInmueble.Motivo_transaccion = motivo_transaccion;
         if (min_precio !== undefined || max_precio !== undefined) {
             whereInmueble.Precio = {
@@ -105,24 +63,20 @@ export async function getFilteredInmueblesFull(req, res) {
             };
         }
         if (antiguedad) whereInmueble.Antiguedad = antiguedad;
-        if (estado_inmueble) whereInmueble.Estado = estado_inmueble; // Sobrescribe 'disponible' si se especifica otro estado
+        if (estado_inmueble) whereInmueble.Estado = estado_inmueble;
         if (codigo_interno) whereInmueble.Codigo_interno = codigo_interno;
 
-        // =========================================================================
-        // 2. Filtros GRUPO 2: Tipo de Edificación
-        // =========================================================================
+        // Grupo 2
         if (tipo_edificacion_categoria) {
             includeOptions.push({
                 model: TipoEdificacion,
-                as: 'tipoEdificacion', // Asegúrate que este alias coincida con la asociación definida en tu modelo Inmueble
-                required: true, // INNER JOIN si se usa este filtro
+                as: 'tipoEdificacion',
+                required: true,
                 where: { Tipo_edificacion_categoria: tipo_edificacion_categoria },
             });
         }
 
-        // =========================================================================
-        // 3. Filtros GRUPO 3: Detalles de la Edificación (Acerca_edificacion)
-        // =========================================================================
+        // Grupo 3
         const whereAcercaEdificacion = {};
         if (tipo_construccion) whereAcercaEdificacion.Tipo_construccion = tipo_construccion;
         if (material_predominante) whereAcercaEdificacion.Material_predominante = material_predominante;
@@ -141,21 +95,19 @@ export async function getFilteredInmueblesFull(req, res) {
             };
         }
         if (remodelado_si !== undefined) whereAcercaEdificacion.Remodelado_si = remodelado_si === 'true';
-        if (fecha_ultima_remodelacion) whereAcercaEdificacion.Fecha_ultima_remodelacion = fecha_ultima_remodelacion; // Considerar formato de fecha
+        if (fecha_ultima_remodelacion) whereAcercaEdificacion.Fecha_ultima_remodelacion = fecha_ultima_remodelacion;
         if (material_piso_predominante) whereAcercaEdificacion.Material_piso_predominante = material_piso_predominante;
 
         if (Object.keys(whereAcercaEdificacion).length > 0) {
             includeOptions.push({
-                model: Acerca_edificacion, // Nombre de importación corregido
-                as: 'acercaEdificacion', // Asegúrate que este alias coincida con la asociación
+                model: Acerca_edificacion,
+                as: 'acercaEdificacion',
                 required: true,
                 where: whereAcercaEdificacion,
             });
         }
 
-        // =========================================================================
-        // 4. Filtros GRUPO 4: Divisiones (Division)
-        // =========================================================================
+        // Grupo 4
         const whereDivision = {};
         if (num_habitaciones !== undefined) whereDivision.Numero_habitaciones = parseInt(num_habitaciones, 10);
         if (min_habitaciones !== undefined || max_habitaciones !== undefined) {
@@ -183,16 +135,14 @@ export async function getFilteredInmueblesFull(req, res) {
 
         if (Object.keys(whereDivision).length > 0) {
             includeOptions.push({
-                model: division, // Nombre de importación corregido
-                as: 'division', // Asegúrate que este alias coincida con la asociación
+                model: Division,
+                as: 'division',
                 required: true,
                 where: whereDivision,
             });
         }
 
-        // =========================================================================
-        // 5. Filtros GRUPO 5: Otras Características (OtrasCaracteristicas)
-        // =========================================================================
+        // Grupo 5
         const whereOtrasCaracteristicas = {};
         if (mascotas_permitidas_si !== undefined) whereOtrasCaracteristicas.Mascotas_permitidas_si = mascotas_permitidas_si === 'true';
         if (zona_lavanderia_si !== undefined) whereOtrasCaracteristicas.Zona_lavanderia_si = zona_lavanderia_si === 'true';
@@ -201,31 +151,27 @@ export async function getFilteredInmueblesFull(req, res) {
         if (Object.keys(whereOtrasCaracteristicas).length > 0) {
             includeOptions.push({
                 model: OtrasCaracteristicas,
-                as: 'otrasCaracteristicas', // Asegúrate que este alias coincida con la asociación
+                as: 'otrasCaracteristicas',
                 required: true,
                 where: whereOtrasCaracteristicas,
             });
         }
 
-        // =========================================================================
-        // 6. Filtros GRUPO 6: Asignación (Asignacion)
-        // =========================================================================
+        // Grupo 6
         const whereAsignacion = {};
         if (uso_comercial_si !== undefined) whereAsignacion.Uso_comercial_si = uso_comercial_si === 'true';
         if (uso_residencial_si !== undefined) whereAsignacion.Uso_residencial_si = uso_residencial_si === 'true';
 
         if (Object.keys(whereAsignacion).length > 0) {
             includeOptions.push({
-                model: asignacion, // Nombre de importación corregido
-                as: 'asignacion', // Asegúrate que este alias coincida con la asociación
+                model: Asignacion,
+                as: 'asignacion',
                 required: true,
                 where: whereAsignacion,
             });
         }
 
-        // =========================================================================
-        // 7. Filtros GRUPO 7: Organización Parqueadero (OrganizacionParqueadero)
-        // =========================================================================
+        // Grupo 7
         const whereOrganizacionParqueadero = {};
         if (parqueadero_cubierto_si !== undefined) whereOrganizacionParqueadero.Parqueadero_cubierto_si = parqueadero_cubierto_si === 'true';
         if (parqueadero_visitantes_si !== undefined) whereOrganizacionParqueadero.Parqueadero_visitantes_si = parqueadero_visitantes_si === 'true';
@@ -233,17 +179,14 @@ export async function getFilteredInmueblesFull(req, res) {
 
         if (Object.keys(whereOrganizacionParqueadero).length > 0) {
             includeOptions.push({
-                model: organizacionParqueadero, // Nombre de importación corregido
-                as: 'organizacionParqueadero', // Asegúrate que este alias coincida con la asociación
+                model: OrganizacionParqueadero,
+                as: 'organizacionParqueadero',
                 required: true,
                 where: whereOrganizacionParqueadero,
             });
         }
 
-        // =========================================================================
-        // 8. Filtros GRUPO 8: Ubicación (Direccion, BarrioCiudadCorregimientoVereda, Ciudad, Municipio, Ndap, etc.)
-        // =========================================================================
-        const whereDireccion = {};
+        // Grupo 8
         const includeDireccion = {
             model: Direccion,
             as: 'Direccion',
@@ -258,34 +201,33 @@ export async function getFilteredInmueblesFull(req, res) {
         };
         let applyLocationFilters = false;
 
-        // Ubicación jerárquica
         if (ndap_id) {
             includeBarrioCiudadCorregimientoVereda.include.push({
                 model: Ciudad, as: 'Ciudad', required: false,
-                include: [{ model: municipio, as: 'Municipio', required: true, include: [{ model: ndap, as: 'Ndap', required: true, where: { Ndap_id: parseInt(ndap_id, 10) } }] }]
+                include: [{ model: Municipio, as: 'Municipio', required: true, include: [{ model: Ndap, as: 'Ndap', required: true, where: { Ndap_id: parseInt(ndap_id, 10) } }] }]
             });
             includeBarrioCiudadCorregimientoVereda.include.push({
                 model: Corregimiento, as: 'Corregimiento', required: false,
-                include: [{ model: municipio, as: 'Municipio', required: true, include: [{ model: ndap, as: 'Ndap', required: true, where: { Ndap_id: parseInt(ndap_id, 10) } }] }]
+                include: [{ model: Municipio, as: 'Municipio', required: true, include: [{ model: Ndap, as: 'Ndap', required: true, where: { Ndap_id: parseInt(ndap_id, 10) } }] }]
             });
             includeBarrioCiudadCorregimientoVereda.include.push({
-                model: vereda, as: 'Vereda', required: false,
-                include: [{ model: municipio, as: 'Municipio', required: true, include: [{ model: ndap, as: 'Ndap', required: true, where: { Ndap_id: parseInt(ndap_id, 10) } }] }]
+                model: Vereda, as: 'Vereda', required: false,
+                include: [{ model: Municipio, as: 'Municipio', required: true, include: [{ model: Ndap, as: 'Ndap', required: true, where: { Ndap_id: parseInt(ndap_id, 10) } }] }]
             });
             applyLocationFilters = true;
         }
         if (municipio_id) {
             includeBarrioCiudadCorregimientoVereda.include.push({
                 model: Ciudad, as: 'Ciudad', required: false,
-                include: [{ model: municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
+                include: [{ model: Municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
             });
             includeBarrioCiudadCorregimientoVereda.include.push({
                 model: Corregimiento, as: 'Corregimiento', required: false,
-                include: [{ model: municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
+                include: [{ model: Municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
             });
             includeBarrioCiudadCorregimientoVereda.include.push({
-                model: vereda, as: 'Vereda', required: false,
-                include: [{ model: municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
+                model: Vereda, as: 'Vereda', required: false,
+                include: [{ model: Municipio, as: 'Municipio', required: true, where: { Municipio_id: parseInt(municipio_id, 10) } }]
             });
             applyLocationFilters = true;
         }
@@ -298,7 +240,7 @@ export async function getFilteredInmueblesFull(req, res) {
             applyLocationFilters = true;
         }
         if (vereda_id) {
-            includeBarrioCiudadCorregimientoVereda.include.push({ model: vereda, as: 'Vereda', required: true, where: { Vereda_id: parseInt(vereda_id, 10) } });
+            includeBarrioCiudadCorregimientoVereda.include.push({ model: Vereda, as: 'Vereda', required: true, where: { Vereda_id: parseInt(vereda_id, 10) } });
             applyLocationFilters = true;
         }
         if (barrio_id) {
@@ -311,8 +253,6 @@ export async function getFilteredInmueblesFull(req, res) {
             includeDireccion.required = true;
         }
 
-        // Proximidad (GPS)
-        let centerLat, centerLon, radius;
         if (latitud && longitud && radio_km) {
             centerLat = parseFloat(latitud);
             centerLon = parseFloat(longitud);
@@ -322,18 +262,16 @@ export async function getFilteredInmueblesFull(req, res) {
                 return res.status(400).json({ message: 'Latitud, longitud y radio_km deben ser números válidos y radio_km debe ser mayor que 0.' });
             }
 
-            // Asegurarse de incluir Localizacion
             includeDireccion.include.push({
                 model: Localizacion,
                 as: 'Localizacion',
                 required: true,
-                attributes: [], // No necesitamos atributos de Localizacion en el resultado principal
+                attributes: [],
             });
-            includeDireccion.required = true; // Hacer Direccion requerida si hay filtro de proximidad
+            includeDireccion.required = true;
             applyLocationFilters = true;
         }
 
-        // Dirección completa (número, calle, etc.)
         const whereDireccionDetails = {};
         let applyFullAddressFilters = false;
         if (numero) { whereDireccionDetails.Direccion_Numero = numero; applyFullAddressFilters = true; }
@@ -352,20 +290,17 @@ export async function getFilteredInmueblesFull(req, res) {
 
         if (applyFullAddressFilters) {
             if (Object.keys(whereDireccionDetails).length > 0) {
-                // Fusionar con el where existente de Direccion si ya hay
                 includeDireccion.where = { ...includeDireccion.where, ...whereDireccionDetails };
             }
-            includeDireccion.required = true; // Hacer Direccion requerida si hay filtros de dirección
+            includeDireccion.required = true;
             applyLocationFilters = true;
         }
 
-        // Añadir el include de Direccion solo si se aplicó algún filtro de ubicación/dirección
         if (applyLocationFilters) {
             const existingDireccionIncludeIndex = includeOptions.findIndex(inc => inc.model === Direccion);
             if (existingDireccionIncludeIndex === -1) {
                 includeOptions.push(includeDireccion);
             } else {
-                // Si Direccion ya fue añadida (ej. por alguna sub-asociación), fusionar sus opciones
                 includeOptions[existingDireccionIncludeIndex] = {
                     ...includeOptions[existingDireccionIncludeIndex],
                     ...includeDireccion,
@@ -374,15 +309,12 @@ export async function getFilteredInmueblesFull(req, res) {
             }
         }
 
-
-        // =========================================================================
-        // 9. Filtros GRUPO 9: Publicador (PlatformUser, PlatformProfile)
-        // =========================================================================
+        // Grupo 9
         let applyPublicadorFilters = false;
         const publicadorInclude = {
             model: PlatformUser,
-            as: 'publicador', // Asegúrate que este alias coincida con la asociación
-            required: false, // Será true si se aplican filtros de publicador
+            as: 'publicador',
+            required: false,
             include: []
         };
 
@@ -395,11 +327,11 @@ export async function getFilteredInmueblesFull(req, res) {
         if (profile_type) {
             publicadorInclude.include.push({
                 model: PlatformProfile,
-                as: 'perfilPublicador', // Asegúrate que este alias coincida con la asociación
+                as: 'perfilPublicador',
                 required: true,
                 where: { Profile_type: profile_type }
             });
-            publicadorInclude.required = true; // Si filtramos por perfil, el publicador es requerido
+            publicadorInclude.required = true;
             applyPublicadorFilters = true;
         }
 
@@ -407,17 +339,13 @@ export async function getFilteredInmueblesFull(req, res) {
             includeOptions.push(publicadorInclude);
         }
 
-        // =========================================================================
-        // Ejecutar la consulta final
-        // =========================================================================
+        // Consulta final
         const findOptions = {
             where: whereInmueble,
             include: includeOptions,
         };
 
-        // Si hay filtro de proximidad, añadir el cálculo de distancia y el 'having'
         if (latitud && longitud && radio_km) {
-            // Sequelize literal para calcular la distancia (Haversine formula)
             findOptions.attributes = {
                 include: [
                     [
@@ -449,3 +377,6 @@ export async function getFilteredInmueblesFull(req, res) {
         res.status(500).json({ message: 'Error interno del servidor al obtener inmuebles con filtros completos.', error: error.message });
     }
 }
+};
+
+module.exports = InmuebleController;

@@ -1,32 +1,53 @@
-// asignacion.js
-import { DataTypes } from 'sequelize';
-import sequelize from '../database/index.js';
-import Organizacion_Parqueadero from './organizacion_parqueadero.js';
+'use strict';
+const { Model } = require('sequelize');
 
-const asignacion = sequelize.define('asignacion', {
-  Asignacion_id: {
-    type: DataTypes.INTEGER(10),
-    primaryKey: true,
-    autoIncrement: true,
-    allowNull: false,
-  },
-  Parqueaderos_asignados: {
-    type: DataTypes.STRING(10),
-    allowNull: false,
-    collate: 'utf8_general_ci',
-  },
-  Organizacion_parqueadero_FK: {
-    type: DataTypes.INTEGER(10),
-    allowNull: false,
-    unique: true,
-  
-  },
-}, {
-  tableName: 'asignacion',
-  timestamps: false
-});
-
-
-asignacion.belongsTo(Organizacion_Parqueadero, { foreignKey: 'Organizacion_parqueadero_FK', targetKey: 'Organizacion_parqueadero_id' });
-
-export default asignacion;
+module.exports = (sequelize, DataTypes) => {
+  class Asignacion extends Model {
+    static associate(models) {
+      Asignacion.belongsTo(models.OrganizacionParqueadero, { foreignKey: 'Organizacion_parqueadero_FK', targetKey: 'Organizacion_parqueadero_id' });
+      Asignacion.hasOne(models.OtrasCaracteristicas, { foreignKey: 'Asignacion_FK', sourceKey: 'Asignacion_id' });
+    }
+  }
+  Asignacion.init({
+    Asignacion_id: {
+      type: DataTypes.INTEGER(11),
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    Parqueaderos_asignados: {
+      type: DataTypes.JSON,
+      allowNull: false,
+    },
+    Organizacion_parqueadero_FK: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false,
+      unique: true,
+    },
+    Disponible: {
+      type: DataTypes.TINYINT(1),
+      allowNull: true,
+      defaultValue: 1,
+    },
+    Descripcion: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    Created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
+    },
+    Updated_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
+    }
+  }, {
+    sequelize,
+    modelName: 'Asignacion',
+    tableName: 'asignacion',
+    timestamps: false
+  });
+  return Asignacion;
+};

@@ -1,32 +1,45 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../database/index.js';
-import Municipio from './municipio.js';
+'use strict';
+const { Model } = require('sequelize');
 
-const Corregimiento = sequelize.define('corregimiento', { // Cambiado a 'corregimiento'
+module.exports = (sequelize, DataTypes) => {
+  class Corregimiento extends Model {
+    static associate(models) {
+      Corregimiento.belongsTo(models.Municipio, { foreignKey: 'Municipio_FK', targetKey: 'Municipio_id' });
+      Corregimiento.hasMany(models.BarrioCiudadCorregimientoVereda, { foreignKey: 'Corregimiento_FK', sourceKey: 'Corregimiento_id' });
+    }
+  }
+  Corregimiento.init({
     Corregimiento_id: {
-        type: DataTypes.INTEGER(10),
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
+      type: DataTypes.INTEGER(11),
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
     },
     Corregimiento: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
+      type: DataTypes.STRING(50),
+      allowNull: false,
     },
     Municipio_FK: {
-        type: DataTypes.INTEGER(10),
-        allowNull: true,
-        references: {
-            model: 'Municipio',
-            key: 'Municipio_id',
-        },
+      type: DataTypes.INTEGER(11),
+      allowNull: true,
     },
-}, {
-    tableName: 'corregimiento', // Cambiado a 'corregimiento'
-    timestamps: false,
-});
-
-Corregimiento.belongsTo(Municipio, { foreignKey: 'Municipio_FK', as: 'municipio' });
-Municipio.hasMany(Corregimiento, { foreignKey: 'Municipio_FK', as: 'corregimientos' });
-
-export default Corregimiento;
+    Activo: {
+      type: DataTypes.TINYINT(1),
+      defaultValue: 1,
+    },
+    Created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    Updated_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    }
+  }, {
+    sequelize,
+    modelName: 'Corregimiento',
+    tableName: 'corregimiento',
+    timestamps: false
+  });
+  return Corregimiento;
+};
