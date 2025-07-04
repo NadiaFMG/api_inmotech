@@ -1,9 +1,13 @@
 const db = require('../models');
 const PlatformUser = db.PlatformUser;
+const bcrypt = require('bcryptjs');
 
 const PlatformUserController = {
   async create(req, res) {
     try {
+      if (req.body.password) {
+        req.body.password = await bcrypt.hash(req.body.password, 10);
+      }
       const user = await PlatformUser.create(req.body);
       res.status(201).json(user);
     } catch (error) {
@@ -32,6 +36,9 @@ const PlatformUserController = {
 
   async update(req, res) {
     try {
+      if (req.body.password) {
+        req.body.password = await bcrypt.hash(req.body.password, 10);
+      }
       const [updated] = await PlatformUser.update(req.body, {
         where: { Platform_user_id: req.params.id }
       });

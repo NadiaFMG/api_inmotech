@@ -53,5 +53,12 @@ router.use('/api/users', require('./UsersRoutes'));
 router.use('/api/userstatus', require('./UserStatusRoutes'));
 router.use('/api/valor', require('./ValorRoutes'));
 router.use('/api/vereda', require('./VeredaRoutes'));
+router.use('/api/carrusel', require('./CarruselRoutes'));
+router.use('/api/contacto', require('./ContactoRoutes'));
+router.use('/api/politicadeprivacidad', require('./PoliticaDePrivacidadRoutes'));
+router.use('/api/porqueelegirnos', require('./PorqueElegirnosRoutes'));
+router.use('/api/preguntasfrecuentes', require('./PreguntasFrecuentesRoutes'));
+router.use('/api/sobrenosotros', require('./SobreNosotrosRoutes'));
+router.use('/api/terminosycondiciones', require('./TerminosYCondicionesRoutes'));
 
 module.exports = router;
