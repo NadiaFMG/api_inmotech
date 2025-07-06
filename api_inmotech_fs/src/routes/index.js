@@ -1,10 +1,3 @@
-// // routes/index.js
-// const express = require('express');
-// const router = express.Router();
-
-// //! la ruta que esta aqui no sirve para nada, es un ejemplo de como se pueden importar rutas
-// router.use('/api', require('./apiUserRoutes'));
-
 const express = require('express');
 const router = express.Router();
 
@@ -21,6 +14,8 @@ router.use('/api/division', require('./DivisionRoutes'));
 router.use('/api/estadopago', require('./EstadoPagoRoutes'));
 router.use('/api/factura', require('./FacturaRoutes'));
 router.use('/api/fc5', require('./fc5Routes'));
+router.use('/api/fcinicio', require('./fcinicioRoutes'));
+router.use('/api/fcinmuebles', require('./fcinmueblesRoutes'));
 router.use('/api/imagenesinmueble', require('./ImagenesInmuebleRoutes'));
 router.use('/api/impuesto', require('./ImpuestoRoutes'));
 router.use('/api/impuestovalor', require('./ImpuestoValorRoutes'));
