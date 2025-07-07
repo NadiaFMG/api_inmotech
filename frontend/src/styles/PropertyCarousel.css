@@ -1,0 +1,19 @@
+.property-carousel {
+    margin-bottom: 2rem;
+}
+
+.property-carousel .carousel-caption {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.property-carousel .carousel-caption h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.property-carousel .carousel-caption p {
+    font-size: 1.2rem;
+}

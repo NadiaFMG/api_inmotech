@@ -1,0 +1,19 @@
+.mapa-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.leaflet-popup-content {
+    margin: 10px;
+}
+
+.leaflet-popup-content h6 {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.leaflet-popup-content p {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}

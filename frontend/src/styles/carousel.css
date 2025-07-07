@@ -1,0 +1,118 @@
+.carousel-container {
+    width: 100%;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-height: 400px; /* Altura mínima para asegurar que sea visible */
+    background-color: #007bff; /* Color de fondo por defecto */
+}
+
+.home-carousel {
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-slide {
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(15, 21, 22, 0.9), rgba(15, 21, 22, 0.5), transparent);
+    color: white;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.carousel-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-description {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilos para los controles del carrusel */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.carousel-indicators {
+    margin-bottom: 1rem;
+}
+
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicators button.active {
+    background-color: white;
+    transform: scale(1.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .carousel-slide {
+        height: 300px;
+    }
+    
+    .carousel-title {
+        font-size: 2rem;
+    }
+    
+    .carousel-description {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-slide {
+        height: 250px;
+    }
+    
+    .carousel-title {
+        font-size: 1.5rem;
+    }
+    
+    .carousel-description {
+        font-size: 0.9rem;
+    }
+    
+    .carousel-content {
+        padding: 1.5rem;
+    }
+} 

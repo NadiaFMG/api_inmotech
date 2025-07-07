@@ -1,31 +1,27 @@
-// import express from 'express';
-// import {
-//     getAllAcercaEdificacion,
-//     getAcercaEdificacionById,
-//     createAcercaEdificacion,
-//     updateAcercaEdificacion,
-//     deleteAcercaEdificacion
-// } from '../controllers/acerca_edificacion.js';
+ const express = require('express');
+ const AcercaEdificacionController = require('../controllers/AcercaEdificacionController');
+
+ const router = express.Router();
+
+ router.get('/', AcercaEdificacionController.findAll);
+ router.get('/:id', AcercaEdificacionController.findById);
+ router.post('/', AcercaEdificacionController.create);
+ router.put('/:id', AcercaEdificacionController.update);
+ router.delete('/:id', AcercaEdificacionController.delete);
+
+ module.exports = router;
+
+// const express = require('express');
+// const AcercaEdificacionController = require('../controllers/AcercaEdificacionController');
+// const verifyToken = require('../middlewares/verifyToken');
+// const { authorize } = require('../middlewares/apimiddleware');
 
 // const router = express.Router();
 
-// router.get('/', getAllAcercaEdificacion);
-// router.get('/:id', getAcercaEdificacionById);
-// router.post('/', createAcercaEdificacion);
-// router.put('/:id', updateAcercaEdificacion);
-// router.delete('/:id', deleteAcercaEdificacion);
+// router.get('/', verifyToken, authorize, AcercaEdificacionController.findAll);
+// router.get('/:id', verifyToken, authorize, AcercaEdificacionController.findById);
+// router.post('/', verifyToken, authorize, AcercaEdificacionController.create);
+// router.put('/:id', verifyToken, authorize, AcercaEdificacionController.update);
+// router.delete('/:id', verifyToken, authorize, AcercaEdificacionController.delete);
 
-// export default router;
-
-const express = require('express');
-const AcercaEdificacionController = require('../controllers/AcercaEdificacionController');
-
-const router = express.Router();
-
-router.get('/', AcercaEdificacionController.findAll);
-router.get('/:id', AcercaEdificacionController.findById);
-router.post('/', AcercaEdificacionController.create);
-router.put('/:id', AcercaEdificacionController.update);
-router.delete('/:id', AcercaEdificacionController.delete);
-
-module.exports = router;
+// module.exports = router;
