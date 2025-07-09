@@ -17,6 +17,13 @@ import AdminProperties from './pages/admin/AdminProperties';
 import CreateProperty from './pages/admin/CreateProperty';
 import EditProperty from './pages/admin/EditProperty';
 import Visualizations from './pages/admin/Visualizations';
+import Usuarios from './pages/admin/Usuarios';
+import CarruselAdmin from './pages/admin/CarruselAdmin';
+import PreguntasFrecuentesAdmin from './pages/admin/PreguntasFrecuentesAdmin';
+import SobreNosotrosAdmin from './pages/admin/SobreNosotrosAdmin';
+import TerminosCondicionesAdmin from './pages/admin/TerminosCondicionesAdmin';
+import PorqueElegirnosAdmin from './pages/admin/PorqueElegirnosAdmin';
+import PoliticaPrivacidadAdmin from './pages/admin/PoliticaPrivacidadAdmin';
 import './styles/Navigation.css';
 import './styles/admin.css';
 import Footer from './components/common/Footer';
@@ -26,7 +33,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AuthForm />} />
+        {/* Ruta de autenticación (login/registro) */}
+        <Route path="/auth" element={<AuthForm />} />
         <Route path="/inmueble/:id" element={<InmuebleDetalle />} />
         <Route path="/terminoscondiciones" element={<TerminosCondiciones />} />
         <Route path="/politicaprivacidad" element={<PoliticaPrivacidad />} />
@@ -56,6 +64,13 @@ function App() {
           <Route path="inmuebles/crear" element={<CreateProperty />} />
           <Route path="inmuebles/editar/:id" element={<EditProperty />} />
           <Route path="visualizaciones" element={<Visualizations />} />
+          <Route path="usuarios" element={<Usuarios />} />
+          <Route path="carrusel" element={<CarruselAdmin />} />
+          <Route path="preguntasfrecuentes" element={<PreguntasFrecuentesAdmin />} />
+          <Route path="sobrenosotros" element={<SobreNosotrosAdmin />} />
+          <Route path="terminosycondiciones" element={<TerminosCondicionesAdmin />} />
+          <Route path="porqueelegirnos" element={<PorqueElegirnosAdmin />} />
+          <Route path="politicadeprivacidad" element={<PoliticaPrivacidadAdmin />} />
         </Route>
       </Routes>
     </Router>

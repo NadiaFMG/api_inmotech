@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Ejemplo: router.use('/api/barrio', require('./BarrioRoutes'));
+router.use('/api', require('./authRoutes'));
 router.use('/api/acercaedificacion', require('./AcercaEdificacionRoutes'));
 router.use('/api/asignacion', require('./AsignacionRoutes'));
 router.use('/api/barriociudadcorregimientovereda', require('./BarrioCiudadCorregimientoVeredaRoutes'));

@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   class TerminosYCondiciones extends Model {}
   TerminosYCondiciones.init({
     id: {
+      field: 'Terminos_id', // <-- agrega esto
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,

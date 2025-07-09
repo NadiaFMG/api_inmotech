@@ -1,9 +1,10 @@
  const express = require('express');
  const AcercaEdificacionController = require('../controllers/AcercaEdificacionController');
+ const verifyToken = require('../middlewares/verifyToken');
 
  const router = express.Router();
 
- router.get('/', AcercaEdificacionController.findAll);
+ router.get('/', verifyToken, AcercaEdificacionController.findAll);
  router.get('/:id', AcercaEdificacionController.findById);
  router.post('/', AcercaEdificacionController.create);
  router.put('/:id', AcercaEdificacionController.update);

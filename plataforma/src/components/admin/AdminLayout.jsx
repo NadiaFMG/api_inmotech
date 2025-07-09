@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Nav } from 'react-bootstrap';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FaHome, FaBuilding, FaChartBar } from 'react-icons/fa';
+import { FaHome, FaBuilding, FaChartBar, FaRegUser } from 'react-icons/fa';
 
 const AdminLayout = () => {
     const location = useLocation();
@@ -9,7 +9,8 @@ const AdminLayout = () => {
     const adminMenuItems = [
         { path: '/admin', icon: <FaHome />, label: 'Dashboard' },
         { path: '/admin/inmuebles', icon: <FaBuilding />, label: 'Inmuebles' },
-        { path: '/admin/visualizaciones', icon: <FaChartBar />, label: 'Visualizaciones' }
+        { path: '/admin/visualizaciones', icon: <FaChartBar />, label: 'Visualizaciones' },
+        { path: '/admin/usuarios', icon: <FaRegUser />, label: 'Usuarios' }
     ];
 
     const isActive = (path) => {

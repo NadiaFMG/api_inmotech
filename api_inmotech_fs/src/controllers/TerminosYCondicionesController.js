@@ -2,14 +2,24 @@ const db = require('../models');
 const TerminosYCondiciones = db.TerminosYCondiciones;
 
 const TerminosYCondicionesController = {
+  // async create(req, res) {
+  //   try {
+  //     const record = await TerminosYCondiciones.create(req.body);
+  //     res.status(201).json(record);
+  //   } catch (error) {
+  //     res.status(400).json({ error: error.message });
+  //   }
+  // },
   async create(req, res) {
-    try {
-      const record = await TerminosYCondiciones.create(req.body);
-      res.status(201).json(record);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  },
+  try {
+    console.log('REQ.BODY:', req.body); // <-- Agrega este log
+    const record = await TerminosYCondiciones.create(req.body);
+    res.status(201).json(record);
+  } catch (error) {
+    console.error('ERROR AL CREAR:', error); // <-- Y este log
+    res.status(400).json({ error: error.message });
+  }
+},
 
   async findAll(req, res) {
     try {
