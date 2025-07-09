@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const sequelize = require('../config/database');
 const allRoutes = require('./routes/index');
 
@@ -9,6 +10,14 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:3001' }));
 
 app.use(express.json());
+
+app.use(
+  '/assets/images/sobrenosotros',
+  express.static(
+    path.join(__dirname, '../../plataforma/src/assets/images/sobrenosotros')
+  )
+);
+
 app.use('/', allRoutes);
 
 const PORT = process.env.PORT || 3000;

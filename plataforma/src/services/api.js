@@ -63,12 +63,27 @@ export const politicaService = {
     delete: (id) => api.delete(`/politicadeprivacidad/${id}`)
 };
 
+// export const sobreNosotrosService = {
+//     create: (data) => api.post('/sobrenosotros', data),
+//     getAll: () => api.get('/sobrenosotros'),
+//     getById: (id) => api.get(`/sobrenosotros/${id}`),
+//     update: (id, data) => api.put(`/sobrenosotros/${id}`, data),
+//     delete: (id) => api.delete(`/sobrenosotros/${id}`)
+// };
+
 export const sobreNosotrosService = {
     create: (data) => api.post('/sobrenosotros', data),
     getAll: () => api.get('/sobrenosotros'),
     getById: (id) => api.get(`/sobrenosotros/${id}`),
     update: (id, data) => api.put(`/sobrenosotros/${id}`, data),
-    delete: (id) => api.delete(`/sobrenosotros/${id}`)
+    delete: (id) => api.delete(`/sobrenosotros/${id}`),
+    uploadImage: (file) => {
+        const formData = new FormData();
+        formData.append('imagen', file);
+        return api.post('/sobrenosotros/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    }
 };
 
 export const preguntasService = {
