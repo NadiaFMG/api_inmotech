@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form } from 'react-bootstrap';
+import { Table, Button, Modal, Form, Image, Carousel } from 'react-bootstrap';
 import { carruselService } from '../../services/api';
 
 const Carrusel = () => {
@@ -10,6 +10,10 @@ const Carrusel = () => {
   const [form, setForm] = useState({ titulo: '', descripcion: '', imagen_url: '', orden: '', activo: true });
   const [showCreate, setShowCreate] = useState(false);
   const [createForm, setCreateForm] = useState({ titulo: '', descripcion: '', imagen_url: '', orden: '', activo: true });
+  const [createImageFile, setCreateImageFile] = useState(null);
+  const [createImagePreview, setCreateImagePreview] = useState(null);
+  const [editImageFile, setEditImageFile] = useState(null);
+  const [editImagePreview, setEditImagePreview] = useState(null);
 
   const fetchData = async () => {
     const res = await carruselService.getAll();
@@ -19,6 +23,11 @@ const Carrusel = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Solo los activos y ordenados
+  const carruselActivos = data
+    .filter(item => item.activo)
+    .sort((a, b) => Number(a.orden) - Number(b.orden));
 
   const handleShow = (row) => {
     setModalData(row);
@@ -35,6 +44,8 @@ const Carrusel = () => {
       orden: row.orden || '',
       activo: row.activo !== undefined ? row.activo : true
     });
+    setEditImageFile(null);
+    setEditImagePreview(null);
     setEditMode(true);
     setShowModal(true);
   };
@@ -46,23 +57,97 @@ const Carrusel = () => {
     }
   };
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    await carruselService.update(modalData.id, form);
-    setShowModal(false);
-    fetchData();
+  const handleCreateImageChange = (e) => {
+    const file = e.target.files[0];
+    setCreateImageFile(file);
+    if (file) {
+      setCreateImagePreview(URL.createObjectURL(file));
+    } else {
+      setCreateImagePreview(null);
+    }
+  };
+
+  const handleEditImageChange = (e) => {
+    const file = e.target.files[0];
+    setEditImageFile(file);
+    if (file) {
+      setEditImagePreview(URL.createObjectURL(file));
+    } else {
+      setEditImagePreview(null);
+    }
   };
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    await carruselService.create(createForm);
+    let imagen_url = createForm.imagen_url;
+
+    if (createImageFile) {
+      const res = await carruselService.uploadImage(createImageFile);
+      const data = res.data;
+      imagen_url = data.url || data.imagen_url || data.path;
+      if (!imagen_url) {
+        alert('No se pudo subir la imagen');
+        return;
+      }
+    }
+
+    await carruselService.create({ ...createForm, imagen_url });
     setShowCreate(false);
     setCreateForm({ titulo: '', descripcion: '', imagen_url: '', orden: '', activo: true });
+    setCreateImageFile(null);
+    setCreateImagePreview(null);
     fetchData();
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    let imagen_url = form.imagen_url;
+
+    if (editImageFile) {
+      const res = await carruselService.uploadImage(editImageFile);
+      const data = res.data;
+      imagen_url = data.url || data.imagen_url || data.path;
+      if (!imagen_url) {
+        alert('No se pudo subir la imagen');
+        return;
+      }
+    }
+
+    await carruselService.update(modalData.id, { ...form, imagen_url });
+    setShowModal(false);
+    setEditImageFile(null);
+    setEditImagePreview(null);
+    fetchData();
+  };
+
+  const getImageUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    return `http://localhost:3000${url}`;
   };
 
   return (
     <div>
+      {/* Carrusel arriba */}
+      <Carousel className="mb-4">
+        {carruselActivos.map(item => (
+          <Carousel.Item key={item.id}>
+            {item.imagen_url && (
+              <img
+                className="d-block w-100"
+                src={getImageUrl(item.imagen_url)}
+                alt={item.titulo}
+                style={{ maxHeight: 400, objectFit: 'cover' }}
+              />
+            )}
+            <Carousel.Caption>
+              <h3>{item.titulo}</h3>
+              <p>{item.descripcion}</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+        ))}
+      </Carousel>
+
       <h2 className="mb-4">Administración Carrusel</h2>
       <Button className="mb-3" variant="success" onClick={() => setShowCreate(true)}>
         + Nuevo Registro
@@ -73,6 +158,7 @@ const Carrusel = () => {
             <th>ID</th>
             <th>Título</th>
             <th>Descripción</th>
+            <th>Imagen</th>
             <th>Orden</th>
             <th>Activo</th>
             <th>Acciones</th>
@@ -84,6 +170,16 @@ const Carrusel = () => {
               <td>{row.id}</td>
               <td>{row.titulo}</td>
               <td>{row.descripcion}</td>
+              <td>
+                {row.imagen_url && (
+                  <Image
+                    src={getImageUrl(row.imagen_url)}
+                    alt="Imagen"
+                    style={{ maxWidth: 80, maxHeight: 80, objectFit: 'cover' }}
+                    rounded
+                  />
+                )}
+              </td>
               <td>{row.orden}</td>
               <td>{row.activo ? 'Sí' : 'No'}</td>
               <td>
@@ -107,7 +203,16 @@ const Carrusel = () => {
               <p><strong>ID:</strong> {modalData.id}</p>
               <p><strong>Título:</strong> {modalData.titulo}</p>
               <p><strong>Descripción:</strong> {modalData.descripcion}</p>
-              <p><strong>Imagen URL:</strong> {modalData.imagen_url}</p>
+              <p><strong>Imagen:</strong></p>
+              {modalData.imagen_url && (
+                <Image
+                  src={getImageUrl(modalData.imagen_url)}
+                  alt="Imagen"
+                  style={{ maxWidth: 200, maxHeight: 200, objectFit: 'cover' }}
+                  rounded
+                  className="mb-2"
+                />
+              )}
               <p><strong>Orden:</strong> {modalData.orden}</p>
               <p><strong>Activo:</strong> {modalData.activo ? 'Sí' : 'No'}</p>
               <p><strong>Fecha creación:</strong> {modalData.fecha_creacion}</p>
@@ -135,13 +240,21 @@ const Carrusel = () => {
                 />
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>Imagen URL</Form.Label>
+                <Form.Label>Imagen</Form.Label>
                 <Form.Control
-                  type="text"
-                  value={form.imagen_url}
-                  onChange={e => setForm({ ...form, imagen_url: e.target.value })}
-                  required
+                  type="file"
+                  accept="image/*"
+                  onChange={handleEditImageChange}
                 />
+                {(editImagePreview || form.imagen_url) && (
+                  <Image
+                    src={editImagePreview || getImageUrl(form.imagen_url)}
+                    alt="Vista previa"
+                    style={{ maxWidth: 200, maxHeight: 200, objectFit: 'cover' }}
+                    rounded
+                    className="mt-2"
+                  />
+                )}
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>Orden</Form.Label>
@@ -192,13 +305,21 @@ const Carrusel = () => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Imagen URL</Form.Label>
+              <Form.Label>Imagen</Form.Label>
               <Form.Control
-                type="text"
-                value={createForm.imagen_url}
-                onChange={e => setCreateForm({ ...createForm, imagen_url: e.target.value })}
-                required
+                type="file"
+                accept="image/*"
+                onChange={handleCreateImageChange}
               />
+              {createImagePreview && (
+                <Image
+                  src={createImagePreview}
+                  alt="Vista previa"
+                  style={{ maxWidth: 200, maxHeight: 200, objectFit: 'cover' }}
+                  rounded
+                  className="mt-2"
+                />
+              )}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Orden</Form.Label>
