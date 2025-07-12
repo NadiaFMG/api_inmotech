@@ -21,12 +21,14 @@
 
 const express = require('express');
 const TipoEdificacionController = require('../controllers/TipoEdificacionController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', TipoEdificacionController.findAll);
-router.get('/:id', TipoEdificacionController.findById);
-router.post('/', TipoEdificacionController.create);
-router.put('/:id', TipoEdificacionController.update);
-router.delete('/:id', TipoEdificacionController.delete);
+router.get('/', verifyToken, TipoEdificacionController.findAll);
+router.get('/:id', verifyToken, TipoEdificacionController.findById);
+router.post('/', verifyToken, TipoEdificacionController.create);
+router.put('/:id', verifyToken, TipoEdificacionController.update);
+router.delete('/:id', verifyToken, TipoEdificacionController.delete);
 
 module.exports = router;

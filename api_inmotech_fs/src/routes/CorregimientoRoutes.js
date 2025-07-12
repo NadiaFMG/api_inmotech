@@ -19,12 +19,14 @@
 
 const express = require('express');
 const CorregimientoController = require('../controllers/CorregimientoController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', CorregimientoController.findAll);
-router.get('/:id', CorregimientoController.findById);
-router.post('/', CorregimientoController.create);
-router.put('/:id', CorregimientoController.update);
-router.delete('/:id', CorregimientoController.delete);
+router.get('/', verifyToken, CorregimientoController.findAll);
+router.get('/:id', verifyToken, CorregimientoController.findById);
+router.post('/', verifyToken, CorregimientoController.create);
+router.put('/:id', verifyToken, CorregimientoController.update);
+router.delete('/:id', verifyToken, CorregimientoController.delete);
 
 module.exports = router;

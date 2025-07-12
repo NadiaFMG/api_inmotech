@@ -19,12 +19,14 @@
 
 const express = require('express');
 const MunicipioController = require('../controllers/MunicipioController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', MunicipioController.findAll);
-router.get('/:id', MunicipioController.findById);
-router.post('/', MunicipioController.create);
-router.put('/:id', MunicipioController.update);
-router.delete('/:id', MunicipioController.delete);
+router.get('/', verifyToken, MunicipioController.findAll);
+router.get('/:id', verifyToken, MunicipioController.findById);
+router.post('/', verifyToken, MunicipioController.create);
+router.put('/:id', verifyToken, MunicipioController.update);
+router.delete('/:id', verifyToken, MunicipioController.delete);
 
 module.exports = router;

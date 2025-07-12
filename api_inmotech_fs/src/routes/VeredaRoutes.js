@@ -19,12 +19,14 @@
 
 const express = require('express');
 const VeredaController = require('../controllers/VeredaController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', VeredaController.findAll);
-router.get('/:id', VeredaController.findById);
-router.post('/', VeredaController.create);
-router.put('/:id', VeredaController.update);
-router.delete('/:id', VeredaController.delete);
+router.get('/', verifyToken, VeredaController.findAll);
+router.get('/:id', verifyToken, VeredaController.findById);
+router.post('/', verifyToken, VeredaController.create);
+router.put('/:id', verifyToken, VeredaController.update);
+router.delete('/:id', verifyToken, VeredaController.delete);
 
 module.exports = router;

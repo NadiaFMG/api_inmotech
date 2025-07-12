@@ -19,12 +19,14 @@
 
 const express = require('express');
 const BarrioController = require('../controllers/BarrioController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', BarrioController.findAll);
-router.get('/:id', BarrioController.findById);
-router.post('/', BarrioController.create);
-router.put('/:id', BarrioController.update);
-router.delete('/:id', BarrioController.delete);
+router.get('/', verifyToken, BarrioController.findAll);
+router.get('/:id', verifyToken, BarrioController.findById);
+router.post('/', verifyToken, BarrioController.create);
+router.put('/:id', verifyToken, BarrioController.update);
+router.delete('/:id', verifyToken, BarrioController.delete);
 
 module.exports = router;

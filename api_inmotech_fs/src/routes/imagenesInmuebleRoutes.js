@@ -19,12 +19,14 @@
 
 const express = require('express');
 const ImagenesInmuebleController = require('../controllers/ImagenesInmuebleController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', ImagenesInmuebleController.findAll);
-router.get('/:id', ImagenesInmuebleController.findById);
-router.post('/', ImagenesInmuebleController.create);
-router.put('/:id', ImagenesInmuebleController.update);
-router.delete('/:id', ImagenesInmuebleController.delete);
+router.get('/', verifyToken, ImagenesInmuebleController.findAll);
+router.get('/:id', verifyToken, ImagenesInmuebleController.findById);
+router.post('/', verifyToken, ImagenesInmuebleController.create);
+router.put('/:id', verifyToken, ImagenesInmuebleController.update);
+router.delete('/:id', verifyToken, ImagenesInmuebleController.delete);
 
 module.exports = router;

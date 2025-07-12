@@ -1,11 +1,13 @@
 const express = require('express');
 const FacturaController = require('../controllers/FacturaController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', FacturaController.findAll);
-router.get('/:id', FacturaController.findById);
-router.post('/', FacturaController.create);
-router.put('/:id', FacturaController.update);
-router.delete('/:id', FacturaController.delete);
+router.get('/', verifyToken, FacturaController.findAll);
+router.get('/:id', verifyToken, FacturaController.findById);
+router.post('/', verifyToken, FacturaController.create);
+router.put('/:id', verifyToken, FacturaController.update);
+router.delete('/:id', verifyToken, FacturaController.delete);
 
 module.exports = router;

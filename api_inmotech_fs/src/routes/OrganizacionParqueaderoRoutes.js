@@ -19,12 +19,14 @@
 
 const express = require('express');
 const OrganizacionParqueaderoController = require('../controllers/OrganizacionParqueaderoController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', OrganizacionParqueaderoController.findAll);
-router.get('/:id', OrganizacionParqueaderoController.findById);
-router.post('/', OrganizacionParqueaderoController.create);
-router.put('/:id', OrganizacionParqueaderoController.update);
-router.delete('/:id', OrganizacionParqueaderoController.delete);
+router.get('/', verifyToken, OrganizacionParqueaderoController.findAll);
+router.get('/:id', verifyToken, OrganizacionParqueaderoController.findById);
+router.post('/', verifyToken, OrganizacionParqueaderoController.create);
+router.put('/:id', verifyToken, OrganizacionParqueaderoController.update);
+router.delete('/:id', verifyToken, OrganizacionParqueaderoController.delete);
 
 module.exports = router;
