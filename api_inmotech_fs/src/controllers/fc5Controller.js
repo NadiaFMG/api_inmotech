@@ -1,5 +1,6 @@
 const db = require('../models');
-const { Op, sequelize } = require('sequelize');
+const { Op } = require('sequelize');
+const sequelize = db.sequelize;
 
 const Inmueble = db.Inmueble;
 const TipoEdificacion = db.TipoEdificacion;
@@ -28,20 +29,17 @@ async getFilteredInmueblesFull  (req, res) {
             motivo_transaccion, min_precio, max_precio, min_area_total, max_area_total,
             antiguedad, estado_inmueble, codigo_interno,
             tipo_edificacion_categoria,
-            tipo_construccion, material_predominante, niveles_construidos, min_niveles_construidos, max_niveles_construidos,
+            tipo_construccion, niveles_construidos, min_niveles_construidos, max_niveles_construidos,
             año_construccion, min_año_construccion, max_año_construccion,
-            remodelado_si, fecha_ultima_remodelacion, material_piso_predominante,
             num_habitaciones, min_habitaciones, max_habitaciones,
             num_baños, min_baños, max_baños,
-            tipo_cocina, balcon_si, terraza_mayor_cero, num_terrazas, garaje_mayor_cero, num_garajes,
+            tipo_cocina, balcon_si, num_terrazas, garaje_mayor_cero, num_garajes,
             ascensores_si, min_closets, num_closets,
-            mascotas_permitidas_si, zona_lavanderia_si, calentador_agua_si,
-            uso_comercial_si, uso_residencial_si,
-            parqueadero_cubierto_si, parqueadero_visitantes_si, parqueadero_descubierto_si,
-            ndap_id, municipio_id, ciudad_id, corregimiento_id, vereda_id, barrio_id,
+            mascotas_permitidas_si, zona_lavanderia_si, parqueaderos_asignados,
+            parqueadero_cubierto_si, ndap_id, municipio_id, ciudad_id, corregimiento_id, vereda_id, barrio_id,
             latitud, longitud, radio_km,
-            numero, calle, bloque, adicional, designador_cardinal_id,
-            platform_user_id, profile_type
+            numero, calle, adicional, designador_cardinal_id,
+            platform_user_id
         } = req.query;
 
         const whereInmueble = { Estado: 'disponible' };
@@ -49,15 +47,15 @@ async getFilteredInmueblesFull  (req, res) {
         let centerLat, centerLon, radius;
 
         // Grupo 1
-        if (motivo_transaccion) whereInmueble.Motivo_transaccion = motivo_transaccion;
+        if (motivo_transaccion) whereInmueble.Motivo_VoA = motivo_transaccion;
         if (min_precio !== undefined || max_precio !== undefined) {
-            whereInmueble.Precio = {
+            whereInmueble.Valor = {
                 ...(min_precio !== undefined && { [Op.gte]: parseFloat(min_precio) }),
                 ...(max_precio !== undefined && { [Op.lte]: parseFloat(max_precio) }),
             };
         }
         if (min_area_total !== undefined || max_area_total !== undefined) {
-            whereInmueble.Area_total = {
+            whereInmueble.Area = {
                 ...(min_area_total !== undefined && { [Op.gte]: parseFloat(min_area_total) }),
                 ...(max_area_total !== undefined && { [Op.lte]: parseFloat(max_area_total) }),
             };
@@ -67,37 +65,48 @@ async getFilteredInmueblesFull  (req, res) {
         if (codigo_interno) whereInmueble.Codigo_interno = codigo_interno;
 
         // Grupo 2
-        if (tipo_edificacion_categoria) {
+        const whereTipoEdificacion = {};
+        if (tipo_edificacion_categoria) whereTipoEdificacion.Tipo_edificacion_categoria = tipo_edificacion_categoria;
+        if (niveles_construidos !== undefined && niveles_construidos !== '' && !isNaN(parseInt(niveles_construidos, 10))) {
+            whereTipoEdificacion.Tipo_edificacion_niveles = parseInt(niveles_construidos, 10);
+        }
+        if (
+            (min_niveles_construidos !== undefined && min_niveles_construidos !== '' && !isNaN(parseInt(min_niveles_construidos, 10))) ||
+            (max_niveles_construidos !== undefined && max_niveles_construidos !== '' && !isNaN(parseInt(max_niveles_construidos, 10)))
+        ) {
+            whereTipoEdificacion.Tipo_edificacion_niveles = {
+                ...(min_niveles_construidos !== undefined && min_niveles_construidos !== '' && !isNaN(parseInt(min_niveles_construidos, 10)) && { [Op.gte]: parseInt(min_niveles_construidos, 10) }),
+                ...(max_niveles_construidos !== undefined && max_niveles_construidos !== '' && !isNaN(parseInt(max_niveles_construidos, 10)) && { [Op.lte]: parseInt(max_niveles_construidos, 10) }),
+            };
+        }
+        if (tipo_edificacion_categoria || Object.keys(whereTipoEdificacion).length > 0) {
             includeOptions.push({
                 model: TipoEdificacion,
                 as: 'tipoEdificacion',
                 required: true,
-                where: { Tipo_edificacion_categoria: tipo_edificacion_categoria },
+                where: whereTipoEdificacion,
             });
         }
 
         // Grupo 3
         const whereAcercaEdificacion = {};
         if (tipo_construccion) whereAcercaEdificacion.Tipo_construccion = tipo_construccion;
-        if (material_predominante) whereAcercaEdificacion.Material_predominante = material_predominante;
-        if (niveles_construidos !== undefined) whereAcercaEdificacion.Niveles_construidos = parseInt(niveles_construidos, 10);
-        if (min_niveles_construidos !== undefined || max_niveles_construidos !== undefined) {
-            whereAcercaEdificacion.Niveles_construidos = {
-                ...(min_niveles_construidos !== undefined && { [Op.gte]: parseInt(min_niveles_construidos, 10) }),
-                ...(max_niveles_construidos !== undefined && { [Op.lte]: parseInt(max_niveles_construidos, 10) }),
+        if (
+            año_construccion !== undefined &&
+            año_construccion !== '' &&
+            !isNaN(parseInt(año_construccion, 10))
+        ) {
+            whereAcercaEdificacion.Anio_construccion = parseInt(año_construccion, 10);
+        }
+        if (
+            (min_año_construccion !== undefined && min_año_construccion !== '' && !isNaN(parseInt(min_año_construccion, 10))) ||
+            (max_año_construccion !== undefined && max_año_construccion !== '' && !isNaN(parseInt(max_año_construccion, 10)))
+        ) {
+            whereAcercaEdificacion.Anio_construccion = {
+                ...(min_año_construccion !== undefined && min_año_construccion !== '' && !isNaN(parseInt(min_año_construccion, 10)) && { [Op.gte]: parseInt(min_año_construccion, 10) }),
+                ...(max_año_construccion !== undefined && max_año_construccion !== '' && !isNaN(parseInt(max_año_construccion, 10)) && { [Op.lte]: parseInt(max_año_construccion, 10) }),
             };
         }
-        if (año_construccion !== undefined) whereAcercaEdificacion.Año_construccion = parseInt(año_construccion, 10);
-        if (min_año_construccion !== undefined || max_año_construccion !== undefined) {
-            whereAcercaEdificacion.Año_construccion = {
-                ...(min_año_construccion !== undefined && { [Op.gte]: parseInt(min_año_construccion, 10) }),
-                ...(max_año_construccion !== undefined && { [Op.lte]: parseInt(max_año_construccion, 10) }),
-            };
-        }
-        if (remodelado_si !== undefined) whereAcercaEdificacion.Remodelado_si = remodelado_si === 'true';
-        if (fecha_ultima_remodelacion) whereAcercaEdificacion.Fecha_ultima_remodelacion = fecha_ultima_remodelacion;
-        if (material_piso_predominante) whereAcercaEdificacion.Material_piso_predominante = material_piso_predominante;
-
         if (Object.keys(whereAcercaEdificacion).length > 0) {
             includeOptions.push({
                 model: Acerca_edificacion,
@@ -109,30 +118,81 @@ async getFilteredInmueblesFull  (req, res) {
 
         // Grupo 4
         const whereDivision = {};
-        if (num_habitaciones !== undefined) whereDivision.Numero_habitaciones = parseInt(num_habitaciones, 10);
-        if (min_habitaciones !== undefined || max_habitaciones !== undefined) {
-            whereDivision.Numero_habitaciones = {
+        if (num_habitaciones !== undefined && num_habitaciones !== '' && !isNaN(parseInt(num_habitaciones, 10))) whereDivision.Habitaciones = parseInt(num_habitaciones, 10);
+        if (
+            (min_habitaciones !== undefined && min_habitaciones !== '' && !isNaN(parseInt(min_habitaciones, 10))) ||
+            (max_habitaciones !== undefined && max_habitaciones !== '' && !isNaN(parseInt(max_habitaciones, 10)))
+        ) {
+            whereDivision.Habitaciones = {
                 ...(min_habitaciones !== undefined && { [Op.gte]: parseInt(min_habitaciones, 10) }),
                 ...(max_habitaciones !== undefined && { [Op.lte]: parseInt(max_habitaciones, 10) }),
             };
         }
-        if (num_baños !== undefined) whereDivision.Numero_baños = parseInt(num_baños, 10);
-        if (min_baños !== undefined || max_baños !== undefined) {
-            whereDivision.Numero_baños = {
-                ...(min_baños !== undefined && { [Op.gte]: parseInt(min_baños, 10) }),
-                ...(max_baños !== undefined && { [Op.lte]: parseInt(max_baños, 10) }),
+        if (
+            num_baños !== undefined &&
+            num_baños !== '' &&
+            !isNaN(parseInt(num_baños, 10))
+        ) {
+            whereDivision.Baños = parseInt(num_baños, 10);
+        }
+        if (
+            (min_baños !== undefined && min_baños !== '' && !isNaN(parseInt(min_baños, 10))) ||
+            (max_baños !== undefined && max_baños !== '' && !isNaN(parseInt(max_baños, 10)))
+        ) {
+            whereDivision.Baños = {
+                ...(min_baños !== undefined && min_baños !== '' && !isNaN(parseInt(min_baños, 10)) && { [Op.gte]: parseInt(min_baños, 10) }),
+                ...(max_baños !== undefined && max_baños !== '' && !isNaN(parseInt(max_baños, 10)) && { [Op.lte]: parseInt(max_baños, 10) }),
             };
         }
-        if (tipo_cocina) whereDivision.Tipo_cocina = tipo_cocina;
-        if (balcon_si !== undefined) whereDivision.Balcon_si = balcon_si === 'true';
-        if (terraza_mayor_cero !== undefined) whereDivision.Numero_terrazas = { [Op.gt]: 0 };
-        if (num_terrazas !== undefined) whereDivision.Numero_terrazas = parseInt(num_terrazas, 10);
-        if (garaje_mayor_cero !== undefined) whereDivision.Numero_garajes = { [Op.gt]: 0 };
-        if (num_garajes !== undefined) whereDivision.Numero_garajes = parseInt(num_garajes, 10);
-        if (ascensores_si !== undefined) whereDivision.Ascensores_si = ascensores_si === 'true';
-        if (min_closets !== undefined) whereDivision.Numero_closets = { [Op.gte]: parseInt(min_closets, 10) };
-        if (num_closets !== undefined) whereDivision.Numero_closets = parseInt(num_closets, 10);
-
+        if (tipo_cocina) whereDivision.Cocina = tipo_cocina;
+        if (
+            balcon_si !== undefined &&
+            (balcon_si === 'true' || balcon_si === 'false')
+        ) {
+            whereDivision.Balcon = balcon_si === 'true' ? 'Si' : 'No';
+        }
+        if (
+            num_terrazas !== undefined &&
+            num_terrazas !== '' &&
+            !isNaN(parseInt(num_terrazas, 10)) &&
+            (parseInt(num_terrazas, 10) === 0 || parseInt(num_terrazas, 10) === 1)
+        ) {
+            whereDivision.Terraza = parseInt(num_terrazas, 10);
+        }
+        if (
+            garaje_mayor_cero !== undefined &&
+            garaje_mayor_cero !== '' &&
+            !isNaN(parseInt(garaje_mayor_cero, 10))
+        ) {
+            whereDivision.Garaje = { [Op.gt]: parseInt(garaje_mayor_cero, 10) };
+        }
+        if (
+            num_garajes !== undefined &&
+            num_garajes !== '' &&
+            !isNaN(parseInt(num_garajes, 10))
+        ) {
+            whereDivision.Garaje = parseInt(num_garajes, 10);
+        }
+        if (
+        ascensores_si !== undefined &&
+        (ascensores_si === 'Si' || ascensores_si === 'No')
+        ) {
+            whereDivision.Ascensores = ascensores_si;
+        }
+        if (
+            min_closets !== undefined &&
+            min_closets !== '' &&
+            !isNaN(parseInt(min_closets, 10))
+        ) {
+            whereDivision.Closets = { [Op.gte]: parseInt(min_closets, 10) };
+        }
+        if (
+            num_closets !== undefined &&
+            num_closets !== '' &&
+            !isNaN(parseInt(num_closets, 10))
+        ) {
+            whereDivision.Closets = parseInt(num_closets, 10);
+        }
         if (Object.keys(whereDivision).length > 0) {
             includeOptions.push({
                 model: Division,
@@ -144,49 +204,98 @@ async getFilteredInmueblesFull  (req, res) {
 
         // Grupo 5
         const whereOtrasCaracteristicas = {};
-        if (mascotas_permitidas_si !== undefined) whereOtrasCaracteristicas.Mascotas_permitidas_si = mascotas_permitidas_si === 'true';
-        if (zona_lavanderia_si !== undefined) whereOtrasCaracteristicas.Zona_lavanderia_si = zona_lavanderia_si === 'true';
-        if (calentador_agua_si !== undefined) whereOtrasCaracteristicas.Calentador_agua_si = calentador_agua_si === 'true';
-
-        if (Object.keys(whereOtrasCaracteristicas).length > 0) {
-            includeOptions.push({
-                model: OtrasCaracteristicas,
-                as: 'otrasCaracteristicas',
-                required: true,
-                where: whereOtrasCaracteristicas,
-            });
+        if (
+            mascotas_permitidas_si !== undefined &&
+            mascotas_permitidas_si !== '' &&
+            (mascotas_permitidas_si === 'true' || mascotas_permitidas_si === 'false' || mascotas_permitidas_si === '1' || mascotas_permitidas_si === '0')
+        ) {
+            if (mascotas_permitidas_si === 'true' || mascotas_permitidas_si === '1') {
+                whereOtrasCaracteristicas.Mascotas_permitidas = true;
+            } else if (mascotas_permitidas_si === 'false' || mascotas_permitidas_si === '0') {
+                whereOtrasCaracteristicas.Mascotas_permitidas = false;
+            }
+        }
+        if (
+            zona_lavanderia_si !== undefined &&
+            zona_lavanderia_si !== '' &&
+            (zona_lavanderia_si === 'true' || zona_lavanderia_si === 'false' || zona_lavanderia_si === '1' || zona_lavanderia_si === '0')
+        ) {
+            if (zona_lavanderia_si === 'true' || zona_lavanderia_si === '1') {
+                whereOtrasCaracteristicas.Lavanderia = true;
+            } else if (zona_lavanderia_si === 'false' || zona_lavanderia_si === '0') {
+                whereOtrasCaracteristicas.Lavanderia = false;
+            }
         }
 
-        // Grupo 6
-        const whereAsignacion = {};
-        if (uso_comercial_si !== undefined) whereAsignacion.Uso_comercial_si = uso_comercial_si === 'true';
-        if (uso_residencial_si !== undefined) whereAsignacion.Uso_residencial_si = uso_residencial_si === 'true';
+        // Grupo 6 - Asignacion y OrganizacionParqueadero anidados
+        let asignacionInclude = null;
+        const whereOrganizacionParqueadero = {};
+        if (parqueadero_cubierto_si === '1') {
+            whereOrganizacionParqueadero.Cubierto = 1;
+        } else if (parqueadero_cubierto_si === '0') {
+            whereOrganizacionParqueadero.Cubierto = 0;
+        }
 
-        if (Object.keys(whereAsignacion).length > 0) {
-            includeOptions.push({
+        // Normaliza parqueaderos_asignados para texto (longtext)
+        let parqueaderosArray = parqueaderos_asignados;
+        if (typeof parqueaderos_asignados === 'string' && parqueaderos_asignados !== '') {
+            try {
+                parqueaderosArray = JSON.parse(parqueaderos_asignados);
+            } catch {
+                parqueaderosArray = [parqueaderos_asignados];
+            }
+        }
+        if (Array.isArray(parqueaderosArray) && parqueaderosArray.length > 0) {
+            asignacionInclude = {
                 model: Asignacion,
                 as: 'asignacion',
                 required: true,
-                where: whereAsignacion,
-            });
-        }
-
-        // Grupo 7
-        const whereOrganizacionParqueadero = {};
-        if (parqueadero_cubierto_si !== undefined) whereOrganizacionParqueadero.Parqueadero_cubierto_si = parqueadero_cubierto_si === 'true';
-        if (parqueadero_visitantes_si !== undefined) whereOrganizacionParqueadero.Parqueadero_visitantes_si = parqueadero_visitantes_si === 'true';
-        if (parqueadero_descubierto_si !== undefined) whereOrganizacionParqueadero.Parqueadero_descubierto_si = parqueadero_descubierto_si === 'true';
-
-        if (Object.keys(whereOrganizacionParqueadero).length > 0) {
-            includeOptions.push({
-                model: OrganizacionParqueadero,
-                as: 'organizacionParqueadero',
+                where: {
+                    [Op.or]: parqueaderosArray.map(val => ({
+                        Parqueaderos_asignados: { [Op.like]: `%${val}%` }
+                    }))
+                },
+                include: []
+            };
+            if (parqueadero_cubierto_si === '1' || parqueadero_cubierto_si === '0') {
+                asignacionInclude.include.push({
+                    model: OrganizacionParqueadero,
+                    as: 'organizacionParqueadero',
+                    required: true,
+                    where: whereOrganizacionParqueadero
+                });
+            }
+        } else if (parqueadero_cubierto_si === '1' || parqueadero_cubierto_si === '0') {
+            asignacionInclude = {
+                model: Asignacion,
+                as: 'asignacion',
                 required: true,
-                where: whereOrganizacionParqueadero,
-            });
+                include: [{
+                    model: OrganizacionParqueadero,
+                    as: 'organizacionParqueadero',
+                    required: true,
+                    where: whereOrganizacionParqueadero
+                }]
+            };
         }
 
-        // Grupo 8
+        // Solo agrega el include si asignacionInclude fue inicializado
+        const otrasCaracteristicasInclude = {
+            model: OtrasCaracteristicas,
+            as: 'otrasCaracteristicas',
+            required: true,
+            where: whereOtrasCaracteristicas,
+            include: []
+        };
+
+        if (asignacionInclude) {
+            otrasCaracteristicasInclude.include.push(asignacionInclude);
+        }
+        if (Object.keys(whereOtrasCaracteristicas).length > 0 || asignacionInclude) {
+            includeOptions.push(otrasCaracteristicasInclude);
+        }
+
+        // Grupo 8 - Dirección y localización
         const includeDireccion = {
             model: Direccion,
             as: 'Direccion',
@@ -276,8 +385,7 @@ async getFilteredInmueblesFull  (req, res) {
         let applyFullAddressFilters = false;
         if (numero) { whereDireccionDetails.Direccion_Numero = numero; applyFullAddressFilters = true; }
         if (calle) { whereDireccionDetails.Direccion_Calle = { [Op.like]: `%${calle}%` }; applyFullAddressFilters = true; }
-        if (bloque) { whereDireccionDetails.Direccion_Bloque = { [Op.like]: `%${bloque}%` }; applyFullAddressFilters = true; }
-        if (adicional) { whereDireccionDetails.Direccion_Adicional = { [Op.like]: `%${adicional}%` }; applyFullAddressFilters = true; }
+        if (adicional) { whereDireccionDetails.Descripcion_adicional = { [Op.like]: `%${adicional}%` }; applyFullAddressFilters = true; }
         if (designador_cardinal_id) {
             whereDireccionDetails.Designador_cardinal_FK = parseInt(designador_cardinal_id, 10);
             includeDireccion.include.push({
@@ -309,34 +417,9 @@ async getFilteredInmueblesFull  (req, res) {
             }
         }
 
-        // Grupo 9
-        let applyPublicadorFilters = false;
-        const publicadorInclude = {
-            model: PlatformUser,
-            as: 'publicador',
-            required: false,
-            include: []
-        };
-
+        // Grupo 9 - Publicador
         if (platform_user_id) {
-            publicadorInclude.where = { Platform_user_id: parseInt(platform_user_id, 10) };
-            publicadorInclude.required = true;
-            applyPublicadorFilters = true;
-        }
-
-        if (profile_type) {
-            publicadorInclude.include.push({
-                model: PlatformProfile,
-                as: 'perfilPublicador',
-                required: true,
-                where: { Profile_type: profile_type }
-            });
-            publicadorInclude.required = true;
-            applyPublicadorFilters = true;
-        }
-
-        if (applyPublicadorFilters) {
-            includeOptions.push(publicadorInclude);
+            whereInmueble.Platform_user_FK = parseInt(platform_user_id, 10);    
         }
 
         // Consulta final
@@ -351,10 +434,10 @@ async getFilteredInmueblesFull  (req, res) {
                     [
                         sequelize.literal(`
                             6371 * acos(
-                                cos(radians(${centerLat})) * cos(radians("Direccion->Localizacion"."Latitud")) *
-                                cos(radians("Direccion->Localizacion"."Longitud") - radians(${centerLon})) +
-                                sin(radians(${centerLat})) * sin(radians("Direccion->Localizacion"."Latitud"))
-                            )
+                            cos(radians(${centerLat})) * cos(radians(\`Direccion->Localizacion\`.\`Latitud\`)) *
+                            cos(radians(\`Direccion->Localizacion\`.\`Longitud\`) - radians(${centerLon})) +
+                            sin(radians(${centerLat})) * sin(radians(\`Direccion->Localizacion\`.\`Latitud\`))
+                        )
                         `),
                         'distancia_km'
                     ]

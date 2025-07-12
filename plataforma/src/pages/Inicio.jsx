@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import PropertyCard from '../components/common/PropertyCard';
-import propertyService from '../services/propertyService';
+import {inmuebleService} from '../services/propertyService';
 import { useNavigate } from 'react-router-dom';
 import PropertyCarousel from '../components/common/PropertyCarousel';
 import ListadoDestacado from '../components/destacados/ListadoDestacado';

@@ -4,7 +4,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class OrganizacionParqueadero extends Model {
     static associate(models) {
-      OrganizacionParqueadero.hasOne(models.Asignacion, { foreignKey: 'Organizacion_parqueadero_FK', sourceKey: 'Organizacion_parqueadero_id' });
+      OrganizacionParqueadero.hasOne(models.Asignacion, { foreignKey: 'Organizacion_parqueadero_FK', sourceKey: 'Organizacion_parqueadero_id', as: 'organizacionParqueadero' });
     }
   }
   OrganizacionParqueadero.init({

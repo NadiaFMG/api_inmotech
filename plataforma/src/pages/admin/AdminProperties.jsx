@@ -4,7 +4,7 @@ import { FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import SearchFilter from '../../components/admin/SearchFilter';
 import PropertyCard from '../../components/common/PropertyCard';
-import propertyService from '../../services/propertyService';
+import {inmuebleService} from '../../services/propertyService';
 
 const AdminProperties = () => {
     const navigate = useNavigate();
