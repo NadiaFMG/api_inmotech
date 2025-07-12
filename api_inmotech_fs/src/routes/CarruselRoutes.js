@@ -18,6 +18,8 @@
 const express = require('express');
 const router = express.Router();
 const CarruselController = require('../controllers/CarruselController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const multer = require('multer');
 const path = require('path');
 
@@ -41,14 +43,14 @@ router.post('/upload', upload.single('file'), (req, res) => {
 });
 
 // Crear
-router.post('/', CarruselController.create);
+router.post('/', verifyToken, CarruselController.create);
 // Listar todos
-router.get('/', CarruselController.findAll);
+router.get('/', verifyToken, CarruselController.findAll);
 // Obtener por ID
-router.get('/:id', CarruselController.findById);
+router.get('/:id', verifyToken, CarruselController.findById);
 // Actualizar
-router.put('/:id', CarruselController.update);
+router.put('/:id', verifyToken, CarruselController.update);
 // Eliminar
-router.delete('/:id', CarruselController.delete);
+router.delete('/:id', verifyToken, CarruselController.delete);
 
 module.exports = router;

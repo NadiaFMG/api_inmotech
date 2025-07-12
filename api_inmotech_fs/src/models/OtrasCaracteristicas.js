@@ -4,7 +4,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class OtrasCaracteristicas extends Model {
     static associate(models) {
-      OtrasCaracteristicas.belongsTo(models.Asignacion, { foreignKey: 'Asignacion_FK', targetKey: 'Asignacion_id' });
+      OtrasCaracteristicas.belongsTo(models.Asignacion, { foreignKey: 'Asignacion_FK', targetKey: 'Asignacion_id', as: 'asignacion' });
       OtrasCaracteristicas.hasOne(models.Inmueble, { foreignKey: 'Otras_caracteristicas_FK', sourceKey: 'Otras_caracteristicas_id' });
     }
   }

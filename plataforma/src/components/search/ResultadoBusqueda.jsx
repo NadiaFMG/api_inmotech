@@ -1,34 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Alert, Spinner } from 'react-bootstrap';
-import axios from 'axios';
-import { REACT_APP_API_BASE_URL } from '../../utils/constants';
+import React from 'react';
+import { Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import PropertyCard from '../common/PropertyCard';
 
-const ResultadoBusqueda = ({ searchParams }) => {
-    const [inmuebles, setInmuebles] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchInmuebles = async () => {
-            try {
-                let url = `${REACT_APP_API_BASE_URL}/propiedades`;
-                if (searchParams) {
-                    const params = new URLSearchParams(searchParams);
-                    url += `?${params.toString()}`;
-                }
-                const response = await axios.get(url);
-                setInmuebles(response.data);
-                setLoading(false);
-            } catch (err) {
-                setError('Error al cargar los inmuebles');
-                setLoading(false);
-            }
-        };
-
-        fetchInmuebles();
-    }, [searchParams]);
-
+const ResultadoBusqueda = ({ inmuebles, loading, error }) => {
     if (loading) {
         return (
             <Container className="text-center my-5">
@@ -58,7 +32,7 @@ const ResultadoBusqueda = ({ searchParams }) => {
     return (
         <Container className="my-5">
             <h2 className="mb-4">
-                {searchParams ? 'Resultados de búsqueda' : 'Todos los inmuebles'}
+                Resultados de búsqueda
                 <span className="text-muted ms-2">({inmuebles.length} encontrados)</span>
             </h2>
             <Row>

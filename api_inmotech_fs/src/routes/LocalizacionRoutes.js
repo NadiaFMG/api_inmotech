@@ -19,12 +19,14 @@
 
 const express = require('express');
 const LocalizacionController = require('../controllers/LocalizacionController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', LocalizacionController.findAll);
-router.get('/:id', LocalizacionController.findById);
-router.post('/', LocalizacionController.create);
-router.put('/:id', LocalizacionController.update);
-router.delete('/:id', LocalizacionController.delete);
+router.get('/', verifyToken, LocalizacionController.findAll);
+router.get('/:id', verifyToken, LocalizacionController.findById);
+router.post('/', verifyToken, LocalizacionController.create);
+router.put('/:id', verifyToken, LocalizacionController.update);
+router.delete('/:id', verifyToken, LocalizacionController.delete);
 
 module.exports = router;

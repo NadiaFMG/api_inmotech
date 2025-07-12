@@ -19,12 +19,14 @@
 
 const express = require('express');
 const CiudadController = require('../controllers/CiudadController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', CiudadController.findAll);
-router.get('/:id', CiudadController.findById);
-router.post('/', CiudadController.create);
-router.put('/:id', CiudadController.update);
-router.delete('/:id', CiudadController.delete);
+router.get('/', verifyToken, CiudadController.findAll);
+router.get('/:id', verifyToken, CiudadController.findById);
+router.post('/', verifyToken, CiudadController.create);
+router.put('/:id', verifyToken, CiudadController.update);
+router.delete('/:id', verifyToken, CiudadController.delete);
 
 module.exports = router;

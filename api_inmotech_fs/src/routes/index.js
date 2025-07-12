@@ -21,6 +21,7 @@ router.use('/api/imagenesinmueble', require('./ImagenesInmuebleRoutes'));
 router.use('/api/impuesto', require('./ImpuestoRoutes'));
 router.use('/api/impuestovalor', require('./ImpuestoValorRoutes'));
 router.use('/api/inmueble', require('./InmuebleRoutes'));
+router.use('/api/inmueble', require('./getInmuebleCompleto'));
 router.use('/api/localizacion', require('./LocalizacionRoutes'));
 router.use('/api/modulerole', require('./ModuleRoleRoutes'));
 router.use('/api/module', require('./ModuleRoutes'));

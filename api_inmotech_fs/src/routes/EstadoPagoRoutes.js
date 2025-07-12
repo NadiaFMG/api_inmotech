@@ -19,12 +19,14 @@
 
 const express = require('express');
 const EstadoPagoController = require('../controllers/EstadoPagoController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', EstadoPagoController.findAll);
-router.get('/:id', EstadoPagoController.findById);
-router.post('/', EstadoPagoController.create);
+router.get('/', verifyToken,  EstadoPagoController.findAll);
+router.get('/:id', verifyToken, EstadoPagoController.findById);
+router.post('/', verifyToken, EstadoPagoController.create);
 router.put('/:id', EstadoPagoController.update);
-router.delete('/:id', EstadoPagoController.delete);
+router.delete('/:id', verifyToken, EstadoPagoController.delete);
 
 module.exports = router;

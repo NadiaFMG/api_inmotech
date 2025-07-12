@@ -19,12 +19,14 @@
 
 const express = require('express');
 const BarrioCiudadCorregimientoVeredaController = require('../controllers/BarrioCiudadCorregimientoVeredaController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', BarrioCiudadCorregimientoVeredaController.findAll);
-router.get('/:id', BarrioCiudadCorregimientoVeredaController.findById);
-router.post('/', BarrioCiudadCorregimientoVeredaController.create);
-router.put('/:id', BarrioCiudadCorregimientoVeredaController.update);
-router.delete('/:id', BarrioCiudadCorregimientoVeredaController.delete);
+router.get('/', verifyToken, BarrioCiudadCorregimientoVeredaController.findAll);
+router.get('/:id', verifyToken, BarrioCiudadCorregimientoVeredaController.findById);
+router.post('/', verifyToken, BarrioCiudadCorregimientoVeredaController.create);
+router.put('/:id', verifyToken, BarrioCiudadCorregimientoVeredaController.update);
+router.delete('/:id', verifyToken, BarrioCiudadCorregimientoVeredaController.delete);
 
 module.exports = router;

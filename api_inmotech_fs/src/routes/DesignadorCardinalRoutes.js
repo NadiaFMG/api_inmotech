@@ -19,12 +19,14 @@
 
 const express = require('express');
 const DesignadorCardinalController = require('../controllers/DesignadorCardinalController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', DesignadorCardinalController.findAll);
-router.get('/:id', DesignadorCardinalController.findById);
-router.post('/', DesignadorCardinalController.create);
-router.put('/:id', DesignadorCardinalController.update);
-router.delete('/:id', DesignadorCardinalController.delete);
+router.get('/', verifyToken, DesignadorCardinalController.findAll);
+router.get('/:id', verifyToken, DesignadorCardinalController.findById);
+router.post('/', verifyToken, DesignadorCardinalController.create);
+router.put('/:id', verifyToken, DesignadorCardinalController.update);
+router.delete('/:id', verifyToken, DesignadorCardinalController.delete);
 
 module.exports = router;

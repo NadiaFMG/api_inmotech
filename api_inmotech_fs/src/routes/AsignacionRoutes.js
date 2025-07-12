@@ -19,13 +19,15 @@
 
 const express = require('express');
 const AsignacionController = require('../controllers/AsignacionController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 
 const router = express.Router();
 
-router.get('/', AsignacionController.findAll);
-router.get('/:id', AsignacionController.findById);
-router.post('/', AsignacionController.create);
-router.put('/:id', AsignacionController.update);
-router.delete('/:id', AsignacionController.delete);
+router.get('/', verifyToken, AsignacionController.findAll);
+router.get('/:id', verifyToken, AsignacionController.findById);
+router.post('/', verifyToken, AsignacionController.create);
+router.put('/:id', verifyToken, AsignacionController.update);
+router.delete('/:id', verifyToken, AsignacionController.delete);
 
 module.exports = router;

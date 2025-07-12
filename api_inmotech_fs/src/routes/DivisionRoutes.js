@@ -19,12 +19,14 @@
 
 const express = require('express');
 const DivisionController = require('../controllers/DivisionController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const router = express.Router();
 
-router.get('/', DivisionController.findAll);
-router.get('/:id', DivisionController.findById);
-router.post('/', DivisionController.create);
-router.put('/:id', DivisionController.update);
-router.delete('/:id', DivisionController.delete);
+router.get('/', verifyToken, DivisionController.findAll);
+router.get('/:id', verifyToken, DivisionController.findById);
+router.post('/', verifyToken, DivisionController.create);
+router.put('/:id', verifyToken, DivisionController.update);
+router.delete('/:id', verifyToken, DivisionController.delete);
 
 module.exports = router;

@@ -5,10 +5,10 @@
  const router = express.Router();
 
  router.get('/', verifyToken, AcercaEdificacionController.findAll);
- router.get('/:id', AcercaEdificacionController.findById);
- router.post('/', AcercaEdificacionController.create);
- router.put('/:id', AcercaEdificacionController.update);
- router.delete('/:id', AcercaEdificacionController.delete);
+ router.get('/:id', verifyToken, AcercaEdificacionController.findById);
+ router.post('/', verifyToken, AcercaEdificacionController.create);
+ router.put('/:id', verifyToken, AcercaEdificacionController.update);
+ router.delete('/:id', verifyToken, AcercaEdificacionController.delete);
 
  module.exports = router;
 

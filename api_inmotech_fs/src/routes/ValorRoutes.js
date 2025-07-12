@@ -19,12 +19,14 @@
 
 const express = require('express');
 const ValorController = require('../controllers/ValorController');
+ const verifyToken = require('../middlewares/verifyToken');
+ 
 const router = express.Router();
 
-router.get('/', ValorController.findAll);
-router.get('/:id', ValorController.findById);
-router.post('/', ValorController.create);
-router.put('/:id', ValorController.update);
-router.delete('/:id', ValorController.delete);
+router.get('/', verifyToken, ValorController.findAll);
+router.get('/:id', verifyToken, ValorController.findById);
+router.post('/', verifyToken, ValorController.create);
+router.put('/:id', verifyToken, ValorController.update);
+router.delete('/:id', verifyToken, ValorController.delete);
 
 module.exports = router;

@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const SobreNosotrosController = require('../controllers/SobreNosotrosController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 const multer = require('multer');
 const path = require('path');
 
@@ -24,14 +26,14 @@ router.post('/upload', upload.single('imagen'), (req, res) => {
 });
 
 // Crear
-router.post('/', SobreNosotrosController.create);
+router.post('/', verifyToken, SobreNosotrosController.create);
 // Listar todos
-router.get('/', SobreNosotrosController.findAll);
+router.get('/', verifyToken, SobreNosotrosController.findAll);
 // Obtener por ID
-router.get('/:id', SobreNosotrosController.findById);
+router.get('/:id', verifyToken, SobreNosotrosController.findById);
 // Actualizar
-router.put('/:id', SobreNosotrosController.update);
+router.put('/:id', verifyToken, SobreNosotrosController.update);
 // Eliminar
-router.delete('/:id', SobreNosotrosController.delete);
+router.delete('/:id', verifyToken, SobreNosotrosController.delete);
 
 module.exports = router;

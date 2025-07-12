@@ -1,16 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const ContactoController = require('../controllers/ContactoController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 
 // Crear
-router.post('/', ContactoController.create);
+router.post('/', verifyToken, ContactoController.create);
 // Listar todos
-router.get('/', ContactoController.findAll);
+router.get('/', verifyToken, ContactoController.findAll);
 // Obtener por ID
-router.get('/:id', ContactoController.findById);
+router.get('/:id', verifyToken, ContactoController.findById);
 // Actualizar
-router.put('/:id', ContactoController.update);
+router.put('/:id', verifyToken, ContactoController.update);
 // Eliminar
-router.delete('/:id', ContactoController.delete);
+router.delete('/:id', verifyToken, ContactoController.delete);
 
 module.exports = router;

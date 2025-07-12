@@ -1,16 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const PorqueElegirnosController = require('../controllers/PorqueElegirnosController');
+ const verifyToken = require('../middlewares/verifyToken');
+
 
 // Crear
-router.post('/', PorqueElegirnosController.create);
+router.post('/', verifyToken, PorqueElegirnosController.create);
 // Listar todos
-router.get('/', PorqueElegirnosController.findAll);
+router.get('/', verifyToken, PorqueElegirnosController.findAll);
 // Obtener por ID
-router.get('/:id', PorqueElegirnosController.findById);
+router.get('/:id', verifyToken, PorqueElegirnosController.findById);
 // Actualizar
-router.put('/:id', PorqueElegirnosController.update);
+router.put('/:id', verifyToken, PorqueElegirnosController.update);
 // Eliminar
-router.delete('/:id', PorqueElegirnosController.delete);
+router.delete('/:id', verifyToken, PorqueElegirnosController.delete);
 
 module.exports = router;

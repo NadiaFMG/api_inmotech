@@ -19,12 +19,13 @@
 
 const express = require('express');
 const NdapController = require('../controllers/NdapController');
+ const verifyToken = require('../middlewares/verifyToken');
 const router = express.Router();
 
-router.get('/', NdapController.findAll);
-router.get('/:id', NdapController.findById);
-router.post('/', NdapController.create);
-router.put('/:id', NdapController.update);
-router.delete('/:id', NdapController.delete);
+router.get('/', verifyToken, NdapController.findAll);
+router.get('/:id', verifyToken, NdapController.findById);
+router.post('/', verifyToken, NdapController.create);
+router.put('/:id', verifyToken, NdapController.update);
+router.delete('/:id', verifyToken, NdapController.delete);
 
 module.exports = router;
