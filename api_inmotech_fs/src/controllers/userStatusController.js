@@ -101,7 +101,7 @@ const UserStatusController = {
   async update(req, res) {
     try {
       const [updated] = await UserStatus.update(req.body, {
-        where: { UserStatus_id: req.params.id }
+        where: { User_Status_id: req.params.id }
       });
       if (!updated) return res.status(404).json({ error: 'No encontrado' });
       const status = await UserStatus.findByPk(req.params.id);
@@ -114,7 +114,7 @@ const UserStatusController = {
   async delete(req, res) {
     try {
       const deleted = await UserStatus.destroy({
-        where: { UserStatus_id: req.params.id }
+        where: { User_Status_id: req.params.id }
       });
       if (!deleted) return res.status(404).json({ error: 'No encontrado' });
       res.json({ message: 'Eliminado correctamente' });

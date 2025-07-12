@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER(10),
       primaryKey: true,
       allowNull: false,
-      autoIncrement: true,
+      //autoIncrement: true,
     },
     Platform_user_FK: {
       type: DataTypes.INTEGER(11),
