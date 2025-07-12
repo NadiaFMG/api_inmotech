@@ -63,14 +63,6 @@ export const politicaService = {
     delete: (id) => api.delete(`/politicadeprivacidad/${id}`)
 };
 
-// export const sobreNosotrosService = {
-//     create: (data) => api.post('/sobrenosotros', data),
-//     getAll: () => api.get('/sobrenosotros'),
-//     getById: (id) => api.get(`/sobrenosotros/${id}`),
-//     update: (id, data) => api.put(`/sobrenosotros/${id}`, data),
-//     delete: (id) => api.delete(`/sobrenosotros/${id}`)
-// };
-
 export const sobreNosotrosService = {
     create: (data) => api.post('/sobrenosotros', data),
     getAll: () => api.get('/sobrenosotros'),
@@ -99,7 +91,14 @@ export const carruselService = {
     getAll: () => api.get('/carrusel'),
     getById: (id) => api.get(`/carrusel/${id}`),
     update: (id, data) => api.put(`/carrusel/${id}`, data),
-    delete: (id) => api.delete(`/carrusel/${id}`)
+    delete: (id) => api.delete(`/carrusel/${id}`),
+    uploadImage: (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return api.post('/carrusel/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    }
 };
 
 export const porqueElegirnosService = {

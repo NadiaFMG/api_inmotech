@@ -14,9 +14,18 @@ app.use(express.json());
 app.use(
   '/assets/images/sobrenosotros',
   express.static(
-    path.join(__dirname, '../../plataforma/src/assets/images/sobrenosotros')
+    path.resolve(__dirname, '../../plataforma/src/assets/images/sobrenosotros')
   )
 );
+
+app.use(
+  '/assets/images/carrusel',
+  express.static(
+    path.resolve(__dirname, '../../plataforma/src/assets/images/carrusel')
+  )
+);
+
+// console.log('Sirviendo imágenes desde:', path.resolve(__dirname, '../../plataforma/src/assets/images/sobrenosotros'));
 
 app.use('/', allRoutes);
 

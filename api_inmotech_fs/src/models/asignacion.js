@@ -22,8 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     Organizacion_parqueadero_FK: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
-      // unique: true,
-    },
+},
     Disponible: {
       type: DataTypes.TINYINT(1),
       allowNull: true,

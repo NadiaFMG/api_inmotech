@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form } from 'react-bootstrap';
+import { Table, Button, Modal, Form, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
 import { porqueElegirnosService } from '../../services/api';
+// Importa todos los iconos de FontAwesome (puedes cambiar a otra librería si prefieres)
+import * as FaIcons from 'react-icons/fa';
+
+const ICONS_LIST = Object.keys(FaIcons)
+  .filter(name => name.startsWith('Fa'))
+  .map(name => ({ name, icon: React.createElement(FaIcons[name]) }));
 
 const PorqueElegirnos = () => {
   const [data, setData] = useState([]);
@@ -10,6 +16,8 @@ const PorqueElegirnos = () => {
   const [form, setForm] = useState({ titulo: '', descripcion: '', icono: '', orden: '', activo: true });
   const [showCreate, setShowCreate] = useState(false);
   const [createForm, setCreateForm] = useState({ titulo: '', descripcion: '', icono: '', orden: '', activo: true });
+  const [iconSearch, setIconSearch] = useState('');
+  const [iconSearchEdit, setIconSearchEdit] = useState('');
 
   const fetchData = async () => {
     const res = await porqueElegirnosService.getAll();
@@ -37,6 +45,7 @@ const PorqueElegirnos = () => {
     });
     setEditMode(true);
     setShowModal(true);
+    setIconSearchEdit('');
   };
 
   const handleDelete = async (id) => {
@@ -61,10 +70,25 @@ const PorqueElegirnos = () => {
     fetchData();
   };
 
+  // Renderiza el icono guardado
+  const renderIcon = (iconName) => {
+    const IconComp = FaIcons[iconName];
+    return IconComp ? <IconComp /> : null;
+  };
+
+  // Filtrado de iconos por búsqueda
+  const filteredIcons = iconSearch
+    ? ICONS_LIST.filter(opt => opt.name.toLowerCase().includes(iconSearch.toLowerCase()))
+    : [];
+
+  const filteredIconsEdit = iconSearchEdit
+    ? ICONS_LIST.filter(opt => opt.name.toLowerCase().includes(iconSearchEdit.toLowerCase()))
+    : [];
+
   return (
     <div>
       <h2 className="mb-4">Administración Porque Elegirnos</h2>
-      <Button className="mb-3" variant="success" onClick={() => setShowCreate(true)}>
+      <Button className="mb-3" variant="success" onClick={() => { setShowCreate(true); setIconSearch(''); }}>
         + Nuevo Registro
       </Button>
       <Table striped bordered hover responsive>
@@ -73,6 +97,8 @@ const PorqueElegirnos = () => {
             <th>ID</th>
             <th>Título</th>
             <th>Descripción</th>
+            <th>Icono</th>
+            <th>Orden</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -82,6 +108,8 @@ const PorqueElegirnos = () => {
               <td>{row.id}</td>
               <td>{row.titulo}</td>
               <td>{row.descripcion}</td>
+              <td style={{ fontSize: 24 }}>{renderIcon(row.icono)}</td>
+              <td>{row.orden}</td>
               <td>
                 <Button size="sm" variant="info" className="me-2" onClick={() => handleShow(row)}>Ver</Button>
                 <Button size="sm" variant="warning" className="me-2" onClick={() => handleEdit(row)}>Actualizar</Button>
@@ -103,7 +131,7 @@ const PorqueElegirnos = () => {
               <p><strong>ID:</strong> {modalData.id}</p>
               <p><strong>Título:</strong> {modalData.titulo}</p>
               <p><strong>Descripción:</strong> {modalData.descripcion}</p>
-              <p><strong>Icono:</strong> {modalData.icono}</p>
+              <p><strong>Icono:</strong> <span style={{ fontSize: 24 }}>{renderIcon(modalData.icono)}</span></p>
               <p><strong>Orden:</strong> {modalData.orden}</p>
               <p><strong>Activo:</strong> {modalData.activo ? 'Sí' : 'No'}</p>
               <p><strong>Fecha creación:</strong> {modalData.fecha_creacion}</p>
@@ -132,12 +160,34 @@ const PorqueElegirnos = () => {
                 />
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>Icono</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={form.icono}
-                  onChange={e => setForm({ ...form, icono: e.target.value })}
-                />
+                <Form.Label>Buscar Icono</Form.Label>
+                <InputGroup className="mb-2">
+                  <FormControl
+                    placeholder="Buscar icono..."
+                    value={iconSearchEdit}
+                    onChange={e => setIconSearchEdit(e.target.value)}
+                  />
+                </InputGroup>
+                <Row style={{ maxHeight: 150, overflowY: 'auto' }}>
+                  {filteredIconsEdit.map(opt => (
+                    <Col xs={2} key={opt.name} className="text-center mb-2">
+                      <span
+                        style={{
+                          fontSize: 28,
+                          cursor: 'pointer',
+                          border: form.icono === opt.name ? '2px solid #007bff' : '2px solid transparent',
+                          borderRadius: 6,
+                          padding: 4,
+                          display: 'inline-block'
+                        }}
+                        onClick={() => setForm({ ...form, icono: opt.name })}
+                        title={opt.name}
+                      >
+                        {opt.icon}
+                      </span>
+                    </Col>
+                  ))}
+                </Row>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>Orden</Form.Label>
@@ -189,12 +239,34 @@ const PorqueElegirnos = () => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Icono</Form.Label>
-              <Form.Control
-                type="text"
-                value={createForm.icono}
-                onChange={e => setCreateForm({ ...createForm, icono: e.target.value })}
-              />
+              <Form.Label>Buscar Icono</Form.Label>
+              <InputGroup className="mb-2">
+                <FormControl
+                  placeholder="Buscar icono..."
+                  value={iconSearch}
+                  onChange={e => setIconSearch(e.target.value)}
+                />
+              </InputGroup>
+              <Row style={{ maxHeight: 150, overflowY: 'auto' }}>
+                {filteredIcons.map(opt => (
+                  <Col xs={2} key={opt.name} className="text-center mb-2">
+                    <span
+                      style={{
+                        fontSize: 28,
+                        cursor: 'pointer',
+                        border: createForm.icono === opt.name ? '2px solid #007bff' : '2px solid transparent',
+                        borderRadius: 6,
+                        padding: 4,
+                        display: 'inline-block'
+                      }}
+                      onClick={() => setCreateForm({ ...createForm, icono: opt.name })}
+                      title={opt.name}
+                    >
+                      {opt.icon}
+                    </span>
+                  </Col>
+                ))}
+              </Row>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Orden</Form.Label>
