@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     Impuesto_id: {
       type: DataTypes.INTEGER(10),
       primaryKey: true,
-      autoIncrement: true,
+      //autoIncrement: true,
       allowNull: false,
     },
     impuesto: {

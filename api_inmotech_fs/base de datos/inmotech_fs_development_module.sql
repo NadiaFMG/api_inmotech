@@ -2002,7 +2002,7 @@ ALTER TABLE `user_status`
 -- Filtros para la tabla `asignacion`
 --
 ALTER TABLE `asignacion`
-  ADD CONSTRAINT `asignacion_organizacion_parqueadero_fk` FOREIGN KEY (`Organizacion_parqueadero_FK`) REFERENCES `organizacion_parqueadero` (`Organizacion_parqueadero_id`);
+  ADD CONSTRAINT `rganizacion_parqueadero_fk` FOREIGN KEY (`Organizacion_parqueadero_FK`) REFERENCES `organizacion_parqueadero` (`Organizacion_parqueadero_id`);
 
 --
 -- Filtros para la tabla `barrio_ciudad_corregimiento_vereda`

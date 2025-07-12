@@ -4,7 +4,8 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class PlatformProfile extends Model {
     static associate(models) {
-      PlatformProfile.belongsTo(models.Users, { foreignKey: 'User_FK', targetKey: 'User_id' });
+      // *** CORREGIDO AQUÍ: Usar Platform_user_FK en la asociación ***
+      PlatformProfile.belongsTo(models.Users, { foreignKey: 'Platform_user_FK', targetKey: 'User_id' }); 
     }
   }
   PlatformProfile.init({
@@ -73,10 +74,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       collate: 'utf8_general_ci',
     },
-    User_FK: {
+    // *** CAMBIO CLAVE AQUÍ: De User_FK a Platform_user_FK ***
+    Platform_user_FK: { 
       type: DataTypes.INTEGER(11),
       allowNull: false,
-      unique: true,
+      unique: true, // Esto es importante: asegura que cada usuario tenga solo un perfil
     },
     createdAt: {
       allowNull: false,

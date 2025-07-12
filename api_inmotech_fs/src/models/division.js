@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     Division_id: {
       type: DataTypes.INTEGER(11),
       primaryKey: true,
-      autoIncrement: true,
+      //autoIncrement: true,
       allowNull: false,
     },
     Division: {

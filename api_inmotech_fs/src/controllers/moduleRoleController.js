@@ -67,7 +67,7 @@
 // }
 
 const db = require('../models');
-const ModuleRole = db.ModuleRole;
+const ModuleRole = db.ModuleRole; // Asegúrate de que db.ModuleRole se cargue correctamente desde index.js
 
 const ModuleRoleController = {
   async create(req, res) {
@@ -101,7 +101,7 @@ const ModuleRoleController = {
   async update(req, res) {
     try {
       const [updated] = await ModuleRole.update(req.body, {
-        where: { ModuleRole_id: req.params.id }
+        where: { Module_role_id: req.params.id } // <-- CORREGIDO: Usar Module_role_id
       });
       if (!updated) return res.status(404).json({ error: 'No encontrado' });
       const moduleRole = await ModuleRole.findByPk(req.params.id);
@@ -114,7 +114,7 @@ const ModuleRoleController = {
   async delete(req, res) {
     try {
       const deleted = await ModuleRole.destroy({
-        where: { ModuleRole_id: req.params.id }
+        where: { Module_role_id: req.params.id } // <-- CORREGIDO: Usar Module_role_id
       });
       if (!deleted) return res.status(404).json({ error: 'No encontrado' });
       res.json({ message: 'Eliminado correctamente' });

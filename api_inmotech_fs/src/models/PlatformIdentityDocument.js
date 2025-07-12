@@ -42,19 +42,21 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true,
     },
-    createdAt: {
-      allowNull: false,
+     Created_at: {
       type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
     },
-    updatedAt: {
-      allowNull: false,
+    Updated_at: {
       type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
     }
   }, {
     sequelize,
     modelName: 'PlatformIdentityDocument',
     tableName: 'platform_identity_document',
-    timestamps: true
+    timestamps: false
   });
   return PlatformIdentityDocument;
 };

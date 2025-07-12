@@ -33,7 +33,7 @@ const PlatformIdentityDocumentController = {
   async update(req, res) {
     try {
       const [updated] = await PlatformIdentityDocument.update(req.body, {
-        where: { Platform_identity_document_id: req.params.id }
+        where: { Identity_document_id: req.params.id }
       });
       if (!updated) return res.status(404).json({ error: 'No encontrado' });
       const doc = await PlatformIdentityDocument.findByPk(req.params.id);
@@ -46,7 +46,7 @@ const PlatformIdentityDocumentController = {
   async delete(req, res) {
     try {
       const deleted = await PlatformIdentityDocument.destroy({
-        where: { Platform_identity_document_id: req.params.id }
+        where: { Identity_document_id: req.params.id }
       });
       if (!deleted) return res.status(404).json({ error: 'No encontrado' });
       res.json({ message: 'Eliminado correctamente' });

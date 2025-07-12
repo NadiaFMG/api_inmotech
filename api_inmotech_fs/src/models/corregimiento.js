@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     Corregimiento_id: {
       type: DataTypes.INTEGER(11),
       primaryKey: true,
-      autoIncrement: true,
+      //autoIncrement: true,
       allowNull: false,
     },
     Corregimiento: {

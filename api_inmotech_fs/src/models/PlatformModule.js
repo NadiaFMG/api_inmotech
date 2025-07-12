@@ -39,7 +39,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 1,
     },
-    Module_priority: {
+    // CAMBIO AQUÍ: Renombra de Module_priority a Module_order para que coincida con la DB
+    Module_order: { // <--- CAMBIO REALIZADO
       type: DataTypes.INTEGER(11),
       allowNull: true,
       defaultValue: 0,

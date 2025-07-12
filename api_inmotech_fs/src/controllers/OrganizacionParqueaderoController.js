@@ -68,13 +68,16 @@
 // }
 
 const db = require('../models');
-const ImagenesInmueble = db.ImagenesInmueble;
+// *** CAMBIO CLAVE: Importar el modelo OrganizacionParqueadero ***
+const OrganizacionParqueadero = db.OrganizacionParqueadero; 
 
-const ImagenesInmuebleController = {
+// *** CAMBIO CLAVE: Renombrar el objeto controlador ***
+const OrganizacionParqueaderoController = {
   async create(req, res) {
     try {
-      const imagen = await ImagenesInmueble.create(req.body);
-      res.status(201).json(imagen);
+      // Usar OrganizacionParqueadero para crear
+      const newOrganizacion = await OrganizacionParqueadero.create(req.body);
+      res.status(201).json(newOrganizacion);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -82,8 +85,9 @@ const ImagenesInmuebleController = {
 
   async findAll(req, res) {
     try {
-      const imagenes = await ImagenesInmueble.findAll();
-      res.json(imagenes);
+      // Usar OrganizacionParqueadero para buscar todos
+      const organizaciones = await OrganizacionParqueadero.findAll();
+      res.json(organizaciones);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -91,9 +95,10 @@ const ImagenesInmuebleController = {
 
   async findById(req, res) {
     try {
-      const imagen = await ImagenesInmueble.findByPk(req.params.id);
-      if (!imagen) return res.status(404).json({ error: 'No encontrado' });
-      res.json(imagen);
+      // Usar OrganizacionParqueadero para buscar por PK
+      const organizacion = await OrganizacionParqueadero.findByPk(req.params.id);
+      if (!organizacion) return res.status(404).json({ error: 'No encontrado' });
+      res.json(organizacion);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -101,12 +106,14 @@ const ImagenesInmuebleController = {
 
   async update(req, res) {
     try {
-      const [updated] = await ImagenesInmueble.update(req.body, {
-        where: { Imagenes_inmueble_id: req.params.id }
+      // Usar Organizacion_parqueadero_id para la cláusula WHERE
+      const [updated] = await OrganizacionParqueadero.update(req.body, {
+        where: { Organizacion_parqueadero_id: req.params.id }
       });
       if (!updated) return res.status(404).json({ error: 'No encontrado' });
-      const imagen = await ImagenesInmueble.findByPk(req.params.id);
-      res.json(imagen);
+      // Usar OrganizacionParqueadero para buscar por PK
+      const organizacion = await OrganizacionParqueadero.findByPk(req.params.id);
+      res.json(organizacion);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -114,15 +121,16 @@ const ImagenesInmuebleController = {
 
   async delete(req, res) {
     try {
-      const deleted = await ImagenesInmueble.destroy({
-        where: { Imagenes_inmueble_id: req.params.id }
+      // Usar Organizacion_parqueadero_id para la cláusula WHERE
+      const deleted = await OrganizacionParqueadero.destroy({
+        where: { Organizacion_parqueadero_id: req.params.id }
       });
       if (!deleted) return res.status(404).json({ error: 'No encontrado' });
-      res.json({ message: 'Imagen de inmueble eliminada' });
+      res.json({ message: 'Organización de parqueadero eliminada' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 };
 
-module.exports = ImagenesInmuebleController;
+module.exports = OrganizacionParqueaderoController;

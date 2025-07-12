@@ -1,11 +1,11 @@
 const db = require('../models');
-const TipoEdificacion = db.TipoEdificacion;
+const Inmueble = db.Inmueble;
 
-const TipoEdificacionController = {
+const InmuebleController = {
   async create(req, res) {
     try {
-      const tipo = await TipoEdificacion.create(req.body);
-      res.status(201).json(tipo);
+      const inmueble = await Inmueble.create(req.body);
+      res.status(201).json(inmueble);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -13,8 +13,8 @@ const TipoEdificacionController = {
 
   async findAll(req, res) {
     try {
-      const tipos = await TipoEdificacion.findAll();
-      res.json(tipos);
+      const inmuebles = await Inmueble.findAll();
+      res.json(inmuebles);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -22,9 +22,9 @@ const TipoEdificacionController = {
 
   async findById(req, res) {
     try {
-      const tipo = await TipoEdificacion.findByPk(req.params.id);
-      if (!tipo) return res.status(404).json({ error: 'No encontrado' });
-      res.json(tipo);
+      const inmueble = await Inmueble.findByPk(req.params.id);
+      if (!inmueble) return res.status(404).json({ error: 'No encontrado' });
+      res.json(inmueble);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -32,12 +32,12 @@ const TipoEdificacionController = {
 
   async update(req, res) {
     try {
-      const [updated] = await TipoEdificacion.update(req.body, {
-        where: { Tipo_edificacion_id: req.params.id }
+      const [updated] = await Inmueble.update(req.body, {
+        where: { Inmueble_id: req.params.id }
       });
       if (!updated) return res.status(404).json({ error: 'No encontrado' });
-      const tipo = await TipoEdificacion.findByPk(req.params.id);
-      res.json(tipo);
+      const inmueble = await Inmueble.findByPk(req.params.id);
+      res.json(inmueble);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -45,15 +45,15 @@ const TipoEdificacionController = {
 
   async delete(req, res) {
     try {
-      const deleted = await TipoEdificacion.destroy({
-        where: { Tipo_edificacion_id: req.params.id }
+      const deleted = await Inmueble.destroy({
+        where: { Inmueble_id: req.params.id }
       });
       if (!deleted) return res.status(404).json({ error: 'No encontrado' });
-      res.json({ message: 'Tipo de edificación eliminado' });
+      res.json({ message: 'Inmueble eliminado' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 };
 
-module.exports = TipoEdificacionController;
+module.exports = InmuebleController;

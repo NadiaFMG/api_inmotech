@@ -17,11 +17,11 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       allowNull: false,
     },
-    Platform_user_status_name: {
+    User_status_name: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    Platform_user_status_description: {
+    User_status_description: {
       type: DataTypes.STRING(255),
       allowNull: true,
     },

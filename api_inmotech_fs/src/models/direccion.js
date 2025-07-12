@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     Direccion_id: {
       type: DataTypes.INTEGER(11),
       primaryKey: true,
-      autoIncrement: true,
+      //autoIncrement: true,
       allowNull: false
     },
     Direccion: {

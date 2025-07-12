@@ -33,7 +33,7 @@ const PlatformProfileController = {
   async update(req, res) {
     try {
       const [updated] = await PlatformProfile.update(req.body, {
-        where: { Platform_profile_id: req.params.id }
+        where: { Profile_id: req.params.id }
       });
       if (!updated) return res.status(404).json({ error: 'No encontrado' });
       const profile = await PlatformProfile.findByPk(req.params.id);
@@ -46,7 +46,7 @@ const PlatformProfileController = {
   async delete(req, res) {
     try {
       const deleted = await PlatformProfile.destroy({
-        where: { Platform_profile_id: req.params.id }
+        where: { Profile_id: req.params.id }
       });
       if (!deleted) return res.status(404).json({ error: 'No encontrado' });
       res.json({ message: 'Eliminado correctamente' });
