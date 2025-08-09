@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-07-2025 a las 08:52:21
+-- Tiempo de generación: 09-08-2025 a las 07:56:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -634,28 +634,6 @@ CREATE TABLE `module_role` (
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `module_role`
---
-
-INSERT INTO `module_role` (`Module_role_id`, `Module_FK`, `Role_FK`, `Module_role_status`, `Created_at`, `Updated_at`) VALUES
-(1, 1, 1, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(2, 2, 1, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(3, 3, 1, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(5, 5, 1, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(6, 6, 1, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(7, 7, 1, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(8, 8, 1, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(9, 1, 2, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(10, 2, 2, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(11, 4, 2, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(12, 5, 2, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(13, 8, 2, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(14, 1, 3, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(15, 2, 3, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(16, 5, 3, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17'),
-(17, 8, 3, 1, '2025-06-05 02:40:17', '2025-06-05 02:40:17');
-
 -- --------------------------------------------------------
 
 --
@@ -863,32 +841,6 @@ CREATE TABLE `permitions_module_role` (
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `permitions_module_role`
---
-
-INSERT INTO `permitions_module_role` (`Permitions_module_role_id`, `Module_role_FK`, `Permitions_FK`, `Permitions_module_role_status`, `Created_at`, `Updated_at`) VALUES
-(1, 1, 1, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(2, 2, 2, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(3, 2, 3, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(4, 2, 4, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(5, 3, 5, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(6, 3, 6, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(7, 3, 7, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(8, 3, 8, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(9, 4, 9, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(10, 4, 10, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(11, 4, 11, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(12, 7, 12, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(13, 9, 1, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(14, 10, 2, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(15, 10, 3, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(16, 11, 9, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(17, 11, 10, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(18, 11, 11, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(19, 14, 1, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40'),
-(20, 15, 10, 1, '2025-06-05 02:46:40', '2025-06-05 02:46:40');
-
 -- --------------------------------------------------------
 
 --
@@ -906,17 +858,6 @@ CREATE TABLE `platform_identity_document` (
   `Created_at` datetime DEFAULT current_timestamp(),
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `platform_identity_document`
---
-
-INSERT INTO `platform_identity_document` (`Identity_document_id`, `Document_number`, `Document_type`, `Issued_country`, `Issued_date`, `Expiration_date`, `Platform_profile_FK`, `Created_at`, `Updated_at`) VALUES
-(22, '1020304050', 'Cédula de Ciudadanía', 'Colombia', '2010-01-15', '2030-01-15', 1, '2025-06-05 05:15:09', '2025-06-05 05:15:09'),
-(23, 'ABCD12345', 'Pasaporte', 'España', '2020-03-20', '2030-03-20', 2, '2025-06-05 05:15:09', '2025-06-05 05:15:09'),
-(24, '987654321', 'Licencia de Conducir', 'México', '2018-07-01', '2028-07-01', 3, '2025-06-05 05:15:09', '2025-06-05 05:15:09'),
-(25, 'EFGH67890', 'Tarjeta de Identidad', 'Colombia', '2022-11-10', '2032-11-10', 4, '2025-06-05 05:15:09', '2025-06-05 05:15:09'),
-(26, 'JKLMN01234', 'Visa de Residencia', 'Estados Unidos', '2019-05-25', '2029-05-25', 5, '2025-06-05 05:15:09', '2025-06-05 05:15:09');
 
 -- --------------------------------------------------------
 
@@ -967,39 +908,6 @@ CREATE TABLE `platform_module_role` (
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `platform_module_role`
---
-
-INSERT INTO `platform_module_role` (`Platform_module_role_id`, `Platform_module_FK`, `Platform_role_FK`, `Module_role_status`, `Created_at`, `Updated_at`) VALUES
-(1, 1, 1, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(2, 2, 1, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(3, 3, 1, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(4, 4, 1, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(5, 5, 1, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(6, 6, 1, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(7, 7, 1, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(8, 8, 1, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(9, 9, 1, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(10, 1, 2, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(11, 2, 2, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(12, 4, 2, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(13, 7, 2, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(14, 8, 2, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(15, 9, 2, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(16, 1, 3, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(17, 2, 3, 0, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(18, 4, 3, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(19, 7, 3, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(20, 8, 3, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(21, 9, 3, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(22, 1, 4, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(23, 3, 4, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(24, 4, 4, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(25, 7, 4, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(26, 8, 4, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50'),
-(27, 9, 4, 1, '2025-06-05 04:05:50', '2025-06-05 04:05:50');
-
 -- --------------------------------------------------------
 
 --
@@ -1049,25 +957,6 @@ CREATE TABLE `platform_permitions_module_role` (
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `platform_permitions_module_role`
---
-
-INSERT INTO `platform_permitions_module_role` (`Platform_permitions_module_role_id`, `Platform_module_role_FK`, `Platform_permitions_FK`, `Permitions_module_role_status`, `Created_at`, `Updated_at`) VALUES
-(1, 1, 1, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(2, 2, 2, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(3, 2, 3, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(4, 2, 4, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(5, 3, 5, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(6, 3, 6, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(7, 3, 7, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(8, 3, 8, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(9, 4, 9, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(10, 4, 10, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(11, 4, 11, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(12, 5, 13, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17'),
-(13, 6, 12, 1, '2025-06-05 04:09:17', '2025-06-05 04:09:17');
-
 -- --------------------------------------------------------
 
 --
@@ -1093,18 +982,6 @@ CREATE TABLE `platform_profile` (
   `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `platform_profile`
---
-
-INSERT INTO `platform_profile` (`Profile_id`, `Profile_name`, `Profile_lastname`, `Profile_phone`, `Profile_addres`, `Profile_email`, `Profile_photo`, `Profile_birthdate`, `Profile_gender`, `Profile_national_id`, `Profile_bio`, `Profile_website`, `Profile_social`, `Platform_user_FK`, `createdAt`, `updatedAt`) VALUES
-(1, 'Admin', 'Maestro', '3001234567', 'Calle 10 # 20-30', 'admin@inmotech.com', 'https://example.com/photos/admin.jpg', '1985-01-15', 'Masculino', '1234567890', 'Perfil del administrador principal del sistema InmoTech.', 'https://inmotech.com', 'https://linkedin.com/in/admin', 1, '2025-06-05 03:37:39', '2025-06-05 03:37:39'),
-(2, 'Juan', 'Perez', '3109876543', 'Carrera 5 # 15-25', 'juan.perez@inmotech.com', 'https://example.com/photos/juan.jpg', '1990-05-20', 'Masculino', '1020304050', 'Agente de ventas con 5 años de experiencia en el sector inmobiliario.', 'https://juanperez.com', 'https://facebook.com/juanperez', 2, '2025-06-05 03:37:39', '2025-06-05 03:37:39'),
-(3, 'Ana', 'Gomez', '3201122334', 'Avenida 30 # 45-50', 'ana.gomez@inmotech.com', 'https://example.com/photos/ana.jpg', '1992-11-01', 'Femenino', '2030405060', 'Compradora de propiedades en búsqueda de su primera vivienda.', NULL, 'https://twitter.com/anagomez', 3, '2025-06-05 03:37:39', '2025-06-05 03:37:39'),
-(4, 'Carlos', 'Rodriguez', '3156677889', 'Diagonal 25 # 10-10', 'carlos.soporte@inmotech.com', 'https://example.com/photos/carlos.jpg', '1988-03-25', 'Masculino', '3040506070', 'Especialista en soporte técnico y atención al cliente.', NULL, NULL, 4, '2025-06-05 03:37:39', '2025-06-05 03:37:39'),
-(5, 'Laura', 'Martinez', '3012233445', 'Transversal 8 # 3-12', 'laura.inactiva@inmotech.com', 'https://example.com/photos/laura.jpg', '1995-07-07', 'Femenino', '4050607080', 'Perfil inactivo.', NULL, NULL, 5, '2025-06-05 03:37:39', '2025-06-05 03:37:39'),
-(6, 'Pedro', 'Sanchez', '3189988776', 'Calle 70 # 5-60', 'pedro.pendiente@inmotech.com', 'https://example.com/photos/pedro.jpg', '1980-02-14', 'Masculino', '5060708090', 'Nuevo registro pendiente de aprobación.', NULL, NULL, 6, '2025-06-05 03:37:39', '2025-06-05 03:37:39');
-
 -- --------------------------------------------------------
 
 --
@@ -1121,16 +998,6 @@ CREATE TABLE `platform_role` (
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `platform_role`
---
-
-INSERT INTO `platform_role` (`Platform_role_id`, `Role_name`, `Role_description`, `Role_status`, `Role_priority`, `Created_at`, `Updated_at`) VALUES
-(1, 'Administrador', 'Control y gestión general del sistema, usuarios, propiedades y finanzas.', 1, 90, '2025-06-05 02:51:09', '2025-06-05 02:51:09'),
-(2, 'usuario', 'Puede aceder a la plataforma pero no administrar nada', 1, 70, '2025-06-05 02:51:09', '2025-07-07 16:23:35'),
-(3, 'Comprador', 'Realiza compras, gestiona pedidos, y accede a su historial de transacciones.', 1, 50, '2025-06-05 02:51:09', '2025-06-05 02:51:09'),
-(4, 'Agente de Soporte', 'Atención de consultas y resolución de problemas técnicos o de usuario.', 1, 60, '2025-06-05 02:51:09', '2025-06-05 02:51:09');
-
 -- --------------------------------------------------------
 
 --
@@ -1146,18 +1013,6 @@ CREATE TABLE `platform_user` (
   `Created_at` datetime DEFAULT current_timestamp(),
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `platform_user`
---
-
-INSERT INTO `platform_user` (`Platform_user_id`, `Username`, `Password`, `Platform_user_status_FK`, `Platform_role_FK`, `Created_at`, `Updated_at`) VALUES
-(15, 'jonathan0145', '$2b$10$kynyJ1Q7cFBI5GECWS4bl.LkM.CSv2PlMzljYKUr5dgHfpwioZcvG', 1, 1, '2025-07-07 19:44:39', '2025-07-07 19:44:39'),
-(17, 'jonathan0147', '$2b$10$cN/PxdsXH.s/1m.8j2owheFcSwkv3NGUx27AlqWNBvOubYxsf8qoK', 1, 2, '2025-07-07 22:37:17', '2025-07-07 22:37:17'),
-(18, 'jonathan0148', '$2b$10$CS4vfp1iVsZ3rquBPH.h7.51QEFqnJiVcotiIO.SNVJ1vEHWbDRyi', 1, 2, '2025-07-07 22:38:12', '2025-07-07 22:38:12'),
-(19, 'jonathan0149', '$2b$10$c9uDugx1uIOT0eJTMmbsb.cjqROBgDWCSZSv/jUSVTY1b8E3YHL9i', 1, 2, '2025-07-07 22:41:13', '2025-07-07 22:41:13'),
-(20, 'jonathan0150', '$2b$10$vNo8u8ZhI1M5OqUnAAa8oOoeO9N1YoldGziWmAbsj2H/lb7hY15Lm', 1, 1, '2025-07-07 23:04:05', '2025-07-10 17:45:10'),
-(23, 'jonathan060', '$2b$10$eMHU4uwLIwk4GCJd/BMCKecylhOV5oZr0Igyvwdc18iWxXthSOHxG', 1, 2, '2025-07-12 19:09:43', '2025-07-12 19:09:43');
 
 -- --------------------------------------------------------
 
@@ -1337,15 +1192,6 @@ CREATE TABLE `role` (
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `role`
---
-
-INSERT INTO `role` (`Role_id`, `Role_name`, `Role_description`, `Role_status`, `Role_priority`, `Created_at`, `Updated_at`) VALUES
-(1, 'admin', 'Acceso total a la API', 1, 100, '2025-07-04 17:09:41', '2025-07-04 17:09:41'),
-(2, 'service', 'Consumidor de servicios y endpoints públicos', 1, 50, '2025-07-04 17:09:41', '2025-07-04 17:09:41'),
-(3, 'read_only', 'Solo puede consultar información, sin modificar', 1, 10, '2025-07-04 17:09:41', '2025-07-04 17:09:41');
-
 -- --------------------------------------------------------
 
 --
@@ -1471,22 +1317,6 @@ CREATE TABLE `users` (
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `users`
---
-
-INSERT INTO `users` (`User_id`, `User_user`, `User_password`, `User_status_FK`, `Role_FK`, `Created_at`, `Updated_at`) VALUES
-(11, 'admin_sistema', 'hashed_password_admin1', 1, 1, '2025-06-05 02:19:45', '2025-06-05 02:19:45'),
-(12, 'vendedor_carlos', 'hashed_password_seller1', 1, 2, '2025-06-05 02:19:45', '2025-06-05 02:19:45'),
-(13, 'comprador_laura', 'hashed_password_buyer1', 1, 3, '2025-06-05 02:19:45', '2025-06-05 02:19:45'),
-(14, 'admin_marketing', 'hashed_password_admin2', 1, 1, '2025-06-05 02:19:45', '2025-06-05 02:19:45'),
-(15, 'vendedor_maria', 'hashed_password_seller2', 1, 2, '2025-06-05 02:19:45', '2025-06-05 02:19:45'),
-(16, 'comprador_roberto', 'hashed_password_buyer2', 3, 3, '2025-06-05 02:19:45', '2025-06-05 02:19:45'),
-(17, 'vendedor_inactivo', 'hashed_password_seller3', 2, 2, '2025-06-05 02:19:45', '2025-06-05 02:19:45'),
-(18, 'comprador_bloqueado', 'hashed_password_buyer3', 4, 3, '2025-06-05 02:19:45', '2025-06-05 02:19:45'),
-(19, 'admin_soporte', 'hashed_password_admin3', 1, 1, '2025-06-05 02:19:45', '2025-06-05 02:19:45'),
-(20, 'comprador_nuevo', 'hashed_password_buyer4', 3, 3, '2025-06-05 02:19:45', '2025-06-05 02:19:45');
-
 -- --------------------------------------------------------
 
 --
@@ -1500,17 +1330,6 @@ CREATE TABLE `user_status` (
   `Created_at` datetime DEFAULT current_timestamp(),
   `Updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `user_status`
---
-
-INSERT INTO `user_status` (`User_status_id`, `User_status_name`, `User_status_description`, `Created_at`, `Updated_at`) VALUES
-(1, 'Activo', 'Usuario con acceso completo y habilitado.', '2025-06-05 02:14:07', '2025-06-05 02:14:07'),
-(2, 'Inactivo', 'Usuario temporalmente deshabilitado o sin acceso.', '2025-06-05 02:14:07', '2025-06-05 02:14:07'),
-(3, 'Pendiente de Verificación', 'Usuario registrado pero pendiente de confirmación de correo o datos.', '2025-06-05 02:14:07', '2025-06-05 02:14:07'),
-(4, 'Bloqueado', 'Usuario suspendido permanentemente debido a infracciones.', '2025-06-05 02:14:07', '2025-06-05 02:14:07'),
-(5, 'Eliminado', 'Usuario marcado para eliminación lógica (no borrado físicamente).', '2025-06-05 02:14:07', '2025-06-05 02:14:07');
 
 -- --------------------------------------------------------
 
@@ -2214,8 +2033,8 @@ ALTER TABLE `pago`
 -- Filtros para la tabla `permitions_module_role`
 --
 ALTER TABLE `permitions_module_role`
-  ADD CONSTRAINT `permitions_module_role_module_role_fk` FOREIGN KEY (`Module_role_FK`) REFERENCES `module_role` (`Module_role_id`),
-  ADD CONSTRAINT `permitions_module_role_permitions_fk` FOREIGN KEY (`Permitions_FK`) REFERENCES `permitions` (`Permitions_id`);
+  ADD CONSTRAINT `permitions_module_role_ibfk_1` FOREIGN KEY (`Permitions_FK`) REFERENCES `permitions` (`Permitions_id`),
+  ADD CONSTRAINT `permitions_module_role_ibfk_2` FOREIGN KEY (`Module_role_FK`) REFERENCES `module_role` (`Module_role_id`);
 
 --
 -- Filtros para la tabla `platform_identity_document`
@@ -2227,48 +2046,48 @@ ALTER TABLE `platform_identity_document`
 -- Filtros para la tabla `platform_module_role`
 --
 ALTER TABLE `platform_module_role`
-  ADD CONSTRAINT `platform_module_role_module_fk` FOREIGN KEY (`Platform_module_FK`) REFERENCES `platform_module` (`Platform_module_id`),
-  ADD CONSTRAINT `platform_module_role_role_fk` FOREIGN KEY (`Platform_role_FK`) REFERENCES `platform_role` (`Platform_role_id`);
+  ADD CONSTRAINT `platform_module_role_ibfk_1` FOREIGN KEY (`Platform_role_FK`) REFERENCES `platform_role` (`Platform_role_id`),
+  ADD CONSTRAINT `platform_module_role_ibfk_2` FOREIGN KEY (`Platform_module_FK`) REFERENCES `platform_module` (`Platform_module_id`);
 
 --
 -- Filtros para la tabla `platform_permitions_module_role`
 --
 ALTER TABLE `platform_permitions_module_role`
-  ADD CONSTRAINT `platform_permitions_module_role_module_role_fk` FOREIGN KEY (`Platform_module_role_FK`) REFERENCES `platform_module_role` (`Platform_module_role_id`),
-  ADD CONSTRAINT `platform_permitions_module_role_permitions_fk` FOREIGN KEY (`Platform_permitions_FK`) REFERENCES `platform_permitions` (`Platform_permitions_id`);
+  ADD CONSTRAINT `platform_permitions_module_role_ibfk_1` FOREIGN KEY (`Platform_permitions_FK`) REFERENCES `platform_permitions` (`Platform_permitions_id`),
+  ADD CONSTRAINT `platform_permitions_module_role_ibfk_2` FOREIGN KEY (`Platform_module_role_FK`) REFERENCES `platform_module_role` (`Platform_module_role_id`);
 
 --
 -- Filtros para la tabla `platform_profile`
 --
 ALTER TABLE `platform_profile`
-  ADD CONSTRAINT `platform_profile_user_fk` FOREIGN KEY (`Platform_user_FK`) REFERENCES `platform_user` (`Platform_user_id`);
+  ADD CONSTRAINT `platform_profile_ibfk_1` FOREIGN KEY (`Platform_user_FK`) REFERENCES `platform_user` (`Platform_user_id`);
 
 --
 -- Filtros para la tabla `platform_user`
 --
 ALTER TABLE `platform_user`
-  ADD CONSTRAINT `platform_user_role_fk` FOREIGN KEY (`Platform_role_FK`) REFERENCES `platform_role` (`Platform_role_id`),
-  ADD CONSTRAINT `platform_user_status_fk` FOREIGN KEY (`Platform_user_status_FK`) REFERENCES `platform_user_status` (`Platform_user_status_id`);
+  ADD CONSTRAINT `platform_user_ibfk_1` FOREIGN KEY (`Platform_user_status_FK`) REFERENCES `platform_user_status` (`Platform_user_status_id`),
+  ADD CONSTRAINT `platform_user_ibfk_2` FOREIGN KEY (`Platform_role_FK`) REFERENCES `platform_role` (`Platform_role_id`);
 
 --
 -- Filtros para la tabla `suscripcion`
 --
 ALTER TABLE `suscripcion`
-  ADD CONSTRAINT `suscripcion_factura_fk` FOREIGN KEY (`Factura_FK`) REFERENCES `factura` (`Factura_id`),
-  ADD CONSTRAINT `suscripcion_platform_user_fk` FOREIGN KEY (`Platform_user_FK`) REFERENCES `platform_user` (`Platform_user_id`);
+  ADD CONSTRAINT `suscripcion_ibfk_1` FOREIGN KEY (`Platform_user_FK`) REFERENCES `platform_user` (`Platform_user_id`),
+  ADD CONSTRAINT `suscripcion_ibfk_2` FOREIGN KEY (`Factura_FK`) REFERENCES `factura` (`Factura_id`);
 
 --
 -- Filtros para la tabla `users`
 --
 ALTER TABLE `users`
-  ADD CONSTRAINT `users_role_fk` FOREIGN KEY (`Role_FK`) REFERENCES `role` (`Role_id`),
-  ADD CONSTRAINT `users_user_status_fk` FOREIGN KEY (`User_status_FK`) REFERENCES `user_status` (`User_status_id`);
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`User_status_FK`) REFERENCES `user_status` (`User_status_id`),
+  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`Role_FK`) REFERENCES `role` (`Role_id`);
 
 --
 -- Filtros para la tabla `vereda`
 --
 ALTER TABLE `vereda`
-  ADD CONSTRAINT `vereda_municipio_fk` FOREIGN KEY (`Municipio_FK`) REFERENCES `municipio` (`Municipio_id`);
+  ADD CONSTRAINT `vereda_ibfk_1` FOREIGN KEY (`Municipio_FK`) REFERENCES `municipio` (`Municipio_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
