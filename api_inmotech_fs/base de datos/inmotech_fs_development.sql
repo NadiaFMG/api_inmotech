@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-08-2025 a las 07:56:06
+-- Tiempo de generación: 13-08-2025 a las 04:32:48
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -544,15 +544,6 @@ CREATE TABLE `inmueble` (
   `Platform_user_FK` int(11) NOT NULL,
   `Direccion_FK` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `inmueble`
---
-
-INSERT INTO `inmueble` (`Inmueble_id`, `Valor`, `Area`, `Descripcion_General`, `Antiguedad`, `Motivo_VoA`, `Situacion_inmueble`, `Tipo_edificacion_FK`, `Otras_caracteristicas_FK`, `Acerca_edificacion_FK`, `Division_FK`, `Imagenes_inmueble_FK`, `Codigo_interno`, `Estado`, `Fecha_publicacion`, `Fecha_actualizacion`, `Visitas`, `Observaciones`, `Platform_user_FK`, `Direccion_FK`) VALUES
-(1, 12344, 21, 'qwerty', 12, 'venta', 'en construcion', 2, 1, 2, 2, 2, '1', 'disponible', '2025-07-11 13:30:12', '2025-07-11 13:30:12', 0, 'vvdfddgfdfggd', 19, 1),
-(3, 3453464, 34, 'rfegergerg', 21, 'arriendo', 'en planificacion', 3, 2, 3, 3, 3, '2', 'disponible', '2025-07-11 13:32:37', '2025-07-11 15:06:08', 0, 'qwered', 17, 3),
-(4, 1000000, 45, 'casa bonita', 10, 'venta por que me quiero comprar otra casa', 'nuevo', 1, 24, 1, 1, 1, '2199', 'disponible', '2025-07-09 23:19:25', '2025-07-09 23:19:25', 50, 'ninguna', 20, 2);
 
 -- --------------------------------------------------------
 
@@ -1785,7 +1776,7 @@ ALTER TABLE `imagenes_inmueble`
 -- AUTO_INCREMENT de la tabla `inmueble`
 --
 ALTER TABLE `inmueble`
-  MODIFY `Inmueble_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+  MODIFY `Inmueble_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT de la tabla `module`

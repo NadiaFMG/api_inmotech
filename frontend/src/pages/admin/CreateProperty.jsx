@@ -42,7 +42,8 @@ const CreateProperty = () => {
 
     return (
         <Container className="mt-4">
-            <h2>Crear Nueva Propiedad</h2>
+            <h1>HOLA</h1>
+            <h2>Crear Nueva Propiedad jr</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">

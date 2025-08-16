@@ -28,7 +28,8 @@ const getInmuebleCompleto = async (req, res) => {
             corregimiento,
             vereda,
             municipio,
-            ndap
+            ndap,
+            tipoEdificacion
         ] = await Promise.all([
             inmueble.Acerca_edificacion_FK ? db.AcercaEdificacion.findByPk(inmueble.Acerca_edificacion_FK) : null,
             inmueble.Otras_caracteristicas_FK ? db.OtrasCaracteristicas.findByPk(inmueble.Otras_caracteristicas_FK) : null,
@@ -45,7 +46,8 @@ const getInmuebleCompleto = async (req, res) => {
             inmueble.Corregimiento_FK ? db.Corregimiento.findByPk(inmueble.Corregimiento_FK) : null,
             inmueble.Vereda_FK ? db.Vereda.findByPk(inmueble.Vereda_FK) : null,
             inmueble.Municipio_FK ? db.Municipio.findByPk(inmueble.Municipio_FK) : null,
-            inmueble.NDAP_FK ? db.NDAP.findByPk(inmueble.NDAP_FK) : null
+            inmueble.NDAP_FK ? db.NDAP.findByPk(inmueble.NDAP_FK) : null,
+            inmueble.Tipo_edificacion_FK ? db.TipoEdificacion.findByPk(inmueble.Tipo_edificacion_FK) : null
         ]);
 
         res.json({
@@ -65,7 +67,8 @@ const getInmuebleCompleto = async (req, res) => {
             corregimiento,
             vereda,
             municipio,
-            ndap
+            ndap,
+            tipoEdificacion
         });
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener el inmueble completo', error: error.message });

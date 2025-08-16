@@ -12,6 +12,13 @@ app.use(cors({ origin: 'http://localhost:3001' }));
 app.use(express.json());
 
 app.use(
+  '/assets/images/inmuebles',
+  express.static(
+    path.resolve(__dirname, '../../plataforma/src/assets/images/inmuebles')
+  )
+);
+
+app.use(
   '/assets/images/sobrenosotros',
   express.static(
     path.resolve(__dirname, '../../plataforma/src/assets/images/sobrenosotros')
