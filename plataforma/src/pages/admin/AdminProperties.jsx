@@ -17,17 +17,18 @@ const AdminProperties = () => {
     });
 
     const fetchProperties = async () => {
-        try {
-            const response = await propertyService.getAllProperties();
-            console.log('Properties fetched in AdminProperties:', response); // Debug log
-            if (response && response.propiedades) {
-                setProperties(response.propiedades);
-            } else if (Array.isArray(response)) {
-                setProperties(response);
-            }
-        } catch (error) {
-            console.error('Error fetching properties:', error);
-        } finally {
+    try {
+        const response = await inmuebleService.getAll();
+        // Si la respuesta es un objeto con .data, usa .data
+        const data = response.data || response;
+        if (data && data.propiedades) {
+            setProperties(data.propiedades);
+        } else if (Array.isArray(data)) {
+            setProperties(data);
+        }
+    } catch (error) {
+        console.error('Error fetching properties:', error);
+    } finally {
             setLoading(false);
         }
     };

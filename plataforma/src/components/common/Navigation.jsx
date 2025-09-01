@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaSearch, FaBuilding, FaEnvelope, FaInfoCircle } from 'react-icons/fa';
+import { FaHome, FaSearch, FaBuilding, FaEnvelope, FaInfoCircle, FaDollarSign } from 'react-icons/fa';
 
 const Navigation = () => {
     const location = useLocation();
@@ -10,6 +10,7 @@ const Navigation = () => {
         { path: '/inicio', icon: <FaHome />, label: 'Inicio' },
         { path: '/inmuebles', icon: <FaBuilding />, label: 'Inmuebles' },
         { path: '/buscar', icon: <FaSearch />, label: 'Buscar' },
+        { path: '/venderinmueble', icon: <FaDollarSign />, label: 'Vender Inmueble' },
         { path: '/contacto', icon: <FaEnvelope />, label: 'Contacto' },
         { path: '/sobrenosotros', icon: <FaInfoCircle />, label: 'Sobre Nosotros' }
     ];

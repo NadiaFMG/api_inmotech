@@ -15,6 +15,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
 import AdminProperties from './pages/admin/AdminProperties';
 import CreateProperty from './pages/admin/CreateProperty';
+import VenderInmueble from './pages/VenderInmueble';
 import EditProperty from './pages/admin/EditProperty';
 import Visualizations from './pages/admin/Visualizations';
 import Usuarios from './pages/admin/Usuarios';
@@ -53,6 +54,7 @@ function App() {
           <Route path="inicio" element={<Inicio />} />
           <Route path="inmuebles" element={<Inmuebles />} />
           <Route path="buscar" element={<Buscar />} />
+          <Route path="venderinmueble" element={<VenderInmueble />} />
           <Route path="contacto" element={<Contacto />} />
           <Route path="sobrenosotros" element={<SobreNosotros />} />
         </Route>
