@@ -1,15 +1,15 @@
 import React from 'react';
-// import DashboardSummary from '../../components/admin/DashboardSummary';
-// import RecentPropertiesList from '../../components/admin/RecentPropertiesList';
 import AdminTable from '../../components/admin/AdminTable';
 
 const Dashboard = () => {
     return (
-        <div>
-            <h2 className="mb-4">Panel de Administración de la Pagina</h2>
-            {/* <DashboardSummary />
-            <RecentPropertiesList /> */}
-            <AdminTable/>
+        <div style={{ backgroundColor: '#5b88b2', width: '100%' }}>
+            {/* <div className="ancho-admin">
+                <h2 className="mb-4 text-center estilo" style={{ color: '#222' }}>
+                    Panel de Administración de la Pagina
+                </h2>
+                <AdminTable />
+            </div> */}
         </div>
     );
 };

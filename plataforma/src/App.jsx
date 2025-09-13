@@ -35,14 +35,14 @@ function App() {
     <Router>
       <Routes>
         {/* Ruta de autenticación (login/registro) */}
-        <Route path="/auth" element={<AuthForm />} />
+        <Route path="/" element={<AuthForm />} />
         <Route path="/inmueble/:id" element={<InmuebleDetalle />} />
         <Route path="/terminoscondiciones" element={<TerminosCondiciones />} />
         <Route path="/politicaprivacidad" element={<PoliticaPrivacidad />} />
         <Route path="/faq" element={<PreguntasFrecuentes />} />
 
         {/* Public routes with Navigation and Footer */}
-        <Route path="/" element={
+        <Route path="/inicio" element={
           <div className="d-flex flex-column min-vh-100">
             <Navigation />
             <main className="flex-grow-1">
