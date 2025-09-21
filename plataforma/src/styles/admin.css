@@ -2,7 +2,16 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 8px;
-  /* Elimina height y width fijos */
+}
+
+/* admin dashboard*/
+.admin-dashboard-titulo{
+  width: 100%;
+  padding: 20px 20px 20px 20px !important;
+  background-color: #142b42;
+  color: white !important;
+  border-radius: 10px;
+  text-align: center;
 }
 
 .admin-dashboard-card {
@@ -58,5 +67,39 @@
     max-width: 98vw;
     min-height: 120px;
     min-width: 0;
+  }
+}
+
+.property-group-card {
+  background-color: #142b42;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(91,136,178,0.10);
+  padding: 24px 18px 18px 18px;
+  margin-bottom: 24px;
+  color: #fff;
+  transition: box-shadow 0.2s, transform 0.2s;
+  border-top: 5px solid #5b88b2;
+}
+
+.property-group-card h5 {
+  color: #5b88b2;
+  font-weight: bold;
+  margin-bottom: 18px;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 991px) {
+  .property-group-card {
+    padding: 16px 8px;
+  }
+  .property-group-card h5 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .property-group-card {
+    padding: 10px 4px;
+    margin-bottom: 16px;
   }
 }

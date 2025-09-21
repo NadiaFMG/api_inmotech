@@ -331,7 +331,7 @@ const CreateProperty = () => {
 
   return (
     <Container className="mt-4">
-      <h2>Crear Nueva Propiedad</h2>
+      <h2 className='admin-dashboard-titulo'>Crear Nueva Propiedad</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit}>
         <Row>

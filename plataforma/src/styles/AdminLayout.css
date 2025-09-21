@@ -3,7 +3,7 @@
     height: 100vh;
 }
 
-.admin-layout .row {
+.admin-layout{
     height: 100vh;
     margin: 0;
     flex-wrap: nowrap;

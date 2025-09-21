@@ -3,13 +3,14 @@ import AdminTable from '../../components/admin/AdminTable';
 
 const Dashboard = () => {
     return (
+        // <div style={{ backgroundColor: '#5b88b2', width: '100%' }}>
         <div style={{ backgroundColor: '#5b88b2', width: '100%' }}>
-            {/* <div className="ancho-admin">
-                <h2 className="mb-4 text-center estilo" style={{ color: '#222' }}>
+            <div className="ancho-admin">
+                <h2 className="mb-4 text-center admin-dashboard-titulo">
                     Panel de Administración de la Pagina
                 </h2>
                 <AdminTable />
-            </div> */}
+            </div>
         </div>
     );
 };

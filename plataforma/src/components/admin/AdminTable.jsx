@@ -52,7 +52,7 @@ const AdminTable = () => {
 
   return (
     <div className='ancho-admin'>
-      {/* {rows.map((row, rowIdx) => (
+      {rows.map((row, rowIdx) => (
         <Row className="g-4 justify-content-center hg-4" key={rowIdx}>
           {row.map((card, idx) => (
             <Col
@@ -80,7 +80,7 @@ const AdminTable = () => {
             </Col>
           ))}
         </Row>
-      ))} */}
+      ))}
     </div>
   );
 };
