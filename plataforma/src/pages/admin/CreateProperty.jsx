@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Alert, Row, Col } from 'react-bootstrap';
+import { Form, Button, Container, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { propertyService } from '../../services/api';
 
@@ -113,7 +113,7 @@ const CreateProperty = () => {
   const [error, setError] = useState('');
   const [property, setProperty] = useState(initialProperty);
 
-  // Manejo de campos planos
+  // Handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -121,8 +121,6 @@ const CreateProperty = () => {
       [name]: value
     }));
   };
-
-  // Manejo de campos anidados (ejemplo: direccion)
   const handleDireccionChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -133,8 +131,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Localizacion
   const handleLocalizacionChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -148,8 +144,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // NDAP
   const handleNdapChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -163,8 +157,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Municipio
   const handleMunicipioChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -178,8 +170,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Barrio, ciudad, corregimiento, vereda
   const handleBCCVChange = (type, e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -196,8 +186,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Designador cardinal
   const handleDesignadorChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -211,8 +199,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Manejo de imágenes: sube cada imagen al backend y guarda la respuesta
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
     const nuevasImagenes = await Promise.all(files.map(async (file) => {
@@ -229,8 +215,6 @@ const CreateProperty = () => {
       imagenes_inmueble: [...prev.imagenes_inmueble, ...nuevasImagenes]
     }));
   };
-
-  // División
   const handleDivisionChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -241,8 +225,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Acerca Edificacion
   const handleAcercaChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -253,8 +235,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Tipo Edificacion
   const handleTipoEdificacionChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -265,8 +245,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Otras Caracteristicas
   const handleOtrasCaracteristicasChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -277,8 +255,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Asignacion
   const handleAsignacionChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -292,8 +268,6 @@ const CreateProperty = () => {
       }
     }));
   };
-
-  // Organizacion Parqueadero
   const handleOrgParqueaderoChange = (e) => {
     const { name, value } = e.target;
     setProperty(prev => ({
@@ -308,7 +282,6 @@ const CreateProperty = () => {
     }));
   };
 
-  // Envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -329,223 +302,373 @@ const CreateProperty = () => {
     }
   };
 
+  // Agrupa cada sección como un elemento de un array
+  const grupos = [
+    {
+      titulo: 'Datos principales',
+      contenido: (
+        <>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Valor</Form.Label>
+            <Form.Control type="number" name="Valor" value={property.Valor} onChange={handleChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Área</Form.Label>
+            <Form.Control type="number" name="Area" value={property.Area} onChange={handleChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Descripción General</Form.Label>
+            <Form.Control as="textarea" name="Descripcion_General" value={property.Descripcion_General} onChange={handleChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Antigüedad</Form.Label>
+            <Form.Control type="number" name="Antiguedad" value={property.Antiguedad} onChange={handleChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Motivo VoA</Form.Label>
+            <Form.Control type="text" name="Motivo_VoA" value={property.Motivo_VoA} onChange={handleChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Situación inmueble</Form.Label>
+            <Form.Control type="text" name="Situacion_inmueble" value={property.Situacion_inmueble} onChange={handleChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Código interno</Form.Label>
+            <Form.Control type="text" name="Codigo_interno" value={property.Codigo_interno} onChange={handleChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Estado</Form.Label>
+            <Form.Control type="text" name="Estado" value={property.Estado} onChange={handleChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Observaciones</Form.Label>
+            <Form.Control as="textarea" name="Observaciones" value={property.Observaciones} onChange={handleChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Usuario (Platform_user_FK)</Form.Label>
+            <Form.Control type="number" name="Platform_user_FK" value={property.Platform_user_FK} onChange={handleChange} required />
+          </Form.Group>
+        </>
+      )
+    },
+    {
+      titulo: 'Dirección',
+      contenido: (
+        <>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Dirección</Form.Label>
+            <Form.Control type="text" name="Direccion" value={property.direccion.Direccion} onChange={handleDireccionChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Tipo de vía</Form.Label>
+            <Form.Control type="text" name="Tipo_via" value={property.direccion.Tipo_via} onChange={handleDireccionChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Número vía principal</Form.Label>
+            <Form.Control type="number" name="Numero_via_principal" value={property.direccion.Numero_via_principal} onChange={handleDireccionChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Número calle transversal</Form.Label>
+            <Form.Control type="number" name="Numero_calle_transversal" value={property.direccion.Numero_calle_transversal} onChange={handleDireccionChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Número edificación</Form.Label>
+            <Form.Control type="number" name="Numero_edificacion" value={property.direccion.Numero_edificacion} onChange={handleDireccionChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Descripción adicional</Form.Label>
+            <Form.Control type="text" name="Descripcion_adicional" value={property.direccion.Descripcion_adicional} onChange={handleDireccionChange} />
+          </Form.Group>
+        </>
+      )
+    },
+    {
+      titulo: 'NDAP',
+      contenido: (
+        <Form.Group className="mb-3">
+          <Form.Label className="card-label">Descripción NDAP</Form.Label>
+          <Form.Control type="text" name="Ndap_descripcion" value={property.direccion.ndap.Ndap_descripcion} onChange={handleNdapChange} />
+        </Form.Group>
+      )
+    },
+    {
+      titulo: 'Municipio',
+      contenido: (
+        <>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Nombre Municipio</Form.Label>
+            <Form.Control type="text" name="Municipio_nombre" value={property.direccion.municipio.Municipio_nombre} onChange={handleMunicipioChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Descripción Municipio</Form.Label>
+            <Form.Control type="text" name="Municipio_descripcion" value={property.direccion.municipio.Municipio_descripcion} onChange={handleMunicipioChange} />
+          </Form.Group>
+        </>
+      )
+    },
+    {
+      titulo: 'Barrio/Ciudad/Corregimiento/Vereda',
+      contenido: (
+        <>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Nombre Barrio</Form.Label>
+            <Form.Control type="text" name="Nombre_barrio" value={property.direccion.barrio_ciudad_corregimiento_vereda.barrio.Nombre_barrio} onChange={e => handleBCCVChange('barrio', e)} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Ciudad</Form.Label>
+            <Form.Control type="text" name="Ciudad" value={property.direccion.barrio_ciudad_corregimiento_vereda.ciudad.Ciudad} onChange={e => handleBCCVChange('ciudad', e)} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Corregimiento</Form.Label>
+            <Form.Control type="text" name="Corregimiento" value={property.direccion.barrio_ciudad_corregimiento_vereda.corregimiento.Corregimiento} onChange={e => handleBCCVChange('corregimiento', e)} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Vereda</Form.Label>
+            <Form.Control type="text" name="Vereda_nombre" value={property.direccion.barrio_ciudad_corregimiento_vereda.vereda.Vereda_nombre} onChange={e => handleBCCVChange('vereda', e)} />
+          </Form.Group>
+        </>
+      )
+    },
+    {
+      titulo: 'Localización',
+      contenido: (
+        <>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Descripción</Form.Label>
+            <Form.Control type="text" name="Localizacion_descripcion" value={property.direccion.localizacion.Localizacion_descripcion} onChange={handleLocalizacionChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Latitud</Form.Label>
+            <Form.Control type="number" name="Latitud" value={property.direccion.localizacion.Latitud} onChange={handleLocalizacionChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Longitud</Form.Label>
+            <Form.Control type="number" name="Longitud" value={property.direccion.localizacion.Longitud} onChange={handleLocalizacionChange} required />
+          </Form.Group>
+        </>
+      )
+    },
+    {
+      titulo: 'Designador Cardinal',
+      contenido: (
+        <>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Cardinalidad</Form.Label>
+            <Form.Control type="text" name="Cardinalidad" value={property.direccion.designador_cardinal.Cardinalidad} onChange={handleDesignadorChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Abreviación</Form.Label>
+            <Form.Control type="text" name="Abreviacion" value={property.direccion.designador_cardinal.Abreviacion} onChange={handleDesignadorChange} />
+          </Form.Group>
+        </>
+      )
+    },
+    {
+      titulo: 'Imágenes',
+      contenido: (
+        <>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Seleccionar imágenes</Form.Label>
+            <Form.Control
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </Form.Group>
+          {property.imagenes_inmueble.map((img, idx) => (
+            <div key={idx} style={{ border: '1px solid #eee', padding: 10, marginBottom: 10, background: '#15365FFF', color: '#FDFDFDFF', borderRadius: 8 }}>
+              <div>
+                <strong>Nombre:</strong> {img.Nombre}
+              </div>
+              <div>
+                <strong>URL:</strong> <a href={img.URL} target="_blank" rel="noopener noreferrer" style={{ color: '#72A3D1FF' }}>{img.URL}</a>
+              </div>
+              <div>
+                <strong>Archivo Imagen:</strong> {img.Imagenes}
+              </div>
+              {img.URL && (
+                <img src={img.URL} alt={img.Nombre} style={{ maxWidth: 100, marginTop: 5, borderRadius: 4 }} />
+              )}
+            </div>
+          ))}
+        </>
+      )
+    },
+    {
+      titulo: 'División',
+      contenido: (
+        <>
+          {Object.keys(initialProperty.division).map(key => (
+            <Form.Group className="mb-3" key={key}>
+              <Form.Label className="card-label">{key}</Form.Label>
+              <Form.Control type="text" name={key} value={property.division[key]} onChange={handleDivisionChange} />
+            </Form.Group>
+          ))}
+        </>
+      )
+    },
+    {
+      titulo: 'Acerca de la Edificación',
+      contenido: (
+        <>
+          {Object.keys(initialProperty.acerca_edificacion).map(key => (
+            <Form.Group className="mb-3" key={key}>
+              <Form.Label className="card-label">{key}</Form.Label>
+              <Form.Control type="text" name={key} value={property.acerca_edificacion[key]} onChange={handleAcercaChange} />
+            </Form.Group>
+          ))}
+        </>
+      )
+    },
+    {
+      titulo: 'Tipo Edificación',
+      contenido: (
+        <>
+          {Object.keys(initialProperty.tipo_edificacion).map(key => (
+            <Form.Group className="mb-3" key={key}>
+              <Form.Label className="card-label">{key}</Form.Label>
+              <Form.Control type="text" name={key} value={property.tipo_edificacion[key]} onChange={handleTipoEdificacionChange} />
+            </Form.Group>
+          ))}
+        </>
+      )
+    },
+    {
+      titulo: 'Otras Características',
+      contenido: (
+        <>
+          {Object.keys(initialProperty.otras_caracteristicas).filter(key => key !== 'asignacion' && key !== 'organizacion_parqueadero').map(key => (
+            <Form.Group className="mb-3" key={key}>
+              <Form.Label className="card-label">{key}</Form.Label>
+              <Form.Control type="text" name={key} value={property.otras_caracteristicas[key]} onChange={handleOtrasCaracteristicasChange} />
+            </Form.Group>
+          ))}
+        </>
+      )
+    },
+    {
+      titulo: 'Asignación',
+      contenido: (
+        <>
+          {Object.keys(initialProperty.otras_caracteristicas.asignacion).map(key => (
+            <Form.Group className="mb-3" key={key}>
+              <Form.Label className="card-label">{key}</Form.Label>
+              <Form.Control type="text" name={key} value={property.otras_caracteristicas.asignacion[key]} onChange={handleAsignacionChange} />
+            </Form.Group>
+          ))}
+        </>
+      )
+    },
+    {
+      titulo: 'Organización Parqueadero',
+      contenido: (
+        <>
+          {Object.keys(initialProperty.otras_caracteristicas.organizacion_parqueadero).map(key => (
+            <Form.Group className="mb-3" key={key}>
+              <Form.Label className="card-label">{key}</Form.Label>
+              <Form.Control type="text" name={key} value={property.otras_caracteristicas.organizacion_parqueadero[key]} onChange={handleOrgParqueaderoChange} />
+            </Form.Group>
+          ))}
+        </>
+      )
+    }
+  ];
+
+  // Divide los grupos en dos columnas
+  const mitad = Math.ceil(grupos.length / 2);
+  const gruposCol1 = grupos.slice(0, mitad);
+  const gruposCol2 = grupos.slice(mitad);
+
   return (
     <Container className="mt-4">
-      <h2 className='admin-dashboard-titulo'>Crear Nueva Propiedad</h2>
+      <h2 className='admin-dashboard-titulo text-center mb-4'>Crear Nueva Propiedad</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit}>
-        <Row>
-          <Col md={6}>
-            {/* Campos principales */}
-            <Form.Group className="mb-3">
-              <Form.Label>Valor</Form.Label>
-              <Form.Control type="number" name="Valor" value={property.Valor} onChange={handleChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Área</Form.Label>
-              <Form.Control type="number" name="Area" value={property.Area} onChange={handleChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Descripción General</Form.Label>
-              <Form.Control as="textarea" name="Descripcion_General" value={property.Descripcion_General} onChange={handleChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Antigüedad</Form.Label>
-              <Form.Control type="number" name="Antiguedad" value={property.Antiguedad} onChange={handleChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Motivo VoA</Form.Label>
-              <Form.Control type="text" name="Motivo_VoA" value={property.Motivo_VoA} onChange={handleChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Situación inmueble</Form.Label>
-              <Form.Control type="text" name="Situacion_inmueble" value={property.Situacion_inmueble} onChange={handleChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Código interno</Form.Label>
-              <Form.Control type="text" name="Codigo_interno" value={property.Codigo_interno} onChange={handleChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Estado</Form.Label>
-              <Form.Control type="text" name="Estado" value={property.Estado} onChange={handleChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Observaciones</Form.Label>
-              <Form.Control as="textarea" name="Observaciones" value={property.Observaciones} onChange={handleChange} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Usuario (Platform_user_FK)</Form.Label>
-              <Form.Control type="number" name="Platform_user_FK" value={property.Platform_user_FK} onChange={handleChange} required />
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            {/* Dirección */}
-            <h5>Dirección</h5>
-            <Form.Group className="mb-3">
-              <Form.Label>Dirección</Form.Label>
-              <Form.Control type="text" name="Direccion" value={property.direccion.Direccion} onChange={handleDireccionChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Tipo de vía</Form.Label>
-              <Form.Control type="text" name="Tipo_via" value={property.direccion.Tipo_via} onChange={handleDireccionChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Número vía principal</Form.Label>
-              <Form.Control type="number" name="Numero_via_principal" value={property.direccion.Numero_via_principal} onChange={handleDireccionChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Número calle transversal</Form.Label>
-              <Form.Control type="number" name="Numero_calle_transversal" value={property.direccion.Numero_calle_transversal} onChange={handleDireccionChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Número edificación</Form.Label>
-              <Form.Control type="number" name="Numero_edificacion" value={property.direccion.Numero_edificacion} onChange={handleDireccionChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Descripción adicional</Form.Label>
-              <Form.Control type="text" name="Descripcion_adicional" value={property.direccion.Descripcion_adicional} onChange={handleDireccionChange} />
-            </Form.Group>
-            {/* NDAP */}
-            <h6>NDAP</h6>
-            <Form.Group className="mb-3">
-              <Form.Label>Descripción NDAP</Form.Label>
-              <Form.Control type="text" name="Ndap_descripcion" value={property.direccion.ndap.Ndap_descripcion} onChange={handleNdapChange} />
-            </Form.Group>
-            {/* Municipio */}
-            <h6>Municipio</h6>
-            <Form.Group className="mb-3">
-              <Form.Label>Nombre Municipio</Form.Label>
-              <Form.Control type="text" name="Municipio_nombre" value={property.direccion.municipio.Municipio_nombre} onChange={handleMunicipioChange} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Descripción Municipio</Form.Label>
-              <Form.Control type="text" name="Municipio_descripcion" value={property.direccion.municipio.Municipio_descripcion} onChange={handleMunicipioChange} />
-            </Form.Group>
-            {/* Barrio, Ciudad, Corregimiento, Vereda */}
-            <h6>Barrio/Ciudad/Corregimiento/Vereda</h6>
-            <Form.Group className="mb-3">
-              <Form.Label>Nombre Barrio</Form.Label>
-              <Form.Control type="text" name="Nombre_barrio" value={property.direccion.barrio_ciudad_corregimiento_vereda.barrio.Nombre_barrio} onChange={e => handleBCCVChange('barrio', e)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Ciudad</Form.Label>
-              <Form.Control type="text" name="Ciudad" value={property.direccion.barrio_ciudad_corregimiento_vereda.ciudad.Ciudad} onChange={e => handleBCCVChange('ciudad', e)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Corregimiento</Form.Label>
-              <Form.Control type="text" name="Corregimiento" value={property.direccion.barrio_ciudad_corregimiento_vereda.corregimiento.Corregimiento} onChange={e => handleBCCVChange('corregimiento', e)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Vereda</Form.Label>
-              <Form.Control type="text" name="Vereda_nombre" value={property.direccion.barrio_ciudad_corregimiento_vereda.vereda.Vereda_nombre} onChange={e => handleBCCVChange('vereda', e)} />
-            </Form.Group>
-            {/* Localización */}
-            <h6>Localización</h6>
-            <Form.Group className="mb-3">
-              <Form.Label>Descripción</Form.Label>
-              <Form.Control type="text" name="Localizacion_descripcion" value={property.direccion.localizacion.Localizacion_descripcion} onChange={handleLocalizacionChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Latitud</Form.Label>
-              <Form.Control type="number" name="Latitud" value={property.direccion.localizacion.Latitud} onChange={handleLocalizacionChange} required />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Longitud</Form.Label>
-              <Form.Control type="number" name="Longitud" value={property.direccion.localizacion.Longitud} onChange={handleLocalizacionChange} required />
-            </Form.Group>
-            {/* Designador Cardinal */}
-            <h6>Designador Cardinal</h6>
-            <Form.Group className="mb-3">
-              <Form.Label>Cardinalidad</Form.Label>
-              <Form.Control type="text" name="Cardinalidad" value={property.direccion.designador_cardinal.Cardinalidad} onChange={handleDesignadorChange} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Abreviación</Form.Label>
-              <Form.Control type="text" name="Abreviacion" value={property.direccion.designador_cardinal.Abreviacion} onChange={handleDesignadorChange} />
-            </Form.Group>
-          </Col>
-        </Row>
-        {/* Imágenes */}
-        <h5>Imágenes</h5>
-        <Form.Group className="mb-3">
-          <Form.Label>Seleccionar imágenes</Form.Label>
-          <Form.Control
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-        </Form.Group>
-        {property.imagenes_inmueble.map((img, idx) => (
-          <div key={idx} style={{ border: '1px solid #eee', padding: 10, marginBottom: 10 }}>
-            <div>
-              <strong>Nombre:</strong> {img.Nombre}
-            </div>
-            <div>
-              <strong>URL:</strong> <a href={img.URL} target="_blank" rel="noopener noreferrer">{img.URL}</a>
-            </div>
-            <div>
-              <strong>Archivo Imagen:</strong> {img.Imagenes}
-            </div>
-            {img.URL && (
-              <img src={img.URL} alt={img.Nombre} style={{ maxWidth: 100, marginTop: 5 }} />
-            )}
+        <div className="two-columns-grid">
+          <div>
+            {gruposCol1.map((grupo, idx) => (
+              <div className="custom-card mb-4" key={grupo.titulo}>
+                <h5 className="card-title">{grupo.titulo}</h5>
+                {grupo.contenido}
+              </div>
+            ))}
           </div>
-        ))}
-        {/* División */}
-        <h5>División</h5>
-        {Object.keys(initialProperty.division).map(key => (
-          <Form.Group className="mb-3" key={key}>
-            <Form.Label>{key}</Form.Label>
-            <Form.Control type="text" name={key} value={property.division[key]} onChange={handleDivisionChange} />
-          </Form.Group>
-        ))}
-        {/* Acerca Edificación */}
-        <h5>Acerca de la Edificación</h5>
-        {Object.keys(initialProperty.acerca_edificacion).map(key => (
-          <Form.Group className="mb-3" key={key}>
-            <Form.Label>{key}</Form.Label>
-            <Form.Control type="text" name={key} value={property.acerca_edificacion[key]} onChange={handleAcercaChange} />
-          </Form.Group>
-        ))}
-        {/* Tipo Edificación */}
-        <h5>Tipo Edificación</h5>
-        {Object.keys(initialProperty.tipo_edificacion).map(key => (
-          <Form.Group className="mb-3" key={key}>
-            <Form.Label>{key}</Form.Label>
-            <Form.Control type="text" name={key} value={property.tipo_edificacion[key]} onChange={handleTipoEdificacionChange} />
-          </Form.Group>
-        ))}
-        {/* Otras Características */}
-        <h5>Otras Características</h5>
-        {Object.keys(initialProperty.otras_caracteristicas).filter(key => key !== 'asignacion' && key !== 'organizacion_parqueadero').map(key => (
-          <Form.Group className="mb-3" key={key}>
-            <Form.Label>{key}</Form.Label>
-            <Form.Control type="text" name={key} value={property.otras_caracteristicas[key]} onChange={handleOtrasCaracteristicasChange} />
-          </Form.Group>
-        ))}
-        {/* Asignación */}
-        <h6>Asignación</h6>
-        {Object.keys(initialProperty.otras_caracteristicas.asignacion).map(key => (
-          <Form.Group className="mb-3" key={key}>
-            <Form.Label>{key}</Form.Label>
-            <Form.Control type="text" name={key} value={property.otras_caracteristicas.asignacion[key]} onChange={handleAsignacionChange} />
-          </Form.Group>
-        ))}
-        {/* Organización Parqueadero */}
-        <h6>Organización Parqueadero</h6>
-        {Object.keys(initialProperty.otras_caracteristicas.organizacion_parqueadero).map(key => (
-          <Form.Group className="mb-3" key={key}>
-            <Form.Label>{key}</Form.Label>
-            <Form.Control type="text" name={key} value={property.otras_caracteristicas.organizacion_parqueadero[key]} onChange={handleOrgParqueaderoChange} />
-          </Form.Group>
-        ))}
-        <div>
-          <Button variant="primary" type="submit">
+          <div>
+            {gruposCol2.map((grupo, idx) => (
+              <div className="custom-card mb-4" key={grupo.titulo}>
+                <h5 className="card-title">{grupo.titulo}</h5>
+                {grupo.contenido}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="button-container">
+          <Button className="btn-crear-propiedad" type="submit">
             Crear Propiedad
           </Button>
         </div>
       </Form>
+      <style>{`
+  body {
+    background: #1C56A7FF;
+  }
+  .two-columns-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .custom-card {
+    border-radius: 16px;
+    border: 1px solid #5a7ca3;
+    background: #15365FFF;
+    box-shadow: 0 2px 8px rgba(60, 90, 130, 0.08);
+    padding: 24px;
+  }
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #72A3D1FF;
+    margin-bottom: 16px;
+  }
+  .card-label {
+    color: #FDFDFDFF;
+  }
+  .custom-card input,
+  .custom-card textarea,
+  .custom-card select {
+    background: #1C56A7FF;
+    color: #FDFDFDFF;
+    border: 1px solid #5a7ca3;
+  }
+  .custom-card input:focus,
+  .custom-card textarea:focus,
+  .custom-card select:focus {
+    border-color: #72A3D1FF;
+    box-shadow: 0 0 0 2px #72A3D1FF33;
+  }
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+    margin-bottom: 32px;
+  }
+  .btn-crear-propiedad {
+    background: #1C56A7FF;
+    color: #FDFDFDFF;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 16px 48px;
+    box-shadow: 0 2px 8px rgba(60, 90, 130, 0.15);
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-crear-propiedad:hover, .btn-crear-propiedad:focus {
+    background: #72A3D1FF;
+    color: #15365FFF;
+  }
+`}</style>
     </Container>
   );
 };

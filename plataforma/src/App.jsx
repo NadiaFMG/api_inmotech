@@ -25,6 +25,7 @@ import SobreNosotrosAdmin from './pages/admin/SobreNosotrosAdmin';
 import TerminosCondicionesAdmin from './pages/admin/TerminosCondicionesAdmin';
 import PorqueElegirnosAdmin from './pages/admin/PorqueElegirnosAdmin';
 import PoliticaPrivacidadAdmin from './pages/admin/PoliticaPrivacidadAdmin';
+import PerfilAdmin from './pages/Perfil.jsx';
 import './styles/Navigation.css';
 import './styles/admin.css';
 import Footer from './components/common/Footer';
@@ -63,6 +64,7 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="inmuebles" element={<AdminProperties />} />
+          <Route path="/admin/perfil" element={<PerfilAdmin />} />
           <Route path="inmuebles/crear" element={<CreateProperty />} />
           <Route path="inmuebles/editar/:id" element={<EditProperty />} />
           <Route path="visualizaciones" element={<Visualizations />} />

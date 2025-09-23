@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Alert, Card } from 'react-bootstrap';
+import { Form, Button, Alert, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
 import '../styles/auth.css';
@@ -8,7 +8,8 @@ const AuthForm = () => {
     const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
     const [credentials, setCredentials] = useState({
-        username: '',
+        usuario: '',
+        correo: '',
         password: ''
     });
     const [error, setError] = useState('');
@@ -25,15 +26,15 @@ const AuthForm = () => {
         e.preventDefault();
         try {
             if (isLogin) {
-                const response = await authService.login(credentials.username, credentials.password);
-                // El backend responde con 'user', no 'usuario'
+                // Permite usuario o correo en el mismo input
+                const response = await authService.login(credentials.usuario, credentials.password);
                 if (response.user && response.user.role === 1) {
                     navigate('/admin');
                 } else {
                     navigate('/inicio');
                 }
             } else {
-                await authService.register(credentials.username, credentials.password);
+                await authService.register(credentials.usuario, credentials.correo, credentials.password);
                 setIsLogin(true);
                 setError('Registro exitoso. Por favor inicia sesión.');
             }
@@ -52,18 +53,47 @@ const AuthForm = () => {
                     <h2 className="auth-title mb-4">{isLogin ? 'Iniciar Sesión' : 'Registro'}</h2>
                     {error && <Alert variant={error.includes('exitoso') ? 'success' : 'danger'} className="auth-error">{error}</Alert>}
                     <Form className="auth-form" onSubmit={handleSubmit}>
-                        <Form.Group className="mb-4">
-                            <Form.Label>Usuario</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="username"
-                                value={credentials.username}
-                                onChange={handleChange}
-                                required
-                                autoComplete="username"
-                                placeholder="Ingresa tu usuario"
-                            />
-                        </Form.Group>
+                        {isLogin ? (
+                            <Form.Group className="mb-4">
+                                <Form.Label>Usuario o correo</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="usuario"
+                                    value={credentials.usuario}
+                                    onChange={handleChange}
+                                    required
+                                    autoComplete="username"
+                                    placeholder="Ingresa tu usuario o correo"
+                                />
+                            </Form.Group>
+                        ) : (
+                            <>
+                                <Form.Group className="mb-4">
+                                    <Form.Label>Usuario</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="usuario"
+                                        value={credentials.usuario}
+                                        onChange={handleChange}
+                                        required
+                                        autoComplete="username"
+                                        placeholder="Ingresa tu usuario"
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-4">
+                                    <Form.Label>Correo</Form.Label>
+                                    <Form.Control
+                                        type="email"
+                                        name="correo"
+                                        value={credentials.correo}
+                                        onChange={handleChange}
+                                        required
+                                        autoComplete="email"
+                                        placeholder="Ingresa tu correo"
+                                    />
+                                </Form.Group>
+                            </>
+                        )}
                         <Form.Group className="mb-4">
                             <Form.Label>Contraseña</Form.Label>
                             <Form.Control

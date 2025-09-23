@@ -15,8 +15,8 @@ api.interceptors.request.use((config) => {
 });
 
 export const authService = {
-    login: async (username, password) => {
-        const response = await api.post('/login', { Username: username, password });
+    login: async (usuario, password) => {
+        const response = await api.post('/login', { Username: usuario, password });
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -24,8 +24,9 @@ export const authService = {
         }
         return response.data;
     },
-    register: async (username, password) => {
-        const response = await api.post('/register', { Username: username, password });
+    register: async (usuario, correo, password) => {
+        // Aquí agregas el campo correo
+        const response = await api.post('/register', { Username: usuario, email: correo, password });
         return response.data;
     },
     getPerfil: () => api.get('/auth/perfil')
