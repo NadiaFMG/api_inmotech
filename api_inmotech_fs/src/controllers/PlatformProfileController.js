@@ -53,6 +53,68 @@ const PlatformProfileController = {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
+  },
+// crear perfil del usuario logueado
+  async createByUser(req, res) {
+    try {
+      const userId = req.body.userId || req.query.userId;
+      if (!userId) {
+        return res.status(400).json({ error: 'Se requiere userId' });
+      }
+      // Verifica si ya existe un perfil para ese usuario
+      const exists = await PlatformProfile.findOne({
+        where: { Platform_user_FK: userId }
+      });
+      if (exists) {
+        return res.status(400).json({ error: 'El perfil ya existe para este usuario' });
+      }
+      // Crea el perfil con Platform_user_FK igual al userId
+      const profile = await PlatformProfile.create({
+        ...req.body,
+        Platform_user_FK: userId
+      });
+      res.status(201).json(profile);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+//perfiles de cada usuario
+  async findByUser(req, res) {
+    try {
+      const userId = req.query.userId || req.body.userId;
+      if (!userId) {
+        return res.status(400).json({ error: 'Se requiere userId' });
+      }
+      // Cambia aquí el nombre del campo
+      const profile = await PlatformProfile.findOne({
+        where: { Platform_user_FK: userId }
+      });
+      if (!profile) return res.status(404).json({ error: 'Perfil no encontrado' });
+      res.json(profile);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  // Actualizar perfil por userId
+  async updateByUser(req, res) {
+    try {
+      const userId = req.query.userId || req.body.userId;
+      if (!userId) {
+        return res.status(400).json({ error: 'Se requiere userId' });
+      }
+      // Busca el perfil por Platform_user_FK
+      const profile = await PlatformProfile.findOne({
+        where: { Platform_user_FK: userId }
+      });
+      if (!profile) return res.status(404).json({ error: 'Perfil no encontrado' });
+
+      // Actualiza el perfil
+      await profile.update(req.body);
+      res.json(profile);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
   }
 };
 

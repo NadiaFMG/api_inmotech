@@ -39,6 +39,28 @@ const authController = {
     }
   },
 
+  async checkUsuario(req, res) {
+    try {
+      const { usuario } = req.query;
+      if (!usuario) return res.status(400).json({ disponible: false, error: 'Usuario requerido' });
+      const exists = await PlatformUser.findOne({ where: { Username: usuario } });
+      res.json({ disponible: !exists });
+    } catch (error) {
+      res.status(500).json({ disponible: false, error: error.message });
+    }
+  },
+
+  async checkCorreo(req, res) {
+    try {
+      const { correo } = req.query;
+      if (!correo) return res.status(400).json({ disponible: false, error: 'Correo requerido' });
+      const exists = await PlatformUser.findOne({ where: { email: correo } });
+      res.json({ disponible: !exists });
+    } catch (error) {
+      res.status(500).json({ disponible: false, error: error.message });
+    }
+  },
+
   async register(req, res) {
   try {
     const { Username, email, password } = req.body;
