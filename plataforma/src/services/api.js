@@ -32,25 +32,6 @@ export const authService = {
     getPerfil: () => api.get('/auth/perfil')
 };
 
-//PlatformProfile
-
-// export const platformProfileService = {
-//     create: (data) => api.post('/platformprofile', data),
-//     getAll: () => api.get('/platformprofile'),
-//     getById: (id) => api.get(`/platformprofile/${id}`),
-//     update: (id, data) => api.put(`/platformprofile/${id}`, data),
-//     delete: (id) => api.delete(`/platformprofile/${id}`)
-// };
-
-// export const platformProfileService = {
-//     create: (data) => api.post('/platformprofile', data),
-//     getAll: () => api.get('/platformprofile'),
-//     getById: (id) => api.get(`/platformprofile/${id}`),
-//     update: (id, data) => api.put(`/platformprofile/${id}`, data),
-//     delete: (id) => api.delete(`/platformprofile/${id}`),
-//     getByUserId: (userId) => api.get('/platformprofile/by-user', { params: { userId } })
-// };
-
 export const platformProfileService = {
     // Crear perfil del usuario logueado
     createByUser: (data) => api.post('/platformprofile/by-user', data),
