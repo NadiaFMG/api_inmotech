@@ -25,12 +25,34 @@ export const authService = {
         return response.data;
     },
     register: async (usuario, correo, password) => {
-        // Aquí agregas el campo correo
         const response = await api.post('/register', { Username: usuario, email: correo, password });
+        return response.data;
+    },
+    loginWithGoogle: async (credential) => {
+        const response = await api.post('/google', { credential });
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+        }
         return response.data;
     },
     getPerfil: () => api.get('/auth/perfil')
 };
+
+// export const platformProfileService = {
+//     // Crear perfil del usuario logueado
+//     createByUser: (data) => api.post('/platformprofile/by-user', data),
+//     // Editar perfil del usuario logueado
+//     updateByUser: (userId, data) => api.put('/platformprofile/by-user', { ...data, userId }),
+//     // Obtener perfil por userId
+//     getByUserId: (userId) => api.get('/platformprofile/by-user', { params: { userId } }),
+//     // Otros servicios generales
+//     create: (data) => api.post('/platformprofile', data),
+//     getAll: () => api.get('/platformprofile'),
+//     getById: (id) => api.get(`/platformprofile/${id}`),
+//     update: (id, data) => api.put(`/platformprofile/${id}`, data),
+//     delete: (id) => api.delete(`/platformprofile/${id}`)
+// };
 
 export const platformProfileService = {
     // Crear perfil del usuario logueado
@@ -39,6 +61,14 @@ export const platformProfileService = {
     updateByUser: (userId, data) => api.put('/platformprofile/by-user', { ...data, userId }),
     // Obtener perfil por userId
     getByUserId: (userId) => api.get('/platformprofile/by-user', { params: { userId } }),
+    // Subir imagen de perfil y obtener la URL pública
+    uploadProfilePhoto: (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return api.post('/platformprofile/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    },
     // Otros servicios generales
     create: (data) => api.post('/platformprofile', data),
     getAll: () => api.get('/platformprofile'),

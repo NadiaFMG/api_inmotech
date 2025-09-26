@@ -1,10 +1,11 @@
 import React from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
-import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaSearch, FaBuilding, FaEnvelope, FaInfoCircle, FaDollarSign } from 'react-icons/fa';
+import { Navbar, Nav, Container, Dropdown } from 'react-bootstrap';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaHome, FaSearch, FaBuilding, FaEnvelope, FaInfoCircle, FaDollarSign, FaUser } from 'react-icons/fa';
 
 const Navigation = () => {
     const location = useLocation();
+    const navigate = useNavigate();
 
     const menuItems = [
         { path: '/inicio', icon: <FaHome />, label: 'Inicio' },
@@ -14,6 +15,19 @@ const Navigation = () => {
         { path: '/contacto', icon: <FaEnvelope />, label: 'Contacto' },
         { path: '/sobrenosotros', icon: <FaInfoCircle />, label: 'Sobre Nosotros' }
     ];
+
+    // Obtén el usuario logueado desde localStorage
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const handleCerrarSesion = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        navigate('/');
+    };
+
+    const handleVerPerfil = () => {
+        navigate('/user/perfil');
+    };
 
     return (
         <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
@@ -32,6 +46,20 @@ const Navigation = () => {
                                 <span className="me-1">{item.icon}</span> {item.label}
                             </Nav.Link>
                         ))}
+                        {user && (
+                            <Dropdown align="end" className="ms-3">
+                                <Dropdown.Toggle variant="outline-light" id="dropdown-user">
+                                    <FaUser className="me-1" />
+                                    <span style={{ fontWeight: 600 }}>
+                                        {user.username}
+                                    </span>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={handleVerPerfil}>Ver Perfil</Dropdown.Item>
+                                    <Dropdown.Item onClick={handleCerrarSesion}>Cerrar Sesión</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        )}
                     </Nav>
                 </Navbar.Collapse>
             </Container>

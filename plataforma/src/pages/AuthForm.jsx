@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Form, Button, Alert, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
+import { GoogleLogin } from '@react-oauth/google';
 import '../styles/auth.css';
 
-// Lista simple de dominios de correo temporal (puedes ampliarla)
 const TEMP_DOMAINS = [
     'mailinator.com', 'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'yopmail.com'
 ];
@@ -26,10 +26,8 @@ const AuthForm = () => {
     const [usuarioDisponible, setUsuarioDisponible] = useState(null);
     const [correoDisponible, setCorreoDisponible] = useState(null);
 
-    // Validación de usuario único (simulación, deberías tener un endpoint real)
     const checkUsuarioDisponible = async (usuario) => {
         try {
-            // Simulación: reemplaza por tu endpoint real
             const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/check-usuario?usuario=${usuario}`);
             const data = await res.json();
             setUsuarioDisponible(data.disponible);
@@ -38,10 +36,8 @@ const AuthForm = () => {
         }
     };
 
-    // Validación de correo único (simulación, deberías tener un endpoint real)
     const checkCorreoDisponible = async (correo) => {
         try {
-            // Simulación: reemplaza por tu endpoint real
             const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/check-correo?correo=${correo}`);
             const data = await res.json();
             setCorreoDisponible(data.disponible);
@@ -57,7 +53,6 @@ const AuthForm = () => {
             [name]: value
         }));
 
-        // Validar disponibilidad en tiempo real
         if (name === 'usuario' && value.length >= 3) {
             checkUsuarioDisponible(value);
         }
@@ -67,7 +62,6 @@ const AuthForm = () => {
     };
 
     const validarRegistro = async () => {
-        // Validación de usuario
         if (!usuarioRegex.test(credentials.usuario)) {
             setError('El usuario debe tener entre 3 y 20 caracteres y solo puede contener letras, números y guiones bajos.');
             return false;
@@ -76,7 +70,6 @@ const AuthForm = () => {
             setError('El usuario ya está registrado.');
             return false;
         }
-        // Validación de correo
         if (!emailRegex.test(credentials.correo)) {
             setError('El correo electrónico no tiene un formato válido.');
             return false;
@@ -90,7 +83,6 @@ const AuthForm = () => {
             setError('El correo ya está registrado.');
             return false;
         }
-        // Validación de contraseña
         if (credentials.password.length < 8) {
             setError('La contraseña debe tener al menos 8 caracteres.');
             return false;
@@ -133,6 +125,26 @@ const AuthForm = () => {
         }
     };
 
+    // Login con Google usando el servicio centralizado
+    const handleGoogleLogin = async (credentialResponse) => {
+        try {
+            const data = await authService.loginWithGoogle(credentialResponse.credential);
+            if (data.token && data.user) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                if (data.user.role === 1) {
+                    navigate('/admin');
+                } else {
+                    navigate('/inicio');
+                }
+            } else {
+                setError(data.error || 'Error al iniciar sesión con Google');
+            }
+        } catch (error) {
+            setError('Error al iniciar sesión con Google');
+        }
+    };
+
     return (
         <div className="auth-container d-flex align-items-center justify-content-center">
             <Card className="auth-card">
@@ -151,7 +163,6 @@ const AuthForm = () => {
                                     name="usuario"
                                     value={credentials.usuario}
                                     onChange={handleChange}
-                                    // required
                                     autoComplete="username"
                                     placeholder="Ingresa tu usuario o correo"
                                 />
@@ -165,7 +176,6 @@ const AuthForm = () => {
                                         name="usuario"
                                         value={credentials.usuario}
                                         onChange={handleChange}
-                                        // required
                                         autoComplete="username"
                                         placeholder="Ingresa tu usuario"
                                         isInvalid={usuarioDisponible === false}
@@ -187,7 +197,6 @@ const AuthForm = () => {
                                         name="correo"
                                         value={credentials.correo}
                                         onChange={handleChange}
-                                        // required
                                         autoComplete="email"
                                         placeholder="Ingresa tu correo"
                                         isInvalid={correoDisponible === false}
@@ -211,7 +220,6 @@ const AuthForm = () => {
                                 name="password"
                                 value={credentials.password}
                                 onChange={handleChange}
-                                // required
                                 autoComplete={isLogin ? "current-password" : "new-password"}
                                 placeholder="Ingresa tu contraseña"
                             />
@@ -230,6 +238,12 @@ const AuthForm = () => {
                             {isLogin ? 'Iniciar Sesión' : validating ? 'Validando...' : 'Registrarse'}
                         </Button>
                         <div className="auth-divider">o</div>
+                        <div className="text-center mb-3">
+                            <GoogleLogin
+                                onSuccess={handleGoogleLogin}
+                                onError={() => setError('Error al iniciar sesión con Google')}
+                            />
+                        </div>
                         <div className="text-center">
                             <Button variant="link" className="auth-link" onClick={() => setIsLogin(!isLogin)}>
                                 {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
