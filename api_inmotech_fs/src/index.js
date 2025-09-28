@@ -55,11 +55,34 @@ const allRoutes = require('./routes/index');
 
 const app = express();
 
-// Permitir peticiones desde cualquier origen (todos los dispositivos)
-app.use(cors());
+// Detectar ambiente
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+//? Configuración CORS para desarrollo (localhost)
+if (isDevelopment) {
+  app.use(
+    cors({
+      origin: ['http://localhost:3001', 'http://127.0.0.1:3001'],
+      credentials: true,
+    })
+  );
+  console.log('🔧 Modo desarrollo: CORS configurado para localhost');
+} else {
+  //? Configuración CORS para producción/red local (cualquier IP)
+  app.use(
+    cors({
+      origin: true, // Permitir cualquier origen
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    })
+  );
+  console.log('🌐 Modo producción: CORS configurado para red local');
+}
 
 app.use(express.json());
 
+// Todas las rutas estáticas de imágenes que tenías originalmente
 app.use(
   '/assets/images/inmuebles',
   express.static(
@@ -81,18 +104,58 @@ app.use(
   )
 );
 
+// Descomentar si tienes estas rutas también
+// app.use(
+//   '/assets/images/perfiles',
+//   express.static(
+//     path.resolve(__dirname, '../../plataforma/src/assets/images/perfiles')
+//   )
+// );
+
 // console.log('Sirviendo imágenes desde:', path.resolve(__dirname, '../../plataforma/src/assets/images/sobrenosotros'));
 
+// Todas las rutas de tu API
 app.use('/', allRoutes);
 
-const PORT = process.env.PORT || 3000;
-// Escuchar en todas las interfaces de red
-app.listen(PORT, '0.0.0.0', async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('¡Conexión a la base de datos establecida!');
-    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
-  } catch (error) {
-    console.error('No se pudo conectar a la base de datos:', error);
-  }
+// Ruta de prueba para verificar conectividad
+app.get('/api/test', (req, res) => {
+  res.json({
+    message: 'API funcionando correctamente',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'production',
+    mode: isDevelopment ? 'development' : 'production',
+  });
 });
+
+const PORT = process.env.PORT || 3000;
+
+//? Configuración de host para desarrollo (localhost)
+if (isDevelopment) {
+  app.listen(PORT, 'localhost', async () => {
+    try {
+      await sequelize.authenticate();
+      console.log('✅ ¡Conexión a la base de datos establecida!');
+      console.log(`🚀 Servidor ejecutándose en DESARROLLO:`);
+      console.log(`   - URL: http://localhost:${PORT}`);
+      console.log(`   - Ambiente: ${process.env.NODE_ENV}`);
+      console.log('📁 Rutas estáticas configuradas para imágenes');
+    } catch (error) {
+      console.error('❌ No se pudo conectar a la base de datos:', error);
+    }
+  });
+} else {
+  //? Configuración de host para producción/red local (todas las IPs)
+  app.listen(PORT, '0.0.0.0', async () => {
+    try {
+      await sequelize.authenticate();
+      console.log('✅ ¡Conexión a la base de datos establecida!');
+      console.log(`🚀 Servidor ejecutándose en RED LOCAL:`);
+      console.log(`   - Local: http://localhost:${PORT}`);
+      console.log(`   - Red: http://192.168.20.21:${PORT}`);
+      console.log(`   - Ambiente: ${process.env.NODE_ENV || 'production'}`);
+      console.log('📁 Rutas estáticas configuradas para imágenes');
+    } catch (error) {
+      console.error('❌ No se pudo conectar a la base de datos:', error);
+    }
+  });
+}
