@@ -14,11 +14,12 @@ import '../styles/PropertyCarousel.css';
 const Inicio = () => {
     const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProperties = async () => {
             try {
-                const response = await propertyService.getAllProperties();
+                const response = await inmuebleService.getAllProperties();
                 console.log('Properties fetched in Inicio:', response);
                 if (response && response.propiedades) {
                     setProperties(response.propiedades);
@@ -35,12 +36,34 @@ const Inicio = () => {
         fetchProperties();
     }, []);
 
+    const handlePropertyClick = (propertyId) => {
+        navigate(`/property/${propertyId}`);
+    };
+
     return (
         <div className="inicio-container">
             <PropertyCarousel />
             <Container>
                 <SearchBar />
                 <ListadoDestacado properties={properties} loading={loading} />
+                
+                {/* Sección adicional con PropertyCard */}
+                <Row className="mt-4">
+                    <Col>
+                        <h3>Propiedades Recientes</h3>
+                    </Col>
+                </Row>
+                <Row>
+                    {properties.slice(0, 6).map(property => (
+                        <Col md={4} key={property.id} className="mb-3">
+                            <PropertyCard 
+                                property={property} 
+                                onClick={() => handlePropertyClick(property.id)}
+                            />
+                        </Col>
+                    ))}
+                </Row>
+                
                 <SeccionesInformativas />
             </Container>
         </div>

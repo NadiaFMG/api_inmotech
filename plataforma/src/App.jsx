@@ -27,13 +27,24 @@ import TerminosCondicionesAdmin from './pages/admin/TerminosCondicionesAdmin';
 import PorqueElegirnosAdmin from './pages/admin/PorqueElegirnosAdmin';
 import PoliticaPrivacidadAdmin from './pages/admin/PoliticaPrivacidadAdmin';
 import PerfilAdmin from './pages/Perfil.jsx';
-import PerfilUser from './pages/PerfilUser.jsx'; // <-- Importa tu componente de perfil de usuario
+import PerfilUser from './pages/PerfilUser.jsx';
 import './styles/Navigation.css';
 import './styles/admin.css';
 import Footer from './components/common/Footer';
 import './styles/Footer.css';
 
 const GOOGLE_CLIENT_ID = "441927923403-u594ve5sook0pp5openu0igkqknll1o8.apps.googleusercontent.com";
+
+// Layout component for public pages
+const PublicLayout = () => (
+  <div className="d-flex flex-column min-vh-100">
+    <Navigation />
+    <main className="flex-grow-1">
+      <Outlet />
+    </main>
+    <Footer />
+  </div>
+);
 
 function App() {
   return (
@@ -42,27 +53,19 @@ function App() {
         <Routes>
           {/* Ruta de autenticación (login/registro) */}
           <Route path="/" element={<AuthForm />} />
-          <Route path="/inmueble/:id" element={<InmuebleDetalle />} />
-          <Route path="/terminoscondiciones" element={<TerminosCondiciones />} />
-          <Route path="/politicaprivacidad" element={<PoliticaPrivacidad />} />
-          <Route path="/faq" element={<PreguntasFrecuentes />} />
-
-          {/* Public routes with Navigation and Footer */}
-          <Route path="/inicio" element={
-            <div className="d-flex flex-column min-vh-100">
-              <Navigation />
-              <main className="flex-grow-1">
-                <Outlet />
-              </main>
-              <Footer />
-            </div>
-          }>
+          
+          {/* Rutas públicas con Navigation y Footer */}
+          <Route path="/" element={<PublicLayout />}>
             <Route path="inicio" element={<Inicio />} />
             <Route path="inmuebles" element={<Inmuebles />} />
             <Route path="buscar" element={<Buscar />} />
             <Route path="venderinmueble" element={<VenderInmueble />} />
             <Route path="contacto" element={<Contacto />} />
             <Route path="sobrenosotros" element={<SobreNosotros />} />
+            <Route path="inmueble/:id" element={<InmuebleDetalle />} />
+            <Route path="terminoscondiciones" element={<TerminosCondiciones />} />
+            <Route path="politicaprivacidad" element={<PoliticaPrivacidad />} />
+            <Route path="faq" element={<PreguntasFrecuentes />} />
           </Route>
 
           {/* Perfil de usuario normal */}
@@ -72,7 +75,7 @@ function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="inmuebles" element={<AdminProperties />} />
-            <Route path="/admin/perfil" element={<PerfilAdmin />} />
+            <Route path="perfil" element={<PerfilAdmin />} />
             <Route path="inmuebles/crear" element={<CreateProperty />} />
             <Route path="inmuebles/editar/:id" element={<EditProperty />} />
             <Route path="visualizaciones" element={<Visualizations />} />
