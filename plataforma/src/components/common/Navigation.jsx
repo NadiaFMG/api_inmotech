@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar, Nav, Container, Dropdown } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaHome, FaSearch, FaBuilding, FaEnvelope, FaInfoCircle, FaDollarSign, FaUser } from 'react-icons/fa';
+import '../../styles/Navigation.css';
 
 const Navigation = () => {
     const location = useLocation();
@@ -30,7 +31,7 @@ const Navigation = () => {
     };
 
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
+        <Navbar expand="lg" /*className="mb-4"*/>
             <Container>
                 <Navbar.Brand as={Link} to="/inicio">InmoTech</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -41,14 +42,14 @@ const Navigation = () => {
                                 key={item.path}
                                 as={Link} 
                                 to={item.path}
-                                active={location.pathname === item.path}
+                                className={location.pathname === item.path ? 'active' : ''}
                             >
                                 <span className="me-1">{item.icon}</span> {item.label}
                             </Nav.Link>
                         ))}
                         {user && (
                             <Dropdown align="end" className="ms-3">
-                                <Dropdown.Toggle variant="outline-light" id="dropdown-user">
+                                <Dropdown.Toggle variant="" id="dropdown-user" className="custom-dropdown-toggle">
                                     <FaUser className="me-1" />
                                     <span style={{ fontWeight: 600 }}>
                                         {user.username}

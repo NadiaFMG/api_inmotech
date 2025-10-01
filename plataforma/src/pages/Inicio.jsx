@@ -10,6 +10,7 @@ import SeccionesInformativas from '../components/info/SeccionesInformativas';
 import '../styles/ListadoDestacado.css';
 import '../styles/SeccionesInformativas.css';
 import '../styles/PropertyCarousel.css';
+import '../styles/home.css';
 
 const Inicio = () => {
     const [properties, setProperties] = useState([]);
