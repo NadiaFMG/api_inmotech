@@ -139,40 +139,20 @@ const InmuebleController = {
         });
       }
 
-      // 1. NDAP - DEBUGGING MEJORADO
+      // 1. NDAP
       let ndapId = null;
       if (req.body.direccion?.ndap && req.body.direccion.ndap.Ndap_descripcion) {
         try {
-          console.log('=== DEBUGGING NDAP ===');
-          console.log('Datos NDAP recibidos:', JSON.stringify(req.body.direccion.ndap, null, 2));
-          
-          // Verificar estructura exacta
+          console.log('=== PROCESANDO NDAP ===');
           const ndapData = req.body.direccion.ndap;
-          console.log('Campos NDAP a validar:');
-          console.log('- Ndap_descripcion:', ndapData.Ndap_descripcion, '(tipo:', typeof ndapData.Ndap_descripcion, ')');
-          console.log('- Activo:', ndapData.Activo, '(tipo:', typeof ndapData.Activo, ')');
           
-          // Verificar longitud del campo
-          if (ndapData.Ndap_descripcion && ndapData.Ndap_descripcion.length > 255) {
-            console.error('ERROR: Ndap_descripcion demasiado largo:', ndapData.Ndap_descripcion.length, 'caracteres');
-            await t.rollback();
-            return res.status(400).json({ 
-              error: 'Error al crear/buscar NDAP', 
-              detalles: 'Ndap_descripcion no puede tener más de 255 caracteres',
-              valor_enviado: ndapData.Ndap_descripcion
-            });
-          }
-          
-          // Limpiar datos - solo enviar campos que existen en el modelo
           const ndapLimpio = {
             Ndap_descripcion: String(ndapData.Ndap_descripcion).trim(),
             Activo: Number(ndapData.Activo) || 1
           };
           
-          console.log('Datos NDAP limpios a enviar:', ndapLimpio);
+          console.log('Datos NDAP a procesar:', ndapLimpio);
           
-          // Buscar existente primero
-          console.log('Buscando NDAP existente con descripción:', ndapLimpio.Ndap_descripcion);
           const ndapExistente = await Ndap.findOne({
             where: { Ndap_descripcion: ndapLimpio.Ndap_descripcion },
             transaction: t
@@ -182,72 +162,259 @@ const InmuebleController = {
             ndapId = ndapExistente.Ndap_id;
             console.log('NDAP existente encontrado con ID:', ndapId);
           } else {
-            console.log('Creando nuevo NDAP con datos:', ndapLimpio);
-            
-            // Verificar modelo NDAP antes de crear
-            console.log('Verificando estructura del modelo NDAP...');
-            const modeloNdap = await Ndap.describe();
-            console.log('Campos del modelo NDAP:', Object.keys(modeloNdap));
-            
             const nuevoNdap = await Ndap.create(ndapLimpio, { transaction: t });
             ndapId = nuevoNdap.Ndap_id;
             console.log('NDAP creado exitosamente con ID:', ndapId);
           }
-          
-          console.log('=== FIN DEBUGGING NDAP ===');
         } catch (error) {
-          console.error('=== ERROR DETALLADO NDAP ===');
-          console.error('Error completo:', error);
-          console.error('Nombre del error:', error.name);
-          console.error('Mensaje:', error.message);
-          console.error('Stack:', error.stack);
-          
-          if (error.errors && error.errors.length > 0) {
-            console.error('Detalles de errores de validación:');
-            error.errors.forEach((err, index) => {
-              console.error(`Error ${index + 1}:`);
-              console.error('- Campo:', err.path);
-              console.error('- Valor:', err.value);
-              console.error('- Mensaje:', err.message);
-              console.error('- Tipo:', err.type);
-              console.error('- Validador:', err.validatorKey);
-              console.error('- Validador Args:', err.validatorArgs);
-            });
-          }
-          
-          if (error.sql) {
-            console.error('SQL Query:', error.sql);
-          }
-          
-          if (error.parent) {
-            console.error('Error padre:', error.parent);
-          }
-          
-          console.error('=== FIN ERROR NDAP ===');
-          
+          console.error('Error al procesar NDAP:', error);
           await t.rollback();
           return res.status(400).json({ 
             error: 'Error al crear/buscar NDAP', 
-            detalles: error.message,
-            tipo_error: error.name,
-            errores_validacion: error.errors ? error.errors.map(e => ({
-              campo: e.path,
-              valor: e.value,
-              mensaje: e.message,
-              tipo: e.type,
-              validador: e.validatorKey,
-              validador_args: e.validatorArgs
-            })) : [],
-            datos_enviados: req.body.direccion.ndap,
-            sql: error.sql,
-            error_padre: error.parent ? error.parent.message : null
+            detalles: error.message
           });
         }
-      } else {
-        console.log('NDAP no proporcionado o falta Ndap_descripcion');
       }
 
-      // 2. Localización (obligatoria)
+      // 2. MUNICIPIO - CONECTAR CON NDAP
+      let municipioId = null;
+      if (req.body.direccion?.municipio && req.body.direccion.municipio.Municipio_nombre) {
+        try {
+          console.log('=== PROCESANDO MUNICIPIO ===');
+          const municipioData = req.body.direccion.municipio;
+          
+          const municipioLimpio = {
+            Municipio_nombre: String(municipioData.Municipio_nombre).trim(),
+            Municipio_descripcion: municipioData.Municipio_descripcion ? String(municipioData.Municipio_descripcion).trim() : null,
+            Activo: Number(municipioData.Activo) || 1,
+            Ndap_FK: ndapId || null  // ← CONECTAR CON NDAP
+          };
+          
+          console.log('Datos Municipio a procesar:', municipioLimpio);
+          
+          const municipioExistente = await Municipio.findOne({
+            where: { 
+              Municipio_nombre: municipioLimpio.Municipio_nombre,
+              Ndap_FK: municipioLimpio.Ndap_FK
+            },
+            transaction: t
+          });
+          
+          if (municipioExistente) {
+            municipioId = municipioExistente.Municipio_id;
+            console.log('Municipio existente encontrado con ID:', municipioId);
+          } else {
+            const nuevoMunicipio = await Municipio.create(municipioLimpio, { transaction: t });
+            municipioId = nuevoMunicipio.Municipio_id;
+            console.log('Municipio creado exitosamente con ID:', municipioId);
+          }
+        } catch (error) {
+          console.error('Error al procesar Municipio:', error);
+          await t.rollback();
+          return res.status(400).json({ 
+            error: 'Error al crear/buscar Municipio', 
+            detalles: error.message
+          });
+        }
+      }
+
+      // 3. DESIGNADOR CARDINAL - NUEVO
+      let designadorCardinalId = null;
+      if (req.body.direccion?.designador_cardinal && req.body.direccion.designador_cardinal.Cardinalidad) {
+        try {
+          console.log('=== PROCESANDO DESIGNADOR CARDINAL ===');
+          const designadorData = req.body.direccion.designador_cardinal;
+          
+          const designadorLimpio = {
+            Cardinalidad: String(designadorData.Cardinalidad).trim(),
+            Abreviacion: designadorData.Abreviacion ? String(designadorData.Abreviacion).trim() : null,
+            Activo: Number(designadorData.Activo) || 1
+          };
+          
+          console.log('Datos DesignadorCardinal a procesar:', designadorLimpio);
+          
+          const designadorExistente = await DesignadorCardinal.findOne({
+            where: { Cardinalidad: designadorLimpio.Cardinalidad },
+            transaction: t
+          });
+          
+          if (designadorExistente) {
+            designadorCardinalId = designadorExistente.Designador_cardinal_id;
+            console.log('DesignadorCardinal existente encontrado con ID:', designadorCardinalId);
+          } else {
+            const nuevoDesignador = await DesignadorCardinal.create(designadorLimpio, { transaction: t });
+            designadorCardinalId = nuevoDesignador.Designador_cardinal_id;
+            console.log('DesignadorCardinal creado exitosamente con ID:', designadorCardinalId);
+          }
+        } catch (error) {
+          console.error('Error al procesar DesignadorCardinal:', error);
+          await t.rollback();
+          return res.status(400).json({ 
+            error: 'Error al crear/buscar DesignadorCardinal', 
+            detalles: error.message
+          });
+        }
+      }
+
+      // 4. BARRIO, CIUDAD, CORREGIMIENTO, VEREDA - NUEVO
+      let barrioCiudadCorregimientoVeredaId = null;
+      let barrioId = null;
+      let ciudadId = null;
+      let corregimientoId = null;
+      let veredaId = null;
+
+      if (req.body.direccion?.barrio_ciudad_corregimiento_vereda) {
+        try {
+          console.log('=== PROCESANDO BARRIO/CIUDAD/CORREGIMIENTO/VEREDA ===');
+          const bccvData = req.body.direccion.barrio_ciudad_corregimiento_vereda;
+          
+          // PROCESAR BARRIO
+          if (bccvData.barrio && bccvData.barrio.Nombre_barrio) {
+            const barrioLimpio = {
+              Nombre_barrio: String(bccvData.barrio.Nombre_barrio).trim(),
+              Activo: 1
+            };
+            
+            const barrioExistente = await Barrio.findOne({
+              where: { Nombre_barrio: barrioLimpio.Nombre_barrio },
+              transaction: t
+            });
+            
+            if (barrioExistente) {
+              barrioId = barrioExistente.Barrio_id;
+              console.log('Barrio existente encontrado con ID:', barrioId);
+            } else {
+              const nuevoBarrio = await Barrio.create(barrioLimpio, { transaction: t });
+              barrioId = nuevoBarrio.Barrio_id;
+              console.log('Barrio creado exitosamente con ID:', barrioId);
+            }
+          }
+
+          // PROCESAR CIUDAD - CONECTAR CON MUNICIPIO
+          if (bccvData.ciudad && bccvData.ciudad.Ciudad) {
+            const ciudadLimpia = {
+              Ciudad: String(bccvData.ciudad.Ciudad).trim(),
+              Activo: Number(bccvData.ciudad.Activo) || 1,
+              Municipio_FK: municipioId || null  // ← CONECTAR CON MUNICIPIO
+            };
+            
+            const ciudadExistente = await Ciudad.findOne({
+              where: { 
+                Ciudad: ciudadLimpia.Ciudad,
+                Municipio_FK: ciudadLimpia.Municipio_FK
+              },
+              transaction: t
+            });
+            
+            if (ciudadExistente) {
+              ciudadId = ciudadExistente.Ciudad_id;
+              console.log('Ciudad existente encontrada con ID:', ciudadId);
+            } else {
+              const nuevaCiudad = await Ciudad.create(ciudadLimpia, { transaction: t });
+              ciudadId = nuevaCiudad.Ciudad_id;
+              console.log('Ciudad creada exitosamente con ID:', ciudadId);
+            }
+          }
+
+          // PROCESAR CORREGIMIENTO - CONECTAR CON MUNICIPIO
+          if (bccvData.corregimiento && bccvData.corregimiento.Corregimiento) {
+            const corregimientoLimpio = {
+              Corregimiento: String(bccvData.corregimiento.Corregimiento).trim(),
+              Activo: Number(bccvData.corregimiento.Activo) || 1,
+              Municipio_FK: municipioId || null  // ← CONECTAR CON MUNICIPIO
+            };
+            
+            const corregimientoExistente = await Corregimiento.findOne({
+              where: { 
+                Corregimiento: corregimientoLimpio.Corregimiento,
+                Municipio_FK: corregimientoLimpio.Municipio_FK
+              },
+              transaction: t
+            });
+            
+            if (corregimientoExistente) {
+              corregimientoId = corregimientoExistente.Corregimiento_id;
+              console.log('Corregimiento existente encontrado con ID:', corregimientoId);
+            } else {
+              const nuevoCorregimiento = await Corregimiento.create(corregimientoLimpio, { transaction: t });
+              corregimientoId = nuevoCorregimiento.Corregimiento_id;
+              console.log('Corregimiento creado exitosamente con ID:', corregimientoId);
+            }
+          }
+
+          // PROCESAR VEREDA - CONECTAR CON MUNICIPIO
+          if (bccvData.vereda && bccvData.vereda.Vereda_nombre) {
+            const veredaLimpia = {
+              Vereda_nombre: String(bccvData.vereda.Vereda_nombre).trim(),
+              Activo: Number(bccvData.vereda.Activo) || 1,
+              Municipio_FK: municipioId || null  // ← CONECTAR CON MUNICIPIO
+            };
+            
+            const veredaExistente = await Vereda.findOne({
+              where: { 
+                Vereda_nombre: veredaLimpia.Vereda_nombre,
+                Municipio_FK: veredaLimpia.Municipio_FK
+              },
+              transaction: t
+            });
+            
+            if (veredaExistente) {
+              veredaId = veredaExistente.Vereda_id;
+              console.log('Vereda existente encontrada con ID:', veredaId);
+            } else {
+              const nuevaVereda = await Vereda.create(veredaLimpia, { transaction: t });
+              veredaId = nuevaVereda.Vereda_id;
+              console.log('Vereda creada exitosamente con ID:', veredaId);
+            }
+          }
+
+          // CREAR BARRIO_CIUDAD_CORREGIMIENTO_VEREDA - CORREGIR NOMBRE DE CAMPO
+          if (barrioId || ciudadId || corregimientoId || veredaId) {
+            const bccvDataFinal = {
+              Barrio_FK: barrioId || null,
+              Ciudad_FK: ciudadId || null,
+              Corregimiento_FK: corregimientoId || null,
+              Vereda_Fk: veredaId || null, // ← CAMBIAR FK POR Fk (minúscula)
+              Activo: 1
+            };
+            
+            console.log('Datos BCCV finales a crear:', bccvDataFinal);
+            console.log('IDs disponibles - Barrio:', barrioId, 'Ciudad:', ciudadId, 'Corregimiento:', corregimientoId, 'Vereda:', veredaId);
+            
+            // También corregir en la búsqueda
+            const bccvExistente = await BarrioCiudadCorregimientoVereda.findOne({
+              where: {
+                Barrio_FK: bccvDataFinal.Barrio_FK,
+                Ciudad_FK: bccvDataFinal.Ciudad_FK,
+                Corregimiento_FK: bccvDataFinal.Corregimiento_FK,
+                Vereda_Fk: bccvDataFinal.Vereda_Fk, // ← CAMBIAR FK POR Fk
+                Activo: bccvDataFinal.Activo
+              },
+              transaction: t
+            });
+            
+            if (bccvExistente) {
+              barrioCiudadCorregimientoVeredaId = bccvExistente.Barrio_ciudad_corregimiento_vereda_id;
+              console.log('BCCV existente encontrado con ID:', barrioCiudadCorregimientoVeredaId);
+            } else {
+              const nuevoBCCV = await BarrioCiudadCorregimientoVereda.create(bccvDataFinal, { transaction: t });
+              barrioCiudadCorregimientoVeredaId = nuevoBCCV.dataValues.Barrio_ciudad_corregimiento_vereda_id || nuevoBCCV.Barrio_ciudad_corregimiento_vereda_id;
+              console.log('BCCV creado exitosamente con ID:', barrioCiudadCorregimientoVeredaId);
+              console.log('Objeto BCCV completo:', nuevoBCCV.dataValues);
+            }
+          }
+          
+        } catch (error) {
+          console.error('Error al procesar Barrio/Ciudad/Corregimiento/Vereda:', error);
+          await t.rollback();
+          return res.status(400).json({ 
+            error: 'Error al crear/buscar Barrio/Ciudad/Corregimiento/Vereda', 
+            detalles: error.message
+          });
+        }
+      }
+
+      // 5. Localización (obligatoria)
       let localizacionId = null;
       try {
         console.log('=== PROCESANDO LOCALIZACION ===');
@@ -286,7 +453,7 @@ const InmuebleController = {
         });
       }
 
-      // 3. Dirección
+      // 6. Dirección - SIN Municipio_FK ni Ndap_FK
       let direccionId = null;
       try {
         console.log('=== PROCESANDO DIRECCION ===');
@@ -299,14 +466,23 @@ const InmuebleController = {
         delete direccionData.barrio_ciudad_corregimiento_vereda;
         delete direccionData.designador_cardinal;
         
-        // Asignar FKs
+        // Asignar FKs - SOLO LAS QUE EXISTEN EN LA TABLA DIRECCION
         direccionData.Localizacion_FK = localizacionId;
-        // Otros FKs se pueden asignar como null si no existen
+        direccionData.Designador_cardinal_FK = designadorCardinalId || null;
+        direccionData.Barrio_ciudad_corregimiento_vereda_FK = barrioCiudadCorregimientoVeredaId || null;
         
-        console.log('Datos de dirección final:', direccionData);
+        // NO AGREGAR ESTAS - NO EXISTEN EN LA TABLA DIRECCION
+        // direccionData.Ndap_FK = ndapId || null;
+        // direccionData.Municipio_FK = municipioId || null;
+        
+        console.log('Datos de dirección final con FKs correctas:', direccionData);
         
         const direccionExistente = await Direccion.findOne({
-          where: direccionData,
+          where: {
+            Direccion: direccionData.Direccion,
+            Tipo_via: direccionData.Tipo_via,
+            Localizacion_FK: localizacionId
+          },
           transaction: t
         });
         
@@ -328,7 +504,7 @@ const InmuebleController = {
         });
       }
 
-      // 4. COMPLETAR - División
+      // 7. División
       let divisionId = null;
       if (req.body.division) {
         try {
@@ -359,7 +535,7 @@ const InmuebleController = {
         }
       }
 
-      // 5. COMPLETAR - AcercaEdificacion
+      // 8. AcercaEdificacion
       let acercaEdificacionId = null;
       if (req.body.acerca_edificacion) {
         try {
@@ -390,7 +566,7 @@ const InmuebleController = {
         }
       }
 
-      // 6. COMPLETAR - TipoEdificacion
+      // 9. TipoEdificacion
       let tipoEdificacionId = null;
       if (req.body.tipo_edificacion) {
         try {
@@ -421,7 +597,7 @@ const InmuebleController = {
         }
       }
 
-      // 7. COMPLETAR - OrganizacionParqueadero y Asignacion
+      // 10. OrganizacionParqueadero, Asignacion y OtrasCaracteristicas
       let organizacionParqueaderoId = null;
       let asignacionId = null;
       let otrasCaracteristicasId = null;
@@ -508,7 +684,7 @@ const InmuebleController = {
         }
       }
 
-      // 8. Imágenes (ya tienes este código)
+      // 11. Imágenes
       let imagenesIds = [];
       if (Array.isArray(req.body.imagenes_inmueble)) {
         for (const img of req.body.imagenes_inmueble) {
@@ -525,7 +701,7 @@ const InmuebleController = {
         imagenesIds.push(imagenDefault.Imagenes_inmueble_id);
       }
 
-      // 9. CREAR EL INMUEBLE PRINCIPAL (ESTO ES LO QUE FALTABA)
+      // 12. CREAR EL INMUEBLE PRINCIPAL
       try {
         console.log('=== CREANDO INMUEBLE PRINCIPAL ===');
         
@@ -584,7 +760,16 @@ const InmuebleController = {
             tipo_edificacion_id: tipoEdificacionId,
             otras_caracteristicas_id: otrasCaracteristicasId,
             imagenes_ids: imagenesIds,
-            ndap_id: ndapId
+            ndap_id: ndapId,
+            municipio_id: municipioId,
+            designador_cardinal_id: designadorCardinalId,
+            barrio_ciudad_corregimiento_vereda_id: barrioCiudadCorregimientoVeredaId,
+            ids_individuales: {
+              barrio_id: barrioId,
+              ciudad_id: ciudadId,
+              corregimiento_id: corregimientoId,
+              vereda_id: veredaId
+            }
           }
         });
         
