@@ -1,994 +1,419 @@
-// // // // // // import React, { useState, useEffect } from 'react';
-// // // // // // import { Button, Row, Col } from 'react-bootstrap';
-// // // // // // import { FaPlus } from 'react-icons/fa';
-// // // // // // import { useNavigate } from 'react-router-dom';
-// // // // // // import SearchFilter from '../../components/admin/SearchFilter';
-// // // // // // import PropertyCard from '../../components/common/PropertyCard';
-// // // // // // import {inmuebleService} from '../../services/propertyService';
-
-// // // // // // const AdminProperties = () => {
-// // // // // //     const navigate = useNavigate();
-// // // // // //     const [properties, setProperties] = useState([]);
-// // // // // //     const [loading, setLoading] = useState(true);
-// // // // // //     const [filters, setFilters] = useState({
-// // // // // //         search: '',
-// // // // // //         estado: '',
-// // // // // //         tipo: ''
-// // // // // //     });
-
-// // // // // //     const fetchProperties = async () => {
-// // // // // //     try {
-// // // // // //         const response = await inmuebleService.getAll();
-// // // // // //         // Si la respuesta es un objeto con .data, usa .data
-// // // // // //         const data = response.data || response;
-// // // // // //         if (data && data.propiedades) {
-// // // // // //             setProperties(data.propiedades);
-// // // // // //         } else if (Array.isArray(data)) {
-// // // // // //             setProperties(data);
-// // // // // //         }
-// // // // // //     } catch (error) {
-// // // // // //         console.error('Error fetching properties:', error);
-// // // // // //     } finally {
-// // // // // //             setLoading(false);
-// // // // // //         }
-// // // // // //     };
-
-// // // // // //     useEffect(() => {
-// // // // // //         fetchProperties();
-// // // // // //     }, []);
-
-// // // // // //     const handleFilterChange = (key, value) => {
-// // // // // //         setFilters(prev => ({
-// // // // // //             ...prev,
-// // // // // //             [key]: value
-// // // // // //         }));
-// // // // // //     };
-
-// // // // // //     return (
-// // // // // //         <div>
-// // // // // //             <div className="d-flex justify-content-between align-items-center mb-4">
-// // // // // //                 <h2>Gestión de Inmuebles</h2>
-// // // // // //                 <Button 
-// // // // // //                     variant="primary"
-// // // // // //                     onClick={() => navigate('/admin/inmuebles/crear')}
-// // // // // //                 >
-// // // // // //                     <FaPlus className="me-2" /> Nuevo Inmueble
-// // // // // //                 </Button>
-// // // // // //             </div>
-
-// // // // // //             <SearchFilter 
-// // // // // //                 filters={filters}
-// // // // // //                 onFilterChange={handleFilterChange}
-// // // // // //             />
-
-// // // // // //             <Row className="mt-4">
-// // // // // //                 {properties.map(property => (
-// // // // // //                     <Col key={property._id} xs={12} md={6} lg={4} className="mb-4">
-// // // // // //                         <PropertyCard 
-// // // // // //                             property={property} 
-// // // // // //                             isAdminView={true}
-// // // // // //                         />
-// // // // // //                     </Col>
-// // // // // //                 ))}
-// // // // // //             </Row>
-// // // // // //         </div>
-// // // // // //     );
-// // // // // // };
-
-// // // // // // export default AdminProperties;
-
-// // // // // import React, { useState, useEffect } from 'react';
-// // // // // import { Button, Row, Col, Spinner } from 'react-bootstrap';
-// // // // // import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
-// // // // // import { useNavigate } from 'react-router-dom';
-// // // // // import SearchFilter from '../../components/admin/SearchFilter';
-// // // // // import PropertyCard from '../../components/common/PropertyCard';
-// // // // // import { inmuebleService } from '../../services/propertyService';
-
-// // // // // const AdminProperties = () => {
-// // // // //   const navigate = useNavigate();
-// // // // //   const [properties, setProperties] = useState([]);
-// // // // //   const [loading, setLoading] = useState(true);
-// // // // //   const [filters, setFilters] = useState({
-// // // // //     search: '',
-// // // // //     estado: '',
-// // // // //     tipo: ''
-// // // // //   });
-
-// // // // //   const fetchProperties = async () => {
-// // // // //     try {
-// // // // //       const response = await inmuebleService.getAll();
-// // // // //       const data = response.data || response;
-// // // // //       if (data && data.propiedades) {
-// // // // //         setProperties(data.propiedades);
-// // // // //       } else if (Array.isArray(data)) {
-// // // // //         setProperties(data);
-// // // // //       }
-// // // // //     } catch (error) {
-// // // // //       console.error('Error fetching properties:', error);
-// // // // //     } finally {
-// // // // //       setLoading(false);
-// // // // //     }
-// // // // //   };
-
-// // // // //   useEffect(() => {
-// // // // //     fetchProperties();
-// // // // //   }, []);
-
-// // // // //   const handleFilterChange = (key, value) => {
-// // // // //     setFilters(prev => ({
-// // // // //       ...prev,
-// // // // //       [key]: value
-// // // // //     }));
-// // // // //   };
-
-// // // // //   const handleEdit = (propertyId) => {
-// // // // //     navigate(`/admin/inmuebles/editar/${propertyId}`);
-// // // // //   };
-
-// // // // //   const handleDelete = async (propertyId) => {
-// // // // //     if (window.confirm('¿Seguro que deseas eliminar este inmueble?')) {
-// // // // //       try {
-// // // // //         await inmuebleService.delete(propertyId);
-// // // // //         setProperties(prev => prev.filter(p => p._id !== propertyId));
-// // // // //       } catch (error) {
-// // // // //         alert('Error al eliminar el inmueble');
-// // // // //       }
-// // // // //     }
-// // // // //   };
-
-// // // // //   return (
-// // // // //     <div>
-// // // // //       <div className="d-flex justify-content-between align-items-center mb-4">
-// // // // //         <h2>Gestión de Inmuebles</h2>
-// // // // //         <Button
-// // // // //           variant="primary"
-// // // // //           onClick={() => navigate('/admin/inmuebles/crear')}
-// // // // //         >
-// // // // //           <FaPlus className="me-2" /> Nuevo Inmueble
-// // // // //         </Button>
-// // // // //       </div>
-
-// // // // //       <SearchFilter
-// // // // //         filters={filters}
-// // // // //         onFilterChange={handleFilterChange}
-// // // // //       />
-
-// // // // //       {loading ? (
-// // // // //         <div className="d-flex justify-content-center mt-5">
-// // // // //           <Spinner animation="border" variant="primary" />
-// // // // //         </div>
-// // // // //       ) : (
-// // // // //         <Row className="mt-4">
-// // // // //           {properties.map(property => (
-// // // // //             <Col key={property._id} xs={12} md={6} lg={4} className="mb-4">
-// // // // //               <div className="property-card-admin">
-// // // // //                 <PropertyCard
-// // // // //                   property={property}
-// // // // //                   isAdminView={true}
-// // // // //                 />
-// // // // //                 <div className="property-card-actions mt-2 d-flex justify-content-end gap-2">
-// // // // //                   <Button
-// // // // //                     variant="outline-success"
-// // // // //                     size="sm"
-// // // // //                     onClick={() => handleEdit(property._id)}
-// // // // //                   >
-// // // // //                     <FaEdit /> Editar
-// // // // //                   </Button>
-// // // // //                   <Button
-// // // // //                     variant="outline-danger"
-// // // // //                     size="sm"
-// // // // //                     onClick={() => handleDelete(property._id)}
-// // // // //                   >
-// // // // //                     <FaTrash /> Eliminar
-// // // // //                   </Button>
-// // // // //                 </div>
-// // // // //               </div>
-// // // // //             </Col>
-// // // // //           ))}
-// // // // //         </Row>
-// // // // //       )}
-// // // // //       <style>{`
-// // // // //         .property-card-admin {
-// // // // //           background: #15365FFF;
-// // // // //           border-radius: 16px;
-// // // // //           box-shadow: 0 2px 8px rgba(60, 90, 130, 0.08);
-// // // // //           padding: 12px 12px 4px 12px;
-// // // // //         }
-// // // // //         .property-card-actions .btn {
-// // // // //           font-weight: 600;
-// // // // //           border-radius: 8px;
-// // // // //         }
-// // // // //         .property-card-actions .btn-outline-success {
-// // // // //           border-color: #72A3D1FF;
-// // // // //           color: #72A3D1FF;
-// // // // //         }
-// // // // //         .property-card-actions .btn-outline-success:hover {
-// // // // //           background: #72A3D1FF;
-// // // // //           color: #fff;
-// // // // //         }
-// // // // //         .property-card-actions .btn-outline-danger {
-// // // // //           border-color: #e74c3c;
-// // // // //           color: #e74c3c;
-// // // // //         }
-// // // // //         .property-card-actions .btn-outline-danger:hover {
-// // // // //           background: #e74c3c;
-// // // // //           color: #fff;
-// // // // //         }
-// // // // //       `}</style>
-// // // // //     </div>
-// // // // //   );
-// // // // // };
-
-// // // // // export default AdminProperties;
-
-// // // // import React, { useState } from 'react';
-// // // // import { Button, Row, Col, Spinner, Pagination } from 'react-bootstrap';
-// // // // import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
-// // // // import { useNavigate } from 'react-router-dom';
-// // // // import SearchFilter from '../../components/admin/SearchFilter';
-// // // // import PropertyCard from '../../components/common/PropertyCard';
-
-// // // // // Datos quemados de ejemplo
-// // // // const mockProperties = Array.from({ length: 20 }).map((_, idx) => ({
-// // // //   _id: `mock${idx + 1}`,
-// // // //   titulo: `Apartamento ${idx + 1}`,
-// // // //   direccion: `Calle ${idx + 1} #${100 + idx}`,
-// // // //   valor: 100000 * (idx + 1),
-// // // //   estado: idx % 2 === 0 ? 'Disponible' : 'Ocupado',
-// // // //   tipo: idx % 3 === 0 ? 'Casa' : 'Apartamento',
-// // // //   descripcion: `Descripción del inmueble ${idx + 1}`,
-// // // //   imagen: 'https://via.placeholder.com/300x180.png?text=Inmueble+' + (idx + 1)
-// // // // }));
-
-// // // // const PAGE_SIZE = 6;
-
-// // // // const AdminProperties = () => {
-// // // //   const navigate = useNavigate();
-// // // //   const [properties, setProperties] = useState(mockProperties);
-// // // //   const [loading] = useState(false);
-// // // //   const [filters, setFilters] = useState({
-// // // //     search: '',
-// // // //     estado: '',
-// // // //     tipo: ''
-// // // //   });
-// // // //   const [page, setPage] = useState(1);
-
-// // // //   // Filtrado simple (puedes mejorar la lógica)
-// // // //   const filtered = properties.filter(p =>
-// // // //     p.titulo.toLowerCase().includes(filters.search.toLowerCase()) &&
-// // // //     (filters.estado ? p.estado === filters.estado : true) &&
-// // // //     (filters.tipo ? p.tipo === filters.tipo : true)
-// // // //   );
-
-// // // //   // Paginado
-// // // //   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-// // // //   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-// // // //   const handleFilterChange = (key, value) => {
-// // // //     setFilters(prev => ({
-// // // //       ...prev,
-// // // //       [key]: value
-// // // //     }));
-// // // //     setPage(1);
-// // // //   };
-
-// // // //   const handleEdit = (propertyId) => {
-// // // //     alert(`Editar inmueble: ${propertyId}`);
-// // // //   };
-
-// // // //   const handleDelete = (propertyId) => {
-// // // //     if (window.confirm('¿Seguro que deseas eliminar este inmueble?')) {
-// // // //       setProperties(prev => prev.filter(p => p._id !== propertyId));
-// // // //     }
-// // // //   };
-
-// // // //   return (
-// // // //     <div>
-// // // //       <div className="d-flex justify-content-between align-items-center mb-4">
-// // // //         <h2>Gestión de Inmuebles</h2>
-// // // //         <Button
-// // // //           variant="primary"
-// // // //           onClick={() => navigate('/admin/inmuebles/crear')}
-// // // //         >
-// // // //           <FaPlus className="me-2" /> Nuevo Inmueble
-// // // //         </Button>
-// // // //       </div>
-
-// // // //       <SearchFilter
-// // // //         filters={filters}
-// // // //         onFilterChange={handleFilterChange}
-// // // //       />
-
-// // // //       {loading ? (
-// // // //         <div className="d-flex justify-content-center mt-5">
-// // // //           <Spinner animation="border" variant="primary" />
-// // // //         </div>
-// // // //       ) : (
-// // // //         <>
-// // // //           <Row className="mt-4">
-// // // //             {paginated.map(property => (
-// // // //               <Col key={property._id} xs={12} md={6} lg={4} className="mb-4">
-// // // //                 <div className="property-card-admin">
-// // // //                   <PropertyCard
-// // // //                     property={property}
-// // // //                     isAdminView={true}
-// // // //                   />
-// // // //                   <div className="property-card-actions mt-2 d-flex justify-content-end gap-2">
-// // // //                     <Button
-// // // //                       variant="outline-success"
-// // // //                       size="sm"
-// // // //                       onClick={() => handleEdit(property._id)}
-// // // //                     >
-// // // //                       <FaEdit /> Editar
-// // // //                     </Button>
-// // // //                     <Button
-// // // //                       variant="outline-danger"
-// // // //                       size="sm"
-// // // //                       onClick={() => handleDelete(property._id)}
-// // // //                     >
-// // // //                       <FaTrash /> Eliminar
-// // // //                     </Button>
-// // // //                   </div>
-// // // //                 </div>
-// // // //               </Col>
-// // // //             ))}
-// // // //           </Row>
-// // // //           <div className="d-flex justify-content-center mt-4">
-// // // //             <Pagination>
-// // // //               <Pagination.First disabled={page === 1} onClick={() => setPage(1)} />
-// // // //               <Pagination.Prev disabled={page === 1} onClick={() => setPage(page - 1)} />
-// // // //               {Array.from({ length: totalPages }).map((_, idx) => (
-// // // //                 <Pagination.Item
-// // // //                   key={idx + 1}
-// // // //                   active={page === idx + 1}
-// // // //                   onClick={() => setPage(idx + 1)}
-// // // //                 >
-// // // //                   {idx + 1}
-// // // //                 </Pagination.Item>
-// // // //               ))}
-// // // //               <Pagination.Next disabled={page === totalPages} onClick={() => setPage(page + 1)} />
-// // // //               <Pagination.Last disabled={page === totalPages} onClick={() => setPage(totalPages)} />
-// // // //             </Pagination>
-// // // //           </div>
-// // // //         </>
-// // // //       )}
-// // // //       <style>{`
-// // // //         .property-card-admin {
-// // // //           background: #15365FFF;
-// // // //           border-radius: 16px;
-// // // //           box-shadow: 0 2px 8px rgba(60, 90, 130, 0.08);
-// // // //           padding: 12px 12px 4px 12px;
-// // // //         }
-// // // //         .property-card-actions .btn {
-// // // //           font-weight: 600;
-// // // //           border-radius: 8px;
-// // // //         }
-// // // //         .property-card-actions .btn-outline-success {
-// // // //           border-color: #72A3D1FF;
-// // // //           color: #72A3D1FF;
-// // // //         }
-// // // //         .property-card-actions .btn-outline-success:hover {
-// // // //           background: #72A3D1FF;
-// // // //           color: #fff;
-// // // //         }
-// // // //         .property-card-actions .btn-outline-danger {
-// // // //           border-color: #e74c3c;
-// // // //           color: #e74c3c;
-// // // //         }
-// // // //         .property-card-actions .btn-outline-danger:hover {
-// // // //           background: #e74c3c;
-// // // //           color: #fff;
-// // // //         }
-// // // //       `}</style>
-// // // //     </div>
-// // // //   );
-// // // // };
-
-// // // // export default AdminProperties;
-// // // import React, { useState } from 'react';
-// // // import { Button, Row, Col, Spinner, Pagination } from 'react-bootstrap';
-// // // import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
-// // // import { useNavigate } from 'react-router-dom';
-// // // import SearchFilter from '../../components/admin/SearchFilter';
-// // // import PropertyCard from '../../components/common/PropertyCard';
-
-// // // // Datos quemados de ejemplo
-// // // const mockProperties = Array.from({ length: 20 }).map((_, idx) => ({
-// // //   _id: `mock${idx + 1}`,
-// // //   titulo: `Apartamento ${idx + 1}`,
-// // //   direccion: `Calle ${idx + 1} #${100 + idx}`,
-// // //   valor: 100000 * (idx + 1),
-// // //   estado: idx % 2 === 0 ? 'Disponible' : 'Ocupado',
-// // //   tipo: idx % 3 === 0 ? 'Casa' : 'Apartamento',
-// // //   descripcion: `Descripción del inmueble ${idx + 1}`,
-// // //   imagen: 'https://via.placeholder.com/300x180.png?text=Inmueble+' + (idx + 1)
-// // // }));
-
-// // // const PAGE_SIZE = 6;
-
-// // // const AdminProperties = () => {
-// // //   const navigate = useNavigate();
-// // //   const [properties, setProperties] = useState(mockProperties);
-// // //   const [loading] = useState(false);
-// // //   const [filters, setFilters] = useState({
-// // //     search: '',
-// // //     estado: '',
-// // //     tipo: ''
-// // //   });
-// // //   const [page, setPage] = useState(1);
-
-// // //   // Filtrado simple (puedes mejorar la lógica)
-// // //   const filtered = properties.filter(p =>
-// // //     p.titulo.toLowerCase().includes(filters.search.toLowerCase()) &&
-// // //     (filters.estado ? p.estado === filters.estado : true) &&
-// // //     (filters.tipo ? p.tipo === filters.tipo : true)
-// // //   );
-
-// // //   // Paginado
-// // //   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-// // //   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-// // //   const handleFilterChange = (key, value) => {
-// // //     setFilters(prev => ({
-// // //       ...prev,
-// // //       [key]: value
-// // //     }));
-// // //     setPage(1);
-// // //   };
-
-// // //   const handleEdit = (propertyId) => {
-// // //     alert(`Editar inmueble: ${propertyId}`);
-// // //   };
-
-// // //   const handleDelete = (propertyId) => {
-// // //     if (window.confirm('¿Seguro que deseas eliminar este inmueble?')) {
-// // //       setProperties(prev => prev.filter(p => p._id !== propertyId));
-// // //     }
-// // //   };
-
-// // //   return (
-// // //     <div>
-// // //       <div className="d-flex justify-content-between align-items-center mb-4">
-// // //         <h2>Gestión de Inmuebles</h2>
-// // //         <Button
-// // //           variant="primary"
-// // //           onClick={() => navigate('/admin/inmuebles/crear')}
-// // //         >
-// // //           <FaPlus className="me-2" /> Nuevo Inmueble
-// // //         </Button>
-// // //       </div>
-
-// // //       <SearchFilter
-// // //         filters={filters}
-// // //         onFilterChange={handleFilterChange}
-// // //       />
-
-// // //       {loading ? (
-// // //         <div className="d-flex justify-content-center mt-5">
-// // //           <Spinner animation="border" variant="primary" />
-// // //         </div>
-// // //       ) : (
-// // //         <>
-// // //           <Row className="mt-4">
-// // //             {paginated.map(property => (
-// // //               <Col key={property._id} xs={12} md={6} lg={4} className="mb-4">
-// // //                 <div className="property-card-admin">
-// // //                   <PropertyCard
-// // //                     property={property}
-// // //                     isAdminView={true}
-// // //                   />
-// // //                   <div className="property-card-actions mt-2 d-flex justify-content-end gap-2">
-// // //                     <Button
-// // //                       variant="outline-success"
-// // //                       size="sm"
-// // //                       onClick={() => handleEdit(property._id)}
-// // //                     >
-// // //                       <FaEdit /> Editar
-// // //                     </Button>
-// // //                     <Button
-// // //                       variant="outline-danger"
-// // //                       size="sm"
-// // //                       onClick={() => handleDelete(property._id)}
-// // //                     >
-// // //                       <FaTrash /> Eliminar
-// // //                     </Button>
-// // //                   </div>
-// // //                 </div>
-// // //               </Col>
-// // //             ))}
-// // //           </Row>
-// // //           <div className="d-flex justify-content-center mt-4">
-// // //             <Pagination>
-// // //               <Pagination.First disabled={page === 1} onClick={() => setPage(1)} />
-// // //               <Pagination.Prev disabled={page === 1} onClick={() => setPage(page - 1)} />
-// // //               {Array.from({ length: totalPages }).map((_, idx) => (
-// // //                 <Pagination.Item
-// // //                   key={idx + 1}
-// // //                   active={page === idx + 1}
-// // //                   onClick={() => setPage(idx + 1)}
-// // //                 >
-// // //                   {idx + 1}
-// // //                 </Pagination.Item>
-// // //               ))}
-// // //               <Pagination.Next disabled={page === totalPages} onClick={() => setPage(page + 1)} />
-// // //               <Pagination.Last disabled={page === totalPages} onClick={() => setPage(totalPages)} />
-// // //             </Pagination>
-// // //           </div>
-// // //         </>
-// // //       )}
-// // //       <style>{`
-// // //         .property-card-admin {
-// // //           background: #15365FFF;
-// // //           border-radius: 16px;
-// // //           box-shadow: 0 2px 8px rgba(60, 90, 130, 0.08);
-// // //           padding: 12px 12px 4px 12px;
-// // //         }
-// // //         .property-card-actions .btn {
-// // //           font-weight: 600;
-// // //           border-radius: 8px;
-// // //         }
-// // //         .property-card-actions .btn-outline-success {
-// // //           border-color: #72A3D1FF;
-// // //           color: #72A3D1FF;
-// // //         }
-// // //         .property-card-actions .btn-outline-success:hover {
-// // //           background: #72A3D1FF;
-// // //           color: #fff;
-// // //         }
-// // //         .property-card-actions .btn-outline-danger {
-// // //           border-color: #e74c3c;
-// // //           color: #e74c3c;
-// // //         }
-// // //         .property-card-actions .btn-outline-danger:hover {
-// // //           background: #e74c3c;
-// // //           color: #fff;
-// // //         }
-// // //       `}</style>
-// // //     </div>
-// // //   );
-// // // };
-
-// // // export default AdminProperties;
-
-// // import React, { useState } from 'react';
-// // import { Button, Row, Col, Spinner, Pagination } from 'react-bootstrap';
-// // import { FaPlus } from 'react-icons/fa';
-// // import { useNavigate } from 'react-router-dom';
-// // import SearchFilter from '../../components/admin/SearchFilter';
-// // import PropertyCard from '../../components/common/PropertyCard';
-
-// // // Datos quemados de ejemplo
-// // const mockProperties = Array.from({ length: 20 }).map((_, idx) => ({
-// //   _id: `mock${idx + 1}`,
-// //   titulo: `Apartamento ${idx + 1}`,
-// //   direccion: `Calle ${idx + 1} #${100 + idx}`,
-// //   valor: 100000 * (idx + 1),
-// //   estado: idx % 2 === 0 ? 'Disponible' : 'Ocupado',
-// //   tipo: idx % 3 === 0 ? 'Casa' : 'Apartamento',
-// //   descripcion: `Descripción del inmueble ${idx + 1}`,
-// //   imagen: 'https://via.placeholder.com/300x180.png?text=Inmueble+' + (idx + 1)
-// // }));
-
-// // const PAGE_SIZE = 20;
-
-// // const AdminProperties = () => {
-// //   const navigate = useNavigate();
-// //   const [properties, setProperties] = useState(mockProperties);
-// //   const [loading] = useState(false);
-// //   const [filters, setFilters] = useState({
-// //     search: '',
-// //     estado: '',
-// //     tipo: ''
-// //   });
-// //   const [page, setPage] = useState(1);
-
-// //   // Filtrado simple
-// //   const filtered = properties.filter(p =>
-// //     p.titulo.toLowerCase().includes(filters.search.toLowerCase()) &&
-// //     (filters.estado ? p.estado === filters.estado : true) &&
-// //     (filters.tipo ? p.tipo === filters.tipo : true)
-// //   );
-
-// //   // Paginado
-// //   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-// //   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-// //   const handleFilterChange = (key, value) => {
-// //     setFilters(prev => ({
-// //       ...prev,
-// //       [key]: value
-// //     }));
-// //     setPage(1);
-// //   };
-
-// //   const handleEdit = (propertyId) => {
-// //     alert(`Editar inmueble: ${propertyId}`);
-// //   };
-
-// //   const handleDelete = (propertyId) => {
-// //     if (window.confirm('¿Seguro que deseas eliminar este inmueble?')) {
-// //       setProperties(prev => prev.filter(p => p._id !== propertyId));
-// //     }
-// //   };
-
-// //   const handleCardClick = (propertyId, e) => {
-// //     // Evita que el click en los botones dentro de la carta active este evento
-// //     if (e.target.closest('.property-card-actions')) return;
-// //     navigate(`/admin/inmuebles/${propertyId}`);
-// //   };
-
-// //   return (
-// //     <div>
-// //       <div className="d-flex justify-content-between align-items-center mb-4">
-// //         <h2>Gestión de Inmuebles</h2>
-// //         <Button
-// //           variant="primary"
-// //           onClick={() => navigate('/admin/inmuebles/crear')}
-// //         >
-// //           <FaPlus className="me-2" /> Nuevo Inmueble
-// //         </Button>
-// //       </div>
-
-// //       <SearchFilter
-// //         filters={filters}
-// //         onFilterChange={handleFilterChange}
-// //       />
-
-// //       {loading ? (
-// //         <div className="d-flex justify-content-center mt-5">
-// //           <Spinner animation="border" variant="primary" />
-// //         </div>
-// //       ) : (
-// //         <>
-// //           <Row className="mt-4">
-// //             {paginated.map(property => (
-// //               <Col key={property._id} xs={12} md={6} lg={4} className="mb-4">
-// //                 <div
-// //                   className="property-card-admin clickable-card"
-// //                   onClick={e => handleCardClick(property._id, e)}
-// //                   tabIndex={0}
-// //                   role="button"
-// //                   style={{ cursor: 'pointer' }}
-// //                 >
-// //                   <PropertyCard
-// //                     property={property}
-// //                     isAdminView={true}
-// //                     onEdit={() => handleEdit(property._id)}
-// //                     onDelete={() => handleDelete(property._id)}
-// //                   />
-// //                   {/* Los botones Editar/Eliminar deben estar SOLO dentro de PropertyCard */}
-// //                 </div>
-// //               </Col>
-// //             ))}
-// //           </Row>
-// //           <div className="d-flex justify-content-center mt-4">
-// //             <Pagination>
-// //               <Pagination.First disabled={page === 1} onClick={() => setPage(1)} />
-// //               <Pagination.Prev disabled={page === 1} onClick={() => setPage(page - 1)} />
-// //               {Array.from({ length: totalPages }).map((_, idx) => (
-// //                 <Pagination.Item
-// //                   key={idx + 1}
-// //                   active={page === idx + 1}
-// //                   onClick={() => setPage(idx + 1)}
-// //                 >
-// //                   {idx + 1}
-// //                 </Pagination.Item>
-// //               ))}
-// //               <Pagination.Next disabled={page === totalPages} onClick={() => setPage(page + 1)} />
-// //               <Pagination.Last disabled={page === totalPages} onClick={() => setPage(totalPages)} />
-// //             </Pagination>
-// //           </div>
-// //         </>
-// //       )}
-// //       <style>{`
-// //         .property-card-admin {
-// //           background: #15365FFF;
-// //           border-radius: 16px;
-// //           box-shadow: 0 2px 8px rgba(60, 90, 130, 0.08);
-// //           padding: 12px 12px 4px 12px;
-// //           transition: box-shadow 0.2s;
-// //         }
-// //         .property-card-admin.clickable-card:hover {
-// //           box-shadow: 0 4px 16px rgba(60, 90, 130, 0.18);
-// //         }
-// //       `}</style>
-// //     </div>
-// //   );
-// // };
-
-// // export default AdminProperties;
-
-// import React, { useState } from 'react';
-// import { Button, Row, Col, Spinner, Pagination } from 'react-bootstrap';
-// import { FaPlus } from 'react-icons/fa';
-// import { useNavigate } from 'react-router-dom';
-// import SearchFilter from '../../components/admin/SearchFilter';
-// import PropertyCard from '../../components/common/PropertyCard';
-
-// // Datos quemados de ejemplo
-// const mockProperties = Array.from({ length: 20 }).map((_, idx) => ({
-//   _id: `mock${idx + 1}`,
-//   titulo: `Apartamento ${idx + 1}`,
-//   direccion: `Calle ${idx + 1} #${100 + idx}`,
-//   valor: 100000 * (idx + 1),
-//   estado: idx % 2 === 0 ? 'Disponible' : 'Ocupado',
-//   tipo: idx % 3 === 0 ? 'Casa' : 'Apartamento',
-//   descripcion: `Descripción del inmueble ${idx + 1}`,
-//   imagen: 'https://via.placeholder.com/300x180.png?text=Inmueble+' + (idx + 1)
-// }));
-
-// const PAGE_SIZE = 20;
-
-// const AdminProperties = () => {
-//   const navigate = useNavigate();
-//   const [properties, setProperties] = useState(mockProperties);
-//   const [loading] = useState(false);
-//   const [filters, setFilters] = useState({
-//     search: '',
-//     estado: '',
-//     tipo: ''
-//   });
-//   const [page, setPage] = useState(1);
-
-//   // Filtrado simple
-//   const filtered = properties.filter(p =>
-//     p.titulo.toLowerCase().includes(filters.search.toLowerCase()) &&
-//     (filters.estado ? p.estado === filters.estado : true) &&
-//     (filters.tipo ? p.tipo === filters.tipo : true)
-//   );
-
-//   // Paginado
-//   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-//   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-//   const handleFilterChange = (key, value) => {
-//     setFilters(prev => ({
-//       ...prev,
-//       [key]: value
-//     }));
-//     setPage(1);
-//   };
-
-//   const handleEdit = (propertyId) => {
-//     alert(`Editar inmueble: ${propertyId}`);
-//   };
-
-//   const handleDelete = (propertyId) => {
-//     if (window.confirm('¿Seguro que deseas eliminar este inmueble?')) {
-//       setProperties(prev => prev.filter(p => p._id !== propertyId));
-//     }
-//   };
-
-//   const handleCardClick = (propertyId, e) => {
-//     // Evita que el click en los botones dentro de la carta active este evento
-//     if (e.target.closest('.property-card-actions')) return;
-//     navigate(`/admin/inmuebles/${propertyId}`);
-//   };
-
-//   return (
-//     <div>
-//       <div className="d-flex justify-content-between align-items-center mb-4">
-//         <h2>Gestión de Inmuebles</h2>
-//         <Button
-//           variant="primary"
-//           onClick={() => navigate('/admin/inmuebles/crear')}
-//         >
-//           <FaPlus className="me-2" /> Nuevo Inmueble
-//         </Button>
-//       </div>
-
-//       <SearchFilter
-//         filters={filters}
-//         onFilterChange={handleFilterChange}
-//       />
-
-//       {loading ? (
-//         <div className="d-flex justify-content-center mt-5">
-//           <Spinner animation="border" variant="primary" />
-//         </div>
-//       ) : (
-//         <>
-//           <Row className="mt-4">
-//             {paginated.map(property => (
-//               <Col key={property._id} xs={12} md={6} lg={4} className="mb-4">
-//                 <div
-//                   className="property-card-admin clickable-card"
-//                   onClick={e => handleCardClick(property._id, e)}
-//                   tabIndex={0}
-//                   role="button"
-//                   style={{ cursor: 'pointer' }}
-//                 >
-//                   <PropertyCard
-//                     property={property}
-//                     isAdminView={true}
-//                     onEdit={() => handleEdit(property._id)}
-//                     onDelete={() => handleDelete(property._id)}
-//                   />
-//                 </div>
-//               </Col>
-//             ))}
-//           </Row>
-//           <div className="d-flex justify-content-center mt-4">
-//             <Pagination>
-//               <Pagination.First disabled={page === 1} onClick={() => setPage(1)} />
-//               <Pagination.Prev disabled={page === 1} onClick={() => setPage(page - 1)} />
-//               {Array.from({ length: totalPages }).map((_, idx) => (
-//                 <Pagination.Item
-//                   key={idx + 1}
-//                   active={page === idx + 1}
-//                   onClick={() => setPage(idx + 1)}
-//                 >
-//                   {idx + 1}
-//                 </Pagination.Item>
-//               ))}
-//               <Pagination.Next disabled={page === totalPages} onClick={() => setPage(page + 1)} />
-//               <Pagination.Last disabled={page === totalPages} onClick={() => setPage(totalPages)} />
-//             </Pagination>
-//           </div>
-//         </>
-//       )}
-//       <style>{`
-//         .property-card-admin {
-//           background: #15365FFF;
-//           border-radius: 16px;
-//           box-shadow: 0 2px 8px rgba(60, 90, 130, 0.08);
-//           padding: 12px 12px 4px 12px;
-//           transition: box-shadow 0.2s;
-//         }
-//         .property-card-admin.clickable-card:hover {
-//           box-shadow: 0 4px 16px rgba(60, 90, 130, 0.18);
-//         }
-//       `}</style>
-//     </div>
-//   );
-// };
-
-// export default AdminProperties;
-
-import React, { useState } from 'react';
-import { Button, Row, Col, Spinner, Pagination } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Button, Alert, Spinner } from 'react-bootstrap';
 import { FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import SearchFilter from '../../components/admin/SearchFilter';
+import SearchBar from '../../components/search/SearchBar';
+import OpcionesFiltradoAvanzado from '../../components/search/OpcionesFiltradoAvanzado';
+import Ordenamiento from '../../components/search/Ordenamiento';
+import Paginacion from '../../components/search/Paginacion';
 import PropertyCard from '../../components/common/PropertyCard';
-
-// Datos quemados de ejemplo
-const mockProperties = Array.from({ length: 20 }).map((_, idx) => ({
-  _id: `mock${idx + 1}`,
-  titulo: `Apartamento ${idx + 1}`,
-  direccion: `Calle ${idx + 1} #${100 + idx}`,
-  valor: 100000 * (idx + 1),
-  estado: idx % 2 === 0 ? 'Disponible' : 'Ocupado',
-  tipo: idx % 3 === 0 ? 'Casa' : 'Apartamento',
-  descripcion: `Descripción del inmueble ${idx + 1}`,
-  imagen: 'https://via.placeholder.com/300x180.png?text=Inmueble+' + (idx + 1)
-}));
-
-const PAGE_SIZE = 20;
+import { busquedaInmuebleService, inmuebleService } from '../../services/propertyService';
 
 const AdminProperties = () => {
-  const navigate = useNavigate();
-  const [properties, setProperties] = useState(mockProperties);
-  const [loading] = useState(false);
-  const [filters, setFilters] = useState({
-    search: '',
-    estado: '',
-    tipo: ''
-  });
-  const [page, setPage] = useState(1);
+    const navigate = useNavigate();
+    const [inmuebles, setInmuebles] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [searchParams, setSearchParams] = useState(null);
+    const [filtrosAvanzados, setFiltrosAvanzados] = useState(null);
+    const [ordenamiento, setOrdenamiento] = useState(null);
+    const [paginaActual, setPaginaActual] = useState(1);
+    const [totalPaginas, setTotalPaginas] = useState(1);
+    const inmueblesPorPagina = 12; // Menos por página para admin
 
-  // Filtrado simple
-  const filtered = properties.filter(p =>
-    p.titulo.toLowerCase().includes(filters.search.toLowerCase()) &&
-    (filters.estado ? p.estado === filters.estado : true) &&
-    (filters.tipo ? p.tipo === filters.tipo : true)
-  );
+    // Función para obtener inmuebles (IGUAL QUE Inmuebles.jsx)
+    useEffect(() => {
+        const fetchInmuebles = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                console.log('Admin: Fetching inmuebles...');
+                
+                // Intentar primero con busquedaInmuebleService, si falla usar inmuebleService
+                let response;
+                try {
+                    const params = {
+                        page: paginaActual,
+                        limit: inmueblesPorPagina,
+                        ...(searchParams || {}),
+                        ...(filtrosAvanzados || {}),
+                        ...(ordenamiento || {})
+                    };
+                    response = await busquedaInmuebleService.buscar(params);
+                } catch (searchError) {
+                    console.log('Error con busquedaInmuebleService, intentando con inmuebleService:', searchError);
+                    response = await inmuebleService.getAllProperties();
+                }
 
-  // Paginado
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+                console.log('Admin Response:', response);
+                
+                // Manejar diferentes estructuras de respuesta
+                let inmueblesData = [];
+                let total = 0;
 
-  const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value
-    }));
-    setPage(1);
-  };
+                if (response?.data?.inmuebles) {
+                    inmueblesData = response.data.inmuebles;
+                    total = response.data.total || inmueblesData.length;
+                } else if (response?.propiedades) {
+                    inmueblesData = response.propiedades;
+                    total = inmueblesData.length;
+                } else if (Array.isArray(response)) {
+                    inmueblesData = response;
+                    total = response.length;
+                } else if (response?.data && Array.isArray(response.data)) {
+                    inmueblesData = response.data;
+                    total = response.data.length;
+                }
 
-  const handleEdit = (propertyId) => {
-    alert(`Editar inmueble: ${propertyId}`);
-  };
+                setInmuebles(inmueblesData);
+                setTotalPaginas(Math.ceil(total / inmueblesPorPagina));
+                
+                console.log('Admin: Inmuebles loaded:', inmueblesData.length);
+                
+            } catch (err) {
+                console.error('Admin: Error completo al cargar inmuebles:', err);
+                setError(`Error al cargar los inmuebles: ${err.message}`);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  const handleDelete = (propertyId) => {
-    if (window.confirm('¿Seguro que deseas eliminar este inmueble?')) {
-      setProperties(prev => prev.filter(p => p._id !== propertyId));
-    }
-  };
+        fetchInmuebles();
+    }, [paginaActual, searchParams, filtrosAvanzados, ordenamiento]);
 
-  // Navega al detalle del inmueble al hacer clic en la carta (excepto en los botones)
-  const handleCardClick = (propertyId, e) => {
-    if (e.target.closest('.property-card-actions')) return;
-    navigate(`/inmuebles/${propertyId}`);
-  };
+    // Handlers (IGUALES QUE Inmuebles.jsx)
+    const handlePageChange = (newPage) => {
+        setPaginaActual(newPage);
+        window.scrollTo(0, 0);
+    };
 
-  return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Gestión de Inmuebles</h2>
-        <Button
-          variant="primary"
-          onClick={() => navigate('/admin/inmuebles/crear')}
-        >
-          <FaPlus className="me-2" /> Nuevo Inmueble
-        </Button>
-      </div>
+    const handleSearch = (params) => {
+        setSearchParams(params);
+        setPaginaActual(1);
+    };
 
-      <SearchFilter
-        filters={filters}
-        onFilterChange={handleFilterChange}
-      />
+    const handleFiltrosAvanzados = (filtros) => {
+        setFiltrosAvanzados(filtros);
+        setPaginaActual(1);
+    };
 
-      {loading ? (
-        <div className="d-flex justify-content-center mt-5">
-          <Spinner animation="border" variant="primary" />
-        </div>
-      ) : (
-        <>
-          <Row className="mt-4">
-            {paginated.map(property => (
-              <Col key={property._id} xs={12} md={6} lg={4} className="mb-4">
-                <div
-                  className="property-card-admin clickable-card"
-                  onClick={e => handleCardClick(property._id, e)}
-                  tabIndex={0}
-                  role="button"
-                  style={{ cursor: 'pointer' }}
-                >
-                  <PropertyCard
-                    property={property}
-                    isAdminView={true}
-                    onEdit={() => handleEdit(property._id)}
-                    onDelete={() => handleDelete(property._id)}
-                  />
+    const handleSort = (sortParams) => {
+        setOrdenamiento(sortParams);
+        setPaginaActual(1);
+    };
+
+    // Funciones específicas de ADMIN
+    const handleEdit = (inmuebleId) => {
+        navigate(`/admin/inmuebles/editar/${inmuebleId}`);
+    };
+
+    const handleDelete = async (inmuebleId) => {
+        if (window.confirm('¿Estás seguro de que deseas eliminar este inmueble? Esta acción no se puede deshacer.')) {
+            try {
+                setLoading(true);
+                await inmuebleService.delete(inmuebleId);
+                
+                // Actualizar la lista local
+                setInmuebles(prev => prev.filter(inmueble => inmueble.Inmueble_id !== inmuebleId));
+                
+                alert('Inmueble eliminado exitosamente');
+            } catch (error) {
+                console.error('Error al eliminar inmueble:', error);
+                alert('Error al eliminar el inmueble: ' + (error.response?.data?.message || error.message));
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
+    const handleViewDetails = (inmuebleId) => {
+        navigate(`/inmueble/${inmuebleId}`);
+    };
+
+    if (loading && inmuebles.length === 0) {
+        return (
+            <Container className="py-4">
+                <div className="text-center">
+                    <Spinner animation="border" variant="light" />
+                    <p className="text-light mt-2">Cargando inmuebles...</p>
                 </div>
-              </Col>
-            ))}
-          </Row>
-          <div className="d-flex justify-content-center mt-4">
-            <Pagination>
-              <Pagination.First disabled={page === 1} onClick={() => setPage(1)} />
-              <Pagination.Prev disabled={page === 1} onClick={() => setPage(page - 1)} />
-              {Array.from({ length: totalPages }).map((_, idx) => (
-                <Pagination.Item
-                  key={idx + 1}
-                  active={page === idx + 1}
-                  onClick={() => setPage(idx + 1)}
-                >
-                  {idx + 1}
-                </Pagination.Item>
-              ))}
-              <Pagination.Next disabled={page === totalPages} onClick={() => setPage(page + 1)} />
-              <Pagination.Last disabled={page === totalPages} onClick={() => setPage(totalPages)} />
-            </Pagination>
-          </div>
-        </>
-      )}
-      <style>{`
-        .property-card-admin {
-          background: #15365FFF;
-          border-radius: 16px;
-          box-shadow: 0 2px 8px rgba(60, 90, 130, 0.08);
-          padding: 12px 12px 4px 12px;
-          transition: box-shadow 0.2s;
-        }
-        .property-card-admin.clickable-card:hover {
-          box-shadow: 0 4px 16px rgba(60, 90, 130, 0.18);
-        }
-      `}</style>
-    </div>
-  );
+            </Container>
+        );
+    }
+
+    return (
+        <Container fluid className="py-4">
+            {/* Header de Admin */}
+            <div className="admin-header mb-4">
+                <div className="d-flex justify-content-between align-items-center">
+                    <h2 className="admin-dashboard-titulo">Gestión de Inmuebles</h2>
+                    <Button
+                        className="btn-crear-inmueble"
+                        onClick={() => navigate('/admin/inmuebles/crear')}
+                    >
+                        <FaPlus className="me-2" /> Crear Inmueble
+                    </Button>
+                </div>
+                <p className="admin-subtitle">
+                    Total de inmuebles: {inmuebles.length} | Página {paginaActual} de {totalPaginas}
+                </p>
+            </div>
+            
+            {error && (
+                <Alert variant="danger" className="mb-3">
+                    {error}
+                </Alert>
+            )}
+            
+            {/* Filtros y búsqueda (IGUALES QUE Inmuebles.jsx) */}
+            <div className="admin-filters mb-4">
+                <SearchBar onSearch={handleSearch} />
+                <OpcionesFiltradoAvanzado onFilter={handleFiltrosAvanzados} />
+                <Row className="mb-3">
+                    <Col>
+                        <Ordenamiento onSort={handleSort} />
+                    </Col>
+                </Row>
+            </div>
+
+            {/* Grid de inmuebles */}
+            <Row className="inmuebles-grid">
+                {inmuebles.map(inmueble => (
+                    <Col key={inmueble.Inmueble_id} xs={12} md={6} lg={4} xl={3} className="mb-4">
+                        <div className="admin-property-card">
+                            <PropertyCard
+                                property={inmueble}
+                                isAdminView={true}
+                                onEdit={() => handleEdit(inmueble.Inmueble_id)}
+                                onDelete={() => handleDelete(inmueble.Inmueble_id)}
+                                onViewDetails={() => handleViewDetails(inmueble.Inmueble_id)}
+                            />
+                        </div>
+                    </Col>
+                ))}
+            </Row>
+
+            {/* Paginación */}
+            {totalPaginas > 1 && (
+                <div className="admin-pagination">
+                    <Paginacion 
+                        paginaActual={paginaActual}
+                        totalPaginas={totalPaginas}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+            )}
+
+            {/* Loading overlay para acciones */}
+            {loading && inmuebles.length > 0 && (
+                <div className="loading-overlay">
+                    <Spinner animation="border" variant="light" />
+                </div>
+            )}
+
+            <style>{`
+                body {
+                    background: #1C56A7FF;
+                }
+
+                .admin-header {
+                    background: linear-gradient(135deg, #15365FFF, #1C56A7FF);
+                    padding: 2rem;
+                    border-radius: 20px;
+                    border: 1px solid #5a7ca3;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                }
+
+                .admin-dashboard-titulo {
+                    color: #FDFDFDFF;
+                    font-weight: 700;
+                    font-size: 2.2rem;
+                    margin: 0;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+                }
+
+                .admin-subtitle {
+                    color: #72A3D1FF;
+                    margin: 0.5rem 0 0 0;
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                }
+
+                .btn-crear-inmueble {
+                    background: linear-gradient(90deg, #48bb78, #38b2ac);
+                    border: none;
+                    color: white;
+                    font-weight: 700;
+                    padding: 0.875rem 1.5rem;
+                    border-radius: 15px;
+                    transition: all 0.3s ease;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+                    font-size: 1rem;
+                }
+
+                .btn-crear-inmueble:hover {
+                    background: linear-gradient(90deg, #38a169, #319795);
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+                    color: white;
+                }
+
+                .admin-filters {
+                    background: rgba(21, 54, 95, 0.7);
+                    padding: 1.5rem;
+                    border-radius: 16px;
+                    border: 1px solid rgba(114, 163, 209, 0.3);
+                    backdrop-filter: blur(10px);
+                }
+
+                .inmuebles-grid {
+                    margin: 0 -0.75rem;
+                }
+
+                .admin-property-card {
+                    height: 100%;
+                    transition: all 0.3s ease;
+                    position: relative;
+                }
+
+                .admin-property-card:hover {
+                    transform: translateY(-4px);
+                }
+
+                .admin-pagination {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 3rem;
+                    padding: 2rem;
+                    background: rgba(21, 54, 95, 0.5);
+                    border-radius: 16px;
+                    border: 1px solid rgba(114, 163, 209, 0.3);
+                }
+
+                .loading-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.7);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                    backdrop-filter: blur(5px);
+                }
+
+                /* Animaciones de entrada stagger */
+                .admin-property-card:nth-child(1) { animation-delay: 0.1s; }
+                .admin-property-card:nth-child(2) { animation-delay: 0.15s; }
+                .admin-property-card:nth-child(3) { animation-delay: 0.2s; }
+                .admin-property-card:nth-child(4) { animation-delay: 0.25s; }
+                .admin-property-card:nth-child(5) { animation-delay: 0.3s; }
+                .admin-property-card:nth-child(6) { animation-delay: 0.35s; }
+                .admin-property-card:nth-child(7) { animation-delay: 0.4s; }
+                .admin-property-card:nth-child(8) { animation-delay: 0.45s; }
+                .admin-property-card:nth-child(9) { animation-delay: 0.5s; }
+                .admin-property-card:nth-child(10) { animation-delay: 0.55s; }
+                .admin-property-card:nth-child(11) { animation-delay: 0.6s; }
+                .admin-property-card:nth-child(12) { animation-delay: 0.65s; }
+
+                .admin-property-card {
+                    animation: fadeInScale 0.6s ease forwards;
+                    opacity: 0;
+                    transform: translateY(20px) scale(0.95);
+                }
+
+                @keyframes fadeInScale {
+                    to {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                }
+
+                /* Responsive */
+                @media (max-width: 1200px) {
+                    .inmuebles-grid .col-xl-3 {
+                        flex: 0 0 33.333333%;
+                        max-width: 33.333333%;
+                    }
+                }
+
+                @media (max-width: 992px) {
+                    .admin-dashboard-titulo {
+                        font-size: 1.8rem;
+                    }
+                    
+                    .admin-header {
+                        padding: 1.5rem;
+                    }
+                    
+                    .admin-header .d-flex {
+                        flex-direction: column;
+                        gap: 1rem;
+                        align-items: flex-start !important;
+                    }
+                    
+                    .btn-crear-inmueble {
+                        align-self: stretch;
+                        text-align: center;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .inmuebles-grid {
+                        margin: 0 -0.5rem;
+                    }
+                    
+                    .admin-filters {
+                        padding: 1rem;
+                    }
+                    
+                    .admin-pagination {
+                        padding: 1rem;
+                    }
+                    
+                    .admin-dashboard-titulo {
+                        font-size: 1.6rem;
+                    }
+                }
+
+                @media (max-width: 576px) {
+                    .admin-header {
+                        padding: 1rem;
+                    }
+                    
+                    .admin-dashboard-titulo {
+                        font-size: 1.4rem;
+                    }
+                    
+                    .admin-subtitle {
+                        font-size: 1rem;
+                    }
+                }
+
+                /* Reducir efectos en dispositivos de menor rendimiento */
+                @media (prefers-reduced-motion: reduce) {
+                    .admin-property-card,
+                    .btn-crear-inmueble {
+                        transition: none !important;
+                        animation: none !important;
+                    }
+                    
+                    .admin-property-card:hover {
+                        transform: none !important;
+                    }
+                    
+                    .admin-property-card {
+                        opacity: 1 !important;
+                        transform: none !important;
+                    }
+                }
+            `}</style>
+        </Container>
+    );
 };
 
 export default AdminProperties;

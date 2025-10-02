@@ -1,230 +1,220 @@
 import React, { useState } from 'react';
-import { Card, Button, Badge, Carousel } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Card, Carousel, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { FaEdit, FaTrash, FaEye, FaBed, FaBath, FaRulerCombined, FaMapMarkerAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
-const PropertyCard = ({ property, isAdminView }) => {
+const PropertyCard = ({ property, isAdminView, onEdit, onDelete, onViewDetails }) => {
     const [imageError, setImageError] = useState(false);
+    const navigate = useNavigate();
     
     // Debug: muestra el objeto recibido
     console.log('Property data received:', property);
 
-    // Manejo de múltiples imágenes como en InmuebleDetalle.jsx
+    // MANEJAR IMÁGENES - con fallback para cuando no hay imágenes
     const imagenes = property.imagenesInmueble || property.imagenes || [];
-    const imagenesArray = Array.isArray(imagenes) ? imagenes : [imagenes].filter(Boolean);
+    const imagenesArray = Array.isArray(imagenes) ? imagenes : [];
+    
+    // Si no hay imágenes, usar imagen por defecto
+    const imagenPorDefecto = 'https://via.placeholder.com/400x250?text=Sin+Imagen+Disponible&bg=f0f0f0&color=666';
 
-    // Función para obtener imagen principal
-    const getImagenPrincipal = () => {
-        if (imagenesArray.length > 0) {
-            return imagenesArray[0].URL || imagenesArray[0].imagen || 'https://via.placeholder.com/400x250?text=Sin+Imagen';
+    console.log('Imágenes procesadas:', imagenesArray.length);
+
+    // Función para manejar click en la carta (solo si NO es admin view)
+    const handleCardClick = () => {
+        if (!isAdminView) {
+            navigate(`/inmueble/${property.Inmueble_id}`);
         }
-        return 'https://via.placeholder.com/400x250?text=Sin+Imágenes+Disponibles';
     };
 
     // Formatear precio
     const formatPrice = (price) => {
-        return Number(price || 0).toLocaleString('es-CO', {
+        const numPrice = Number(price);
+        if (isNaN(numPrice)) return 'Precio no disponible';
+        return new Intl.NumberFormat('es-CO', {
             style: 'currency',
             currency: 'COP',
-            minimumFractionDigits: 0
-        });
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(numPrice);
     };
 
-    // Obtener estado badge variant
-    const getStatusVariant = (estado) => {
-        switch(estado?.toLowerCase()) {
-            case 'disponible': return 'success';
-            case 'vendido': return 'danger';
-            case 'reservado': return 'warning';
-            default: return 'secondary';
-        }
-    };
+    // Extraer información básica
+    const precio = formatPrice(property.Valor);
+    const area = property.Area || 'N/D';
+    const descripcion = property.Descripcion_General || 'Sin descripción disponible';
+    const direccion = property.direccion?.Direccion || 'Dirección no disponible';
+    
+    // Información adicional de división
+    const habitaciones = property.division?.Habitaciones || 'N/D';
+    const banos = property.division?.Baños || 'N/D';
 
     return (
-        <div className="property-card-container">
-            <Card className="property-card h-100">
-                {/* Sección de imágenes */}
-                <div className="card-image-section">
-                    {imagenesArray.length > 1 ? (
-                        <Carousel 
-                            interval={null}
-                            indicators={false}
-                            controls={true}
-                            className="property-carousel"
-                        >
-                            {imagenesArray.map((imagen, index) => (
-                                <Carousel.Item key={index}>
-                                    <img
-                                        src={imagen.URL || imagen.imagen || 'https://via.placeholder.com/400x250?text=Sin+Imagen'}
-                                        alt={imagen.Nombre || `Imagen ${index + 1}` || 'Inmueble'}
-                                        className="property-image"
-                                        onError={(e) => {
-                                            e.target.src = 'https://via.placeholder.com/400x250?text=Error+al+cargar+imagen';
-                                        }}
-                                    />
-                                </Carousel.Item>
-                            ))}
-                        </Carousel>
-                    ) : (
-                        <img
-                            src={getImagenPrincipal()}
-                            alt={property.Descripcion_General || 'Inmueble'}
-                            className="property-image"
-                            onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/400x250?text=Error+al+cargar+imagen';
-                            }}
-                        />
-                    )}
-                    
-                    {/* Overlay con información destacada */}
-                    <div className="image-overlay">
-                        <div className="overlay-top">
-                            <Badge bg={getStatusVariant(property.Estado)} className="status-badge">
-                                {property.Estado || 'N/D'}
-                            </Badge>
-                            {imagenesArray.length > 1 && (
-                                <Badge bg="dark" className="images-badge">
-                                    📸 {imagenesArray.length}
-                                </Badge>
-                            )}
-                        </div>
-                        <div className="overlay-bottom">
-                            <div className="property-price">
-                                {formatPrice(property.Valor)}
-                            </div>
-                        </div>
+        <Card 
+            className={`property-card h-100 ${!isAdminView ? 'clickable' : ''}`}
+            onClick={handleCardClick}
+        >
+            {/* Sección de imágenes */}
+            <div className="card-image-section">
+                {imagenesArray.length > 1 ? (
+                    <Carousel 
+                        interval={null}
+                        indicators={false}
+                        controls={true}
+                        className="property-carousel"
+                    >
+                        {imagenesArray.map((imagen, index) => (
+                            <Carousel.Item key={index}>
+                                <img
+                                    src={imagen.URL || imagen.url || imagenPorDefecto}
+                                    alt={imagen.Nombre || `Imagen ${index + 1}`}
+                                    className="property-image"
+                                    onError={(e) => {
+                                        e.target.src = imagenPorDefecto;
+                                    }}
+                                />
+                            </Carousel.Item>
+                        ))}
+                    </Carousel>
+                ) : (
+                    <img
+                        src={imagenesArray.length > 0 ? 
+                            (imagenesArray[0].URL || imagenesArray[0].url || imagenPorDefecto) : 
+                            imagenPorDefecto
+                        }
+                        alt={property.Descripcion_General || 'Inmueble'}
+                        className="property-image"
+                        onError={(e) => {
+                            e.target.src = imagenPorDefecto;
+                        }}
+                    />
+                )}
+                
+                {/* Overlay con precio e información adicional */}
+                <div className="image-overlay">
+                    <div className="price-badge">
+                        {precio}
                     </div>
+                    {imagenesArray.length > 1 && (
+                        <div className="images-count">
+                            📷 {imagenesArray.length}
+                        </div>
+                    )}
                 </div>
 
-                <Card.Body className="property-card-body">
-                    <div className="property-header">
-                        <Card.Title className="property-title">
-                            {property.Descripcion_General || 'Inmueble'}
-                        </Card.Title>
-                        <div className="property-code">
-                            #{property.Codigo_interno || 'N/D'}
-                        </div>
-                    </div>
-
-                    <div className="property-details">
-                        <div className="detail-row">
-                            <div className="detail-item">
-                                <span className="detail-icon">📐</span>
-                                <span className="detail-text">{property.Area || 'N/D'} m²</span>
-                            </div>
-                            <div className="detail-item">
-                                <span className="detail-icon">⏰</span>
-                                <span className="detail-text">{property.Antiguedad || 'N/D'} años</span>
-                            </div>
-                        </div>
-                        
-                        {/* Información adicional si está disponible */}
-                        {(property.division?.Habitaciones || property.division?.Baños) && (
-                            <div className="detail-row">
-                                {property.division?.Habitaciones && (
-                                    <div className="detail-item">
-                                        <span className="detail-icon">🛏️</span>
-                                        <span className="detail-text">{property.division.Habitaciones} hab.</span>
-                                    </div>
-                                )}
-                                {property.division?.Baños && (
-                                    <div className="detail-item">
-                                        <span className="detail-icon">🚿</span>
-                                        <span className="detail-text">{property.division.Baños} baños</span>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {/* Dirección */}
-                        {property.direccion?.Direccion && (
-                            <div className="property-location">
-                                <span className="detail-icon">📍</span>
-                                <span className="location-text">{property.direccion.Direccion}</span>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="property-actions">
-                        {isAdminView ? (
-                            <div className="admin-actions">
-                                <Button 
-                                    as={Link} 
-                                    to={`/admin/inmuebles/editar/${property.Inmueble_id}`}
-                                    variant="outline-info"
-                                    size="sm"
-                                    className="action-btn"
-                                >
-                                    ✏️ Editar
-                                </Button>
-                                <Button 
-                                    variant="outline-danger"
-                                    size="sm"
-                                    className="action-btn"
-                                >
-                                    🗑️ Eliminar
-                                </Button>
-                            </div>
-                        ) : (
-                            <Button 
-                                as={Link} 
-                                to={`/inmueble/${property.Inmueble_id}`}
-                                className="view-details-btn"
+                {/* BOTONES DE ADMIN - Solo mostrar si isAdminView es true */}
+                {isAdminView && (
+                    <div className="admin-buttons-overlay">
+                        <OverlayTrigger
+                            placement="top"
+                            overlay={<Tooltip>Ver Detalle</Tooltip>}
+                        >
+                            <Button
+                                variant="info"
+                                size="sm"
+                                className="admin-btn admin-btn-view"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onViewDetails && onViewDetails();
+                                }}
                             >
-                                Ver Detalles 🏠
+                                <FaEye />
                             </Button>
-                        )}
+                        </OverlayTrigger>
+                        
+                        <OverlayTrigger
+                            placement="top"
+                            overlay={<Tooltip>Editar</Tooltip>}
+                        >
+                            <Button
+                                variant="warning"
+                                size="sm"
+                                className="admin-btn admin-btn-edit"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onEdit && onEdit();
+                                }}
+                            >
+                                <FaEdit />
+                            </Button>
+                        </OverlayTrigger>
+                        
+                        <OverlayTrigger
+                            placement="top"
+                            overlay={<Tooltip>Eliminar</Tooltip>}
+                        >
+                            <Button
+                                variant="danger"
+                                size="sm"
+                                className="admin-btn admin-btn-delete"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete && onDelete();
+                                }}
+                            >
+                                <FaTrash />
+                            </Button>
+                        </OverlayTrigger>
                     </div>
-                </Card.Body>
-            </Card>
+                )}
+            </div>
 
-            <style>{`
-                .property-card-container {
-                    margin-bottom: 2rem;
-                }
+            {/* Contenido de la carta */}
+            <Card.Body className="property-card-body">
+                <Card.Text className="property-description">
+                    {descripcion.length > 100 ? `${descripcion.substring(0, 100)}...` : descripcion}
+                </Card.Text>
+                
+                <div className="property-location">
+                    <FaMapMarkerAlt className="location-icon" />
+                    <span>{direccion}</span>
+                </div>
+                
+                <div className="property-details">
+                    <div className="detail-item">
+                        <FaBed className="detail-icon" />
+                        <span>{habitaciones} hab.</span>
+                    </div>
+                    <div className="detail-item">
+                        <FaBath className="detail-icon" />
+                        <span>{banos} baños</span>
+                    </div>
+                    <div className="detail-item">
+                        <FaRulerCombined className="detail-icon" />
+                        <span>{area} m²</span>
+                    </div>
+                </div>
+            </Card.Body>
 
+            {/* TUS ESTILOS ORIGINALES + SOLO CAMBIÉ LOS COLORES DE LOS BOTONES ADMIN */}
+            <style jsx>{`
                 .property-card {
                     border: none;
-                    border-radius: 20px;
-                    background: linear-gradient(145deg, #2c5282, #2a4365);
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                    transition: all 0.3s ease;
+                    border-radius: 15px;
                     overflow: hidden;
-                    position: relative;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    background: #15365F; /* CAMBIÉ DE WHITE A TU AZUL OSCURO */
+                    cursor: pointer;
                 }
 
-                .property-card::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(56, 178, 172, 0.05) 100%);
-                    opacity: 0;
-                    transition: opacity 0.3s ease;
-                    pointer-events: none;
-                    z-index: 1;
+                .property-card.clickable {
+                    cursor: pointer;
                 }
 
                 .property-card:hover {
-                    transform: translateY(-8px) scale(1.02);
-                    box-shadow: 0 20px 40px rgba(72, 187, 120, 0.3);
-                    border: 1px solid rgba(72, 187, 120, 0.5);
-                }
-
-                .property-card:hover::before {
-                    opacity: 1;
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
                 }
 
                 .card-image-section {
                     position: relative;
-                    height: 250px;
+                    height: 200px;
                     overflow: hidden;
                 }
 
                 .property-image {
                     width: 100%;
-                    height: 250px;
+                    height: 100%;
                     object-fit: cover;
                     transition: transform 0.3s ease;
                 }
@@ -233,20 +223,15 @@ const PropertyCard = ({ property, isAdminView }) => {
                     transform: scale(1.05);
                 }
 
-                .property-carousel {
-                    height: 100%;
-                }
-
                 .property-carousel .carousel-control-prev,
                 .property-carousel .carousel-control-next {
                     width: 30px;
                     height: 30px;
-                    background: rgba(44, 82, 130, 0.8);
+                    background: rgba(0, 0, 0, 0.5);
                     border-radius: 50%;
                     top: 50%;
                     transform: translateY(-50%);
-                    border: 2px solid rgba(255, 255, 255, 0.3);
-                    backdrop-filter: blur(10px);
+                    border: none;
                 }
 
                 .property-carousel .carousel-control-prev {
@@ -269,263 +254,157 @@ const PropertyCard = ({ property, isAdminView }) => {
                     left: 0;
                     right: 0;
                     bottom: 0;
-                    background: linear-gradient(transparent 30%, rgba(0,0,0,0.7));
+                    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5));
                     display: flex;
                     flex-direction: column;
                     justify-content: space-between;
-                    padding: 1rem;
-                    z-index: 2;
+                    padding: 10px;
+                    pointer-events: none;
                 }
 
-                .overlay-top {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                }
-
-                .status-badge {
-                    font-size: 0.8rem;
-                    padding: 0.5rem 0.75rem;
+                .price-badge {
+                    background: #28a745;
+                    color: white;
+                    padding: 5px 10px;
                     border-radius: 15px;
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
+                    font-weight: bold;
+                    font-size: 0.9rem;
+                    align-self: flex-start;
                 }
 
-                .images-badge {
+                .images-count {
+                    background: rgba(0, 0, 0, 0.7);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 10px;
                     font-size: 0.8rem;
-                    padding: 0.5rem 0.75rem;
-                    border-radius: 15px;
-                    background: rgba(0, 0, 0, 0.7) !important;
-                    border: 1px solid rgba(255, 255, 255, 0.3);
-                }
-
-                .overlay-bottom {
                     align-self: flex-end;
-                    width: 100%;
                 }
 
-                .property-price {
-                    font-size: 1.8rem;
-                    font-weight: 800;
-                    color: #48bb78;
-                    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-                    text-align: right;
+                /* SOLO CAMBIÉ LOS COLORES DE LOS BOTONES ADMIN A TU PALETA AZUL */
+                .admin-buttons-overlay {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    z-index: 10;
+                }
+
+                .admin-btn {
+                    width: 35px;
+                    height: 35px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: none;
+                    font-size: 0.8rem;
+                    transition: all 0.2s ease;
+                    pointer-events: auto;
+                }
+
+                .admin-btn-view {
+                    background: #72A3D1;
+                    color: white;
+                }
+
+                .admin-btn-view:hover {
+                    background: #1C56A7;
+                    transform: scale(1.1);
+                    color: white;
+                }
+
+                .admin-btn-edit {
+                    background: #1C56A7;
+                    color: white;
+                }
+
+                .admin-btn-edit:hover {
+                    background: #15365F;
+                    transform: scale(1.1);
+                    color: white;
+                }
+
+                .admin-btn-delete {
+                    background: #dc3545;
+                    color: white;
+                }
+
+                .admin-btn-delete:hover {
+                    background: #c82333;
+                    transform: scale(1.1);
+                    color: white;
                 }
 
                 .property-card-body {
-                    background: transparent;
-                    border: none;
-                    padding: 1.5rem;
-                    position: relative;
-                    z-index: 2;
+                    padding: 15px;
+                    background: #15365F; /* TAMBIÉN AQUÍ */
                 }
 
-                .property-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    margin-bottom: 1rem;
-                }
-
-                .property-title {
-                    color: #ffffff;
-                    font-weight: 700;
-                    font-size: 1.3rem;
-                    margin: 0;
-                    flex: 1;
-                    line-height: 1.3;
-                    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-                }
-
-                .property-code {
-                    color: #63b3ed;
+                .property-description {
                     font-size: 0.9rem;
-                    font-weight: 600;
-                    background: rgba(72, 187, 120, 0.15);
-                    padding: 0.3rem 0.6rem;
-                    border-radius: 10px;
-                    border: 1px solid rgba(72, 187, 120, 0.3);
-                    margin-left: 1rem;
-                }
-
-                .property-details {
-                    margin-bottom: 1.5rem;
-                }
-
-                .detail-row {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 0.75rem;
-                }
-
-                .detail-item {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    flex: 1;
-                }
-
-                .detail-icon {
-                    font-size: 1.1rem;
-                    background: rgba(72, 187, 120, 0.15);
-                    padding: 0.3rem;
-                    border-radius: 8px;
-                    border: 1px solid rgba(72, 187, 120, 0.3);
-                }
-
-                .detail-text {
-                    color: #ffffff;
-                    font-weight: 600;
-                    font-size: 0.95rem;
+                    color: #FDFDFD; /* TEXTO BLANCO PARA CONTRASTE */
+                    margin-bottom: 10px;
+                    line-height: 1.4;
+                    height: 40px;
+                    overflow: hidden;
                 }
 
                 .property-location {
                     display: flex;
                     align-items: center;
-                    gap: 0.5rem;
-                    padding: 0.75rem;
-                    background: rgba(255, 255, 255, 0.05);
-                    border-radius: 10px;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    margin-top: 0.75rem;
+                    margin-bottom: 10px;
+                    color: #72A3D1; /* AZUL CLARO PARA UBICACIÓN */
+                    font-size: 0.85rem;
                 }
 
-                .location-text {
-                    color: #e2e8f0;
-                    font-size: 0.9rem;
-                    flex: 1;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
+                .location-icon {
+                    color: #dc3545;
+                    margin-right: 5px;
                 }
 
-                .property-actions {
-                    margin-top: auto;
-                }
-
-                .admin-actions {
+                .property-details {
                     display: flex;
-                    gap: 0.75rem;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding-top: 10px;
+                    border-top: 1px solid rgba(114, 163, 209, 0.3); /* BORDE AZUL CLARO */
                 }
 
-                .action-btn {
-                    flex: 1;
-                    font-weight: 600;
-                    border-radius: 10px;
-                    padding: 0.75rem;
-                    transition: all 0.2s ease;
-                    border-width: 2px;
+                .detail-item {
+                    display: flex;
+                    align-items: center;
+                    color: #FDFDFD; /* TEXTO BLANCO */
+                    font-size: 0.8rem;
                 }
 
-                .action-btn:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                .detail-icon {
+                    color: #72A3D1; /* ICONOS AZUL CLARO */
+                    margin-right: 3px;
+                    font-size: 0.8rem;
                 }
 
-                .view-details-btn {
-                    width: 100%;
-                    background: linear-gradient(90deg, #48bb78, #38b2ac);
-                    border: none;
-                    color: white;
-                    font-weight: 700;
-                    padding: 0.875rem 1.5rem;
-                    border-radius: 15px;
-                    transition: all 0.3s ease;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
-                }
-
-                .view-details-btn:hover {
-                    background: linear-gradient(90deg, #38a169, #319795);
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
-                    color: white;
-                }
-
-                /* Animaciones de entrada */
-                .property-card {
-                    animation: fadeInUp 0.6s ease forwards;
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-
-                @keyframes fadeInUp {
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-
+                /* Responsive */
                 @media (max-width: 768px) {
-                    .property-card:hover {
-                        transform: translateY(-4px) scale(1.01);
-                    }
-                    
-                    .property-price {
-                        font-size: 1.5rem;
-                    }
-                    
-                    .property-title {
-                        font-size: 1.1rem;
-                    }
-                    
-                    .admin-actions {
-                        flex-direction: column;
-                    }
-                    
-                    .detail-row {
-                        flex-direction: column;
-                        gap: 0.5rem;
-                    }
-                    
-                    .detail-item {
-                        justify-content: flex-start;
-                    }
-                }
-
-                @media (max-width: 576px) {
                     .card-image-section {
-                        height: 200px;
+                        height: 180px;
                     }
-                    
-                    .property-image {
-                        height: 200px;
-                    }
-                    
-                    .property-header {
-                        flex-direction: column;
-                        gap: 0.5rem;
-                    }
-                    
-                    .property-code {
-                        margin-left: 0;
-                        align-self: flex-start;
-                    }
-                }
 
-                /* Reducir animaciones en dispositivos de menor rendimiento */
-                @media (prefers-reduced-motion: reduce) {
-                    .property-card,
-                    .property-image,
-                    .action-btn,
-                    .view-details-btn {
-                        transition: none !important;
-                        animation: none !important;
+                    .admin-buttons-overlay {
+                        flex-direction: row;
+                        gap: 4px;
                     }
-                    
-                    .property-card:hover {
-                        transform: none !important;
-                    }
-                    
-                    .property-card {
-                        opacity: 1 !important;
-                        transform: none !important;
+
+                    .admin-btn {
+                        width: 30px;
+                        height: 30px;
+                        font-size: 0.7rem;
                     }
                 }
             `}</style>
-        </div>
+        </Card>
     );
 };
 
