@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-08-2025 a las 15:30:56
+-- Tiempo de generación: 02-10-2025 a las 20:32:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,13 +20,18 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `inmotech_fs_development`
 --
+CREATE DATABASE IF NOT EXISTS `inmotech_fs_development` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `inmotech_fs_development`;
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `acerca_edificacion`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `acerca_edificacion`;
 CREATE TABLE `acerca_edificacion` (
   `Acerca_edificacion_id` int(11) NOT NULL,
   `AcercaDeLaEdificacion` varchar(100) NOT NULL,
@@ -45,18 +50,29 @@ CREATE TABLE `acerca_edificacion` (
 --
 
 --
+-- Truncar tablas antes de insertar `acerca_edificacion`
+--
+
+TRUNCATE TABLE `acerca_edificacion`;
+--
 -- Volcado de datos para la tabla `acerca_edificacion`
 --
 
 INSERT INTO `acerca_edificacion` (`Acerca_edificacion_id`, `AcercaDeLaEdificacion`, `Estrato`, `Tipo_construccion`, `Anio_construccion`, `Estado_conservacion`, `Zona_comun`, `Descripcion_adicional`, `Created_at`, `Updated_at`) VALUES
-(3, 'Edificio de Apartamentos Residencial', 4, 'Tradicional', 2005, 'Excelente', 1, 'Cuenta con piscina, gimnasio y salones sociales.', '2025-08-13 19:45:54', '2025-08-13 19:45:54');
+(1, 'Edificio de Apartamentos Residencial', 2, 'Residencial', 2025, 'Excelente', 1, 'Cuenta con piscina, gimnasio y salones sociales.', '2025-09-02 16:18:25', '2025-09-02 16:18:25'),
+(5, 'Edificio moderno', 3, 'Concreto', 2020, 'Excelente', 0, 'Edificio nuevo', '2025-10-01 13:18:02', '2025-10-01 13:18:02'),
+(6, 'edificatio', 4, 'dsad', 2024, '4', 1, 'asasfasfdf', '2025-10-01 18:37:17', '2025-10-01 18:37:17'),
+(7, 'Edificio de Apartamentos Residencial', 2, 'dsad', 2024, '852', 3, '852', '2025-10-01 19:52:57', '2025-10-01 19:52:57');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `asignacion`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `asignacion`;
 CREATE TABLE `asignacion` (
   `Asignacion_id` int(11) NOT NULL,
   `Parqueaderos_asignados` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`Parqueaderos_asignados`)),
@@ -74,18 +90,29 @@ CREATE TABLE `asignacion` (
 --
 
 --
+-- Truncar tablas antes de insertar `asignacion`
+--
+
+TRUNCATE TABLE `asignacion`;
+--
 -- Volcado de datos para la tabla `asignacion`
 --
 
 INSERT INTO `asignacion` (`Asignacion_id`, `Parqueaderos_asignados`, `Organizacion_parqueadero_FK`, `Disponible`, `Descripcion`, `Created_at`, `Updated_at`) VALUES
-(3, '[\"A101\",\"A102\"]', 3, 1, 'Parqueaderos asignados al apto 101 y 102 en la Org. 1', '2025-08-13 19:45:54', '2025-08-13 19:45:54');
+(1, '[\"A101\",\"A102\"]', 1, 1, 'Parqueaderos asignados al apto 101 y 102 en la Org. 1', '2025-09-02 16:18:25', '2025-09-02 16:18:25'),
+(7, '[\"P-1\"]', 7, 0, 'Un parqueadero', '2025-10-01 13:18:01', '2025-10-01 13:18:01'),
+(8, '\"[\\\"A101\\\", \\\"A102\\\"]\"', 8, 1, 'asxc', '2025-10-01 18:37:18', '2025-10-01 18:37:18'),
+(9, '\"[\\\"A101\\\", \\\"A102\\\"]\"', 9, 1, 'asxc', '2025-10-01 19:52:57', '2025-10-01 19:52:57');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `barrio`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `barrio`;
 CREATE TABLE `barrio` (
   `Barrio_id` int(11) NOT NULL,
   `Nombre_barrio` varchar(100) DEFAULT NULL,
@@ -98,18 +125,26 @@ CREATE TABLE `barrio` (
 --
 
 --
+-- Truncar tablas antes de insertar `barrio`
+--
+
+TRUNCATE TABLE `barrio`;
+--
 -- Volcado de datos para la tabla `barrio`
 --
 
 INSERT INTO `barrio` (`Barrio_id`, `Nombre_barrio`, `Created_at`, `Updated_at`) VALUES
-(0, 'Autopista Norte', '2025-08-13 19:45:54', '2025-08-13 19:45:54');
+(0, 'Autopista Norte', '2025-09-02 16:18:25', '2025-09-02 16:18:25');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `barrio_ciudad_corregimiento_vereda`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `barrio_ciudad_corregimiento_vereda`;
 CREATE TABLE `barrio_ciudad_corregimiento_vereda` (
   `Barrio_ciudad_corregimiento_vereda_id` int(11) NOT NULL,
   `Barrio_FK` int(11) DEFAULT NULL,
@@ -133,12 +168,20 @@ CREATE TABLE `barrio_ciudad_corregimiento_vereda` (
 --       `vereda` -> `Vereda_id`
 --
 
+--
+-- Truncar tablas antes de insertar `barrio_ciudad_corregimiento_vereda`
+--
+
+TRUNCATE TABLE `barrio_ciudad_corregimiento_vereda`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `carrusel`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `carrusel`;
 CREATE TABLE `carrusel` (
   `id` int(11) NOT NULL,
   `titulo` varchar(255) NOT NULL,
@@ -154,12 +197,28 @@ CREATE TABLE `carrusel` (
 -- RELACIONES PARA LA TABLA `carrusel`:
 --
 
+--
+-- Truncar tablas antes de insertar `carrusel`
+--
+
+TRUNCATE TABLE `carrusel`;
+--
+-- Volcado de datos para la tabla `carrusel`
+--
+
+INSERT INTO `carrusel` (`id`, `titulo`, `descripcion`, `imagen_url`, `orden`, `activo`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(1, 'cualquiera', 'esto es una descripcion cualquiera', '/assets/images/carrusel/1758402833501-206877642.jpg', 1, 1, '2025-09-20 21:13:54', '2025-09-20 21:13:54'),
+(2, 'otro cualquiera', 'con otra descripcion cualquiera', '/assets/images/carrusel/1758402871417-92197877.png', 2, 1, '2025-09-20 21:14:31', '2025-09-20 21:14:31');
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `ciudad`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `ciudad`;
 CREATE TABLE `ciudad` (
   `Ciudad_id` int(11) NOT NULL,
   `Ciudad` varchar(50) NOT NULL,
@@ -175,12 +234,20 @@ CREATE TABLE `ciudad` (
 --       `municipio` -> `Municipio_id`
 --
 
+--
+-- Truncar tablas antes de insertar `ciudad`
+--
+
+TRUNCATE TABLE `ciudad`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `contacto`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `contacto`;
 CREATE TABLE `contacto` (
   `id` int(11) NOT NULL,
   `platform_user_id` int(11) DEFAULT NULL,
@@ -202,12 +269,20 @@ CREATE TABLE `contacto` (
 --       `platform_user` -> `Platform_user_id`
 --
 
+--
+-- Truncar tablas antes de insertar `contacto`
+--
+
+TRUNCATE TABLE `contacto`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `corregimiento`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `corregimiento`;
 CREATE TABLE `corregimiento` (
   `Corregimiento_id` int(11) NOT NULL,
   `Corregimiento` varchar(50) NOT NULL,
@@ -223,12 +298,20 @@ CREATE TABLE `corregimiento` (
 --       `municipio` -> `Municipio_id`
 --
 
+--
+-- Truncar tablas antes de insertar `corregimiento`
+--
+
+TRUNCATE TABLE `corregimiento`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `designador_cardinal`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `designador_cardinal`;
 CREATE TABLE `designador_cardinal` (
   `Designador_cardinal_id` int(11) NOT NULL,
   `Cardinalidad` varchar(10) NOT NULL,
@@ -243,18 +326,26 @@ CREATE TABLE `designador_cardinal` (
 --
 
 --
+-- Truncar tablas antes de insertar `designador_cardinal`
+--
+
+TRUNCATE TABLE `designador_cardinal`;
+--
 -- Volcado de datos para la tabla `designador_cardinal`
 --
 
 INSERT INTO `designador_cardinal` (`Designador_cardinal_id`, `Cardinalidad`, `Abreviacion`, `Activo`, `Created_at`, `Updated_at`) VALUES
-(3, 'Norte', 'N', 1, '2025-08-13 19:45:54', '2025-08-13 19:45:54');
+(1, 'Norte', 'N', 1, '2025-09-02 16:18:25', '2025-09-02 16:18:25');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `direccion`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `direccion`;
 CREATE TABLE `direccion` (
   `Direccion_id` int(11) NOT NULL,
   `Direccion` varchar(255) NOT NULL,
@@ -282,18 +373,31 @@ CREATE TABLE `direccion` (
 --
 
 --
+-- Truncar tablas antes de insertar `direccion`
+--
+
+TRUNCATE TABLE `direccion`;
+--
 -- Volcado de datos para la tabla `direccion`
 --
 
 INSERT INTO `direccion` (`Direccion_id`, `Direccion`, `Tipo_via`, `Numero_via_principal`, `Numero_calle_transversal`, `Numero_edificacion`, `Descripcion_adicional`, `Designador_cardinal_FK`, `Localizacion_FK`, `Barrio_ciudad_corregimiento_vereda_FK`, `Activo`, `Created_at`, `Updated_at`) VALUES
-(3, 'Calle 123 #45-67', 'Calle', 123, 45, 67, 'Apto 101', 3, 3, NULL, 1, '2025-08-13 19:45:54', '2025-08-13 19:45:54');
+(1, 'Calle 123 #45-67', 'Calle', 123, 45, 67, 'Apto 101', 1, 1, NULL, 1, '2025-09-02 16:18:25', '2025-09-02 16:18:25'),
+(9, 'Calle 50 # 20-10', 'Calle', 50, 20, 10, 'Edificio principal', NULL, 11, NULL, 1, '2025-10-01 13:18:01', '2025-10-01 13:18:01'),
+(10, '123', '123', 123, 123, 121, '123', NULL, 12, NULL, 1, '2025-10-01 18:20:06', '2025-10-01 18:20:06'),
+(11, '567', '567', 567, 567, 567, '567', NULL, 13, NULL, 1, '2025-10-01 18:28:49', '2025-10-01 18:28:49'),
+(12, '890', '890', 890, 890, 890, '890', 1, 14, NULL, 1, '2025-10-01 18:37:17', '2025-10-01 15:21:21'),
+(13, '852', '852', 852, 852, 852, '852', NULL, 15, NULL, 1, '2025-10-01 19:52:57', '2025-10-01 19:52:57');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `division`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `division`;
 CREATE TABLE `division` (
   `Division_id` int(11) NOT NULL,
   `Division` varchar(50) NOT NULL,
@@ -321,18 +425,29 @@ CREATE TABLE `division` (
 --
 
 --
+-- Truncar tablas antes de insertar `division`
+--
+
+TRUNCATE TABLE `division`;
+--
 -- Volcado de datos para la tabla `division`
 --
 
 INSERT INTO `division` (`Division_id`, `Division`, `Balcon`, `Baños`, `Terraza`, `Habitaciones`, `Garaje`, `Ascensores`, `Area`, `Closets`, `Estudio`, `Sala`, `Comedor`, `Cocina`, `Zona_lavanderia`, `Deposito`, `Descripcion_adicional`, `Created_at`, `Updated_at`) VALUES
-(3, 'Apartamento Grande', 'Si', 3, 1, 3, 2, 'Si', '120', 5, 1, 1, 1, 'Integral', 1, 1, 'Amplio apartamento con vista a la ciudad', '2025-08-13 19:45:54', '2025-08-13 19:45:54');
+(1, 'Apartamento Grande', 'Si', 3, 1, 3, 2, 'Si', '120', 5, 1, 1, 1, 'Integral', 1, 1, 'Amplio apartamento con vista a la ciudad', '2025-09-02 16:18:25', '2025-09-02 16:18:25'),
+(6, 'Apartamento', 'Si', 2, 0, 3, 0, '1', '120', 2, 0, 0, 0, 'Si', 0, 0, 'Distribución moderna', '2025-10-01 13:18:01', '2025-10-01 13:18:01'),
+(7, '1', '1', 1, 1, 1, 1, '1', '120', 1, 1, 1, 1, '1', 1, 1, 'asd', '2025-10-01 18:37:17', '2025-10-01 18:37:17'),
+(8, '1', '1', 1, 1, 1, 1, '1', '121', 1, 1, 1, 1, '1', 1, 1, '123', '2025-10-01 19:52:57', '2025-10-01 19:52:57');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `estado_pago`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `estado_pago`;
 CREATE TABLE `estado_pago` (
   `Estado_pago_id` int(10) NOT NULL,
   `Estado_pago` varchar(20) NOT NULL
@@ -342,12 +457,20 @@ CREATE TABLE `estado_pago` (
 -- RELACIONES PARA LA TABLA `estado_pago`:
 --
 
+--
+-- Truncar tablas antes de insertar `estado_pago`
+--
+
+TRUNCATE TABLE `estado_pago`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `factura`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `factura`;
 CREATE TABLE `factura` (
   `Factura_id` int(10) NOT NULL,
   `Factura_NO` int(10) NOT NULL,
@@ -366,12 +489,20 @@ CREATE TABLE `factura` (
 --       `resolucion_factura` -> `Resolucion_factura_id`
 --
 
+--
+-- Truncar tablas antes de insertar `factura`
+--
+
+TRUNCATE TABLE `factura`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `imagenes_inmueble`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `imagenes_inmueble`;
 CREATE TABLE `imagenes_inmueble` (
   `Imagenes_inmueble_id` int(11) NOT NULL,
   `Imagenes` varchar(255) NOT NULL,
@@ -384,19 +515,36 @@ CREATE TABLE `imagenes_inmueble` (
 --
 
 --
+-- Truncar tablas antes de insertar `imagenes_inmueble`
+--
+
+TRUNCATE TABLE `imagenes_inmueble`;
+--
 -- Volcado de datos para la tabla `imagenes_inmueble`
 --
 
 INSERT INTO `imagenes_inmueble` (`Imagenes_inmueble_id`, `Imagenes`, `Nombre`, `URL`) VALUES
-(5, 'apartamento_moderno_1.jpg', 'Vista Frontal Apartamento Moderno', 'https://ejemplo.com/imagenes/apartamento_moderno_1.jpg'),
-(6, 'apartamento_moderno_2.jpg', 'Vista Interior Apartamento Moderno', 'https://ejemplo.com/imagenes/apartamento_moderno_2.jpg');
+(1, '1756829554683-wallpaperbetter12.jpg', 'wallpaperbetter12.jpg', 'http://localhost:3000/assets/images/inmuebles/1756829554683-wallpaperbetter12.jpg'),
+(2, '1756829562330-wallpaperbetter.com_1920x1080 (1).jpg', 'wallpaperbetter.com_1920x1080 (1).jpg', 'http://localhost:3000/assets/images/inmuebles/1756829562330-wallpaperbetter.com_1920x1080 (1).jpg'),
+(6, 'test_imagen.jpg', 'Imagen de prueba', 'http://localhost:3000/assets/images/inmuebles/test_imagen.jpg'),
+(7, '1759327642915-pxfuel (2).jpg', 'pxfuel (2).jpg', 'http://192.168.20.21:3000/assets/images/inmuebles/1759327642915-pxfuel (2).jpg'),
+(8, '1759327643262-pxfuel (3).jpg', 'pxfuel (3).jpg', 'http://192.168.20.21:3000/assets/images/inmuebles/1759327643262-pxfuel (3).jpg'),
+(9, '1759343074151-pxfuel (3).jpg', 'pxfuel (3).jpg', 'http://192.168.20.21:3000/assets/images/inmuebles/1759343074151-pxfuel (3).jpg'),
+(10, '1759343601603-pxfuel (1).jpg', 'pxfuel (1).jpg', 'http://192.168.20.21:3000/assets/images/inmuebles/1759343601603-pxfuel (1).jpg'),
+(11, '1759348197796-caballo.jpg', 'caballo.jpg', 'http://192.168.20.21:3000/assets/images/inmuebles/1759348197796-caballo.jpg'),
+(12, '1759348197784-Gemini_Generated_Image_7t1t7p7t1t7p7t1t (1).png', 'Gemini_Generated_Image_7t1t7p7t1t7p7t1t (1).png', 'http://192.168.20.21:3000/assets/images/inmuebles/1759348197784-Gemini_Generated_Image_7t1t7p7t1t7p7t1t (1).png'),
+(13, '1759348197752-Gemini_Generated_Image_7t1t7p7t1t7p7t1t (2).png', 'Gemini_Generated_Image_7t1t7p7t1t7p7t1t (2).png', 'http://192.168.20.21:3000/assets/images/inmuebles/1759348197752-Gemini_Generated_Image_7t1t7p7t1t7p7t1t (2).png'),
+(14, '1759348197806-Gemini_Generated_Image_7t1t7p7t1t7p7t1t.png', 'Gemini_Generated_Image_7t1t7p7t1t7p7t1t.png', 'http://192.168.20.21:3000/assets/images/inmuebles/1759348197806-Gemini_Generated_Image_7t1t7p7t1t7p7t1t.png');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `impuesto`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `impuesto`;
 CREATE TABLE `impuesto` (
   `Impuesto_id` int(10) NOT NULL,
   `impuesto` varchar(20) NOT NULL,
@@ -409,12 +557,20 @@ CREATE TABLE `impuesto` (
 -- RELACIONES PARA LA TABLA `impuesto`:
 --
 
+--
+-- Truncar tablas antes de insertar `impuesto`
+--
+
+TRUNCATE TABLE `impuesto`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `impuesto_valor`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `impuesto_valor`;
 CREATE TABLE `impuesto_valor` (
   `Impuesto_valor_id` int(10) NOT NULL,
   `Valor_FK` int(10) DEFAULT NULL,
@@ -432,12 +588,20 @@ CREATE TABLE `impuesto_valor` (
 --       `valor` -> `Valor_id`
 --
 
+--
+-- Truncar tablas antes de insertar `impuesto_valor`
+--
+
+TRUNCATE TABLE `impuesto_valor`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `inmueble`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `inmueble`;
 CREATE TABLE `inmueble` (
   `Inmueble_id` int(11) NOT NULL,
   `Valor` int(11) NOT NULL,
@@ -480,18 +644,29 @@ CREATE TABLE `inmueble` (
 --
 
 --
+-- Truncar tablas antes de insertar `inmueble`
+--
+
+TRUNCATE TABLE `inmueble`;
+--
 -- Volcado de datos para la tabla `inmueble`
 --
 
 INSERT INTO `inmueble` (`Inmueble_id`, `Valor`, `Area`, `Descripcion_General`, `Antiguedad`, `Motivo_VoA`, `Situacion_inmueble`, `Tipo_edificacion_FK`, `Otras_caracteristicas_FK`, `Acerca_edificacion_FK`, `Division_FK`, `Imagenes_inmueble_FK`, `Codigo_interno`, `Estado`, `Fecha_publicacion`, `Fecha_actualizacion`, `Visitas`, `Observaciones`, `Platform_user_FK`, `Direccion_FK`) VALUES
-(2, 250000000, 120, 'Apartamento moderno en el centro', 5, 'Venta', 'Disponible', 3, 3, 3, 3, 5, 'APT-101', 'disponible', '2025-08-13 19:45:54', '2025-08-13 19:45:54', 0, 'Sin observaciones', 1, 3);
+(1, 25000000, 120, 'Apartamento moderno en el centro', 5, 'Venta', 'Disponible', 1, 1, 1, 1, 1, 'APT-101', 'disponible', '2025-09-02 16:18:25', '2025-09-02 16:18:25', 0, 'Sin observaciones', 2, 1),
+(4, 250000000, 120, 'Apartamento de prueba', 5, 'Venta', 'Disponible', 5, 7, 5, 6, 6, 'TEST001', 'disponible', '2025-10-01 13:18:02', '2025-10-01 08:33:20', 0, NULL, 2, 9),
+(5, 890, 890, '890', 890, '890', '890', 6, 8, 6, 7, 10, '890', 'disponible', '2025-10-01 18:37:18', '2025-10-01 18:37:18', 0, '890', 8, 12),
+(6, 852, 852, '852', 851, '852', '852', 7, 9, 7, 8, 11, '852', 'disponible', '2025-10-01 19:52:57', '2025-10-01 19:52:57', 0, '852', 8, 13);
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `localizacion`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `localizacion`;
 CREATE TABLE `localizacion` (
   `Localizacion_id` int(11) NOT NULL,
   `Localizacion_descripcion` varchar(100) NOT NULL,
@@ -507,18 +682,31 @@ CREATE TABLE `localizacion` (
 --
 
 --
+-- Truncar tablas antes de insertar `localizacion`
+--
+
+TRUNCATE TABLE `localizacion`;
+--
 -- Volcado de datos para la tabla `localizacion`
 --
 
 INSERT INTO `localizacion` (`Localizacion_id`, `Localizacion_descripcion`, `Latitud`, `Longitud`, `Activo`, `Created_at`, `Updated_at`) VALUES
-(3, 'Oficina Central Bogotás', 4.33600000, -74.05900000, 1, '2025-08-13 19:45:54', '2025-08-13 19:45:54');
+(1, 'Oficina Central Bogotás', 4.33600000, -74.05900000, 1, '2025-09-02 16:18:25', '2025-09-02 16:18:25'),
+(11, 'Centro ciudad', 4.60000000, -74.00000000, 1, '2025-10-01 13:18:01', '2025-10-01 13:18:01'),
+(12, '123', 99.99999999, 121.00000000, 1, '2025-10-01 18:20:06', '2025-10-01 18:20:06'),
+(13, '567', 99.99999999, 567.00000000, 1, '2025-10-01 18:28:49', '2025-10-01 18:28:49'),
+(14, '890', 99.99999999, 890.00000000, 1, '2025-10-01 18:37:17', '2025-10-01 18:37:17'),
+(15, '852', 99.99999999, 852.00000000, 1, '2025-10-01 19:52:57', '2025-10-01 19:52:57');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `module`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `module`;
 CREATE TABLE `module` (
   `Module_id` int(11) NOT NULL,
   `Module_name` varchar(100) NOT NULL,
@@ -533,12 +721,20 @@ CREATE TABLE `module` (
 -- RELACIONES PARA LA TABLA `module`:
 --
 
+--
+-- Truncar tablas antes de insertar `module`
+--
+
+TRUNCATE TABLE `module`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `module_role`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `module_role`;
 CREATE TABLE `module_role` (
   `Module_role_id` int(11) NOT NULL,
   `Module_FK` int(11) NOT NULL,
@@ -556,12 +752,20 @@ CREATE TABLE `module_role` (
 --       `role` -> `Role_id`
 --
 
+--
+-- Truncar tablas antes de insertar `module_role`
+--
+
+TRUNCATE TABLE `module_role`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `municipio`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `municipio`;
 CREATE TABLE `municipio` (
   `Municipio_id` int(11) NOT NULL,
   `Ndap_FK` int(11) DEFAULT NULL,
@@ -578,12 +782,20 @@ CREATE TABLE `municipio` (
 --       `ndap` -> `Ndap_id`
 --
 
+--
+-- Truncar tablas antes de insertar `municipio`
+--
+
+TRUNCATE TABLE `municipio`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `ndap`
 --
+-- Creación: 01-10-2025 a las 18:19:07
+--
 
+DROP TABLE IF EXISTS `ndap`;
 CREATE TABLE `ndap` (
   `Ndap_id` int(11) NOT NULL,
   `Ndap_descripcion` varchar(50) NOT NULL,
@@ -597,18 +809,29 @@ CREATE TABLE `ndap` (
 --
 
 --
+-- Truncar tablas antes de insertar `ndap`
+--
+
+TRUNCATE TABLE `ndap`;
+--
 -- Volcado de datos para la tabla `ndap`
 --
 
 INSERT INTO `ndap` (`Ndap_id`, `Ndap_descripcion`, `Activo`, `Created_at`, `Updated_at`) VALUES
-(0, 'Nivel de Acceso Básico', 1, '2025-08-13 19:45:54', '2025-08-13 19:45:54');
+(1, 'bogota', 1, '2025-10-01 18:20:06', '2025-10-01 18:20:06'),
+(2, 'pol', 1, '2025-10-01 18:28:49', '2025-10-01 18:28:49'),
+(3, '890', 1, '2025-10-01 18:37:16', '2025-10-01 18:37:16'),
+(4, '852', 1, '2025-10-01 19:52:57', '2025-10-01 19:52:57');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `organizacion_parqueadero`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `organizacion_parqueadero`;
 CREATE TABLE `organizacion_parqueadero` (
   `Organizacion_parqueadero_id` int(11) NOT NULL,
   `Tipo_parqueadero` varchar(30) NOT NULL,
@@ -622,18 +845,29 @@ CREATE TABLE `organizacion_parqueadero` (
 --
 
 --
+-- Truncar tablas antes de insertar `organizacion_parqueadero`
+--
+
+TRUNCATE TABLE `organizacion_parqueadero`;
+--
 -- Volcado de datos para la tabla `organizacion_parqueadero`
 --
 
 INSERT INTO `organizacion_parqueadero` (`Organizacion_parqueadero_id`, `Tipo_parqueadero`, `Cantidad`, `Cubierto`, `Disponible`) VALUES
-(3, 'Automóvil', 150, 0, 20);
+(1, 'Automovil', 150, 0, 20),
+(7, 'Cubierto', 1, 0, 0),
+(8, 'carro', 150, 1, 1),
+(9, 'Automovil', 150, 1, 1);
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `otras_caracteristicas`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `otras_caracteristicas`;
 CREATE TABLE `otras_caracteristicas` (
   `Otras_caracteristicas_id` int(11) NOT NULL,
   `Caracteristicas_descripcion` varchar(30) NOT NULL,
@@ -657,18 +891,29 @@ CREATE TABLE `otras_caracteristicas` (
 --
 
 --
+-- Truncar tablas antes de insertar `otras_caracteristicas`
+--
+
+TRUNCATE TABLE `otras_caracteristicas`;
+--
 -- Volcado de datos para la tabla `otras_caracteristicas`
 --
 
 INSERT INTO `otras_caracteristicas` (`Otras_caracteristicas_id`, `Caracteristicas_descripcion`, `Deposito`, `Lavanderia`, `Gas`, `Piso`, `Mascotas_permitidas`, `Tipo_inmueble`, `Amoblado`, `Descripcion_adicional`, `Created_at`, `Updated_at`, `Asignacion_FK`) VALUES
-(3, 'Apartamento con excelentes aca', 1, 1, 1, 5, 1, 'Apartamento', 1, 'Balcón amplio con vista a la ciudad.', '2025-08-13 19:45:54', '2025-08-13 19:45:54', 3);
+(1, 'Apartamento con excelentes aca', 1, 1, 1, 5, 1, 'Apartamento', 1, 'Balcón amplio con vista a la ciudad.', '2025-09-02 16:18:25', '2025-09-02 16:18:25', 1),
+(7, 'Apartamento básico', 0, 0, 0, 0, 0, 'Apartamento', 0, 'Sin muebles', '2025-10-01 13:18:01', '2025-10-01 13:18:01', 7),
+(8, 'adadada', 1, 1, 1, 5, 1, 'Apartamento', 1, 'apto102', '2025-10-01 18:37:18', '2025-10-01 18:37:18', 8),
+(9, '8552', 1, 1, 1, 1, 1, 'Apartamento', 1, 'asd', '2025-10-01 19:52:57', '2025-10-01 19:52:57', 9);
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `pago`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `pago`;
 CREATE TABLE `pago` (
   `Pago_id` int(10) NOT NULL,
   `Referencia_transaccion` int(10) NOT NULL,
@@ -688,12 +933,20 @@ CREATE TABLE `pago` (
 --       `factura` -> `Factura_id`
 --
 
+--
+-- Truncar tablas antes de insertar `pago`
+--
+
+TRUNCATE TABLE `pago`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `permitions`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `permitions`;
 CREATE TABLE `permitions` (
   `Permitions_id` int(11) NOT NULL,
   `Permitions_name` varchar(50) NOT NULL,
@@ -707,12 +960,20 @@ CREATE TABLE `permitions` (
 -- RELACIONES PARA LA TABLA `permitions`:
 --
 
+--
+-- Truncar tablas antes de insertar `permitions`
+--
+
+TRUNCATE TABLE `permitions`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `permitions_module_role`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `permitions_module_role`;
 CREATE TABLE `permitions_module_role` (
   `Permitions_module_role_id` int(11) NOT NULL,
   `Module_role_FK` int(11) NOT NULL,
@@ -730,12 +991,20 @@ CREATE TABLE `permitions_module_role` (
 --       `module_role` -> `Module_role_id`
 --
 
+--
+-- Truncar tablas antes de insertar `permitions_module_role`
+--
+
+TRUNCATE TABLE `permitions_module_role`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `platform_identity_document`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `platform_identity_document`;
 CREATE TABLE `platform_identity_document` (
   `Identity_document_id` int(11) NOT NULL,
   `Document_number` varchar(30) NOT NULL,
@@ -754,12 +1023,20 @@ CREATE TABLE `platform_identity_document` (
 --       `platform_profile` -> `Profile_id`
 --
 
+--
+-- Truncar tablas antes de insertar `platform_identity_document`
+--
+
+TRUNCATE TABLE `platform_identity_document`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `platform_module`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `platform_module`;
 CREATE TABLE `platform_module` (
   `Platform_module_id` int(11) NOT NULL,
   `Module_name` varchar(50) NOT NULL,
@@ -776,12 +1053,20 @@ CREATE TABLE `platform_module` (
 -- RELACIONES PARA LA TABLA `platform_module`:
 --
 
+--
+-- Truncar tablas antes de insertar `platform_module`
+--
+
+TRUNCATE TABLE `platform_module`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `platform_module_role`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `platform_module_role`;
 CREATE TABLE `platform_module_role` (
   `Platform_module_role_id` int(11) NOT NULL,
   `Platform_module_FK` int(11) NOT NULL,
@@ -799,12 +1084,20 @@ CREATE TABLE `platform_module_role` (
 --       `platform_module` -> `Platform_module_id`
 --
 
+--
+-- Truncar tablas antes de insertar `platform_module_role`
+--
+
+TRUNCATE TABLE `platform_module_role`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `platform_permitions`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `platform_permitions`;
 CREATE TABLE `platform_permitions` (
   `Platform_permitions_id` int(11) NOT NULL,
   `Permitions_name` varchar(50) NOT NULL,
@@ -818,12 +1111,20 @@ CREATE TABLE `platform_permitions` (
 -- RELACIONES PARA LA TABLA `platform_permitions`:
 --
 
+--
+-- Truncar tablas antes de insertar `platform_permitions`
+--
+
+TRUNCATE TABLE `platform_permitions`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `platform_permitions_module_role`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `platform_permitions_module_role`;
 CREATE TABLE `platform_permitions_module_role` (
   `Platform_permitions_module_role_id` int(11) NOT NULL,
   `Platform_module_role_FK` int(11) NOT NULL,
@@ -841,12 +1142,20 @@ CREATE TABLE `platform_permitions_module_role` (
 --       `platform_module_role` -> `Platform_module_role_id`
 --
 
+--
+-- Truncar tablas antes de insertar `platform_permitions_module_role`
+--
+
+TRUNCATE TABLE `platform_permitions_module_role`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `platform_profile`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `platform_profile`;
 CREATE TABLE `platform_profile` (
   `Profile_id` int(11) NOT NULL,
   `Profile_name` varchar(20) NOT NULL,
@@ -872,12 +1181,29 @@ CREATE TABLE `platform_profile` (
 --       `platform_user` -> `Platform_user_id`
 --
 
+--
+-- Truncar tablas antes de insertar `platform_profile`
+--
+
+TRUNCATE TABLE `platform_profile`;
+--
+-- Volcado de datos para la tabla `platform_profile`
+--
+
+INSERT INTO `platform_profile` (`Profile_id`, `Profile_name`, `Profile_lastname`, `Profile_phone`, `Profile_addres`, `Profile_email`, `Profile_photo`, `Profile_birthdate`, `Profile_gender`, `Profile_national_id`, `Profile_bio`, `Profile_website`, `Profile_social`, `Platform_user_FK`, `createdAt`, `updatedAt`) VALUES
+(1, 'jonathan ivan', 'rendon bermeo', '3216417337', 'acascac', 'jonathan_bermeo014@hotmail.com', 'https://storage.googleapis.com/inmotechalmacenamiento/1758906948844_wallpaperbetter.com_1920x1080.jpg', '1999-05-21', 'Masculino', 'Colombiano', 'sdadadadasdasd', 'https://storage.googleapis.com/inmotechalmacenamiento/1758871453008_caballo.jpg', 'https://storage.googleapis.com/inmotechalmacenamiento/1758871453008_caballo.jpg', 2, '2025-09-24 05:31:05', '2025-09-26 17:15:52'),
+(2, 'asdf', 'asdasdas', '12321312', 'sadasdasd', 'asdasda@hotmail.com', 'asdsadas', '2025-09-16', 'asdsad', 'colombianos', 'asdasda', 'dsada', 'sdasdas', 3, '2025-09-24 16:11:29', '2025-09-24 16:11:36'),
+(3, 'asdas', 'adasd', '234243', 'asdasd', 'asdasda@hotmail.com', 'https://storage.googleapis.com/inmotechalmacenamiento/1758901126473_pxfuel (3).jpg', '2025-09-26', 'masculino', 'colombiano', 'asdadasd', 'asdad', 'instagramer', 6, '2025-09-25 21:23:54', '2025-09-26 15:38:48');
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `platform_role`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `platform_role`;
 CREATE TABLE `platform_role` (
   `Platform_role_id` int(11) NOT NULL,
   `Role_name` varchar(50) NOT NULL,
@@ -893,6 +1219,11 @@ CREATE TABLE `platform_role` (
 --
 
 --
+-- Truncar tablas antes de insertar `platform_role`
+--
+
+TRUNCATE TABLE `platform_role`;
+--
 -- Volcado de datos para la tabla `platform_role`
 --
 
@@ -905,10 +1236,14 @@ INSERT INTO `platform_role` (`Platform_role_id`, `Role_name`, `Role_description`
 --
 -- Estructura de tabla para la tabla `platform_user`
 --
+-- Creación: 22-09-2025 a las 21:25:25
+--
 
+DROP TABLE IF EXISTS `platform_user`;
 CREATE TABLE `platform_user` (
   `Platform_user_id` int(11) NOT NULL,
   `Username` varchar(100) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `Password` varchar(255) NOT NULL,
   `Platform_user_status_FK` int(11) NOT NULL,
   `Platform_role_FK` int(11) NOT NULL,
@@ -925,18 +1260,31 @@ CREATE TABLE `platform_user` (
 --
 
 --
+-- Truncar tablas antes de insertar `platform_user`
+--
+
+TRUNCATE TABLE `platform_user`;
+--
 -- Volcado de datos para la tabla `platform_user`
 --
 
-INSERT INTO `platform_user` (`Platform_user_id`, `Username`, `Password`, `Platform_user_status_FK`, `Platform_role_FK`, `Created_at`, `Updated_at`) VALUES
-(1, 'jonathan0145', '$2b$10$7.DZDON7R2nNOI/KBYz0jOY08ZugzZMm3Vjo17WB5iE6u5Ou7mmPS', 1, 1, '2025-08-14 20:52:53', '2025-08-14 15:53:30');
+INSERT INTO `platform_user` (`Platform_user_id`, `Username`, `email`, `Password`, `Platform_user_status_FK`, `Platform_role_FK`, `Created_at`, `Updated_at`) VALUES
+(2, 'jonathan0145', 'jonathan_bermeo014@hotmail.com', '$2b$10$qEQUf15CrkyGWGoDOdrorOYZ2ExfzMEIPz5M6DmgDIuEN2Yj2c6Dm', 1, 1, '2025-09-22 22:07:38', '2025-09-22 17:12:47'),
+(3, 'jonathan0146', 'jonathan_bermeo0146@hotmail.com', '$2b$10$7JxhqLV/ks.vk7oRQaVC2OBi7EnssMqtN5CkwD/sVlYRX0lLUknuu', 1, 1, '2025-09-22 22:12:18', '2025-09-24 11:10:15'),
+(6, 'jonathan0147', 'jonathan_bermeo026@hotmail.com', '$2b$10$bHT5fOGT1/BZcbXXpk5bYuUm3J2C9AXVfnSWCMuZo.sOdMIMamlCK', 1, 2, '2025-09-23 17:03:15', '2025-09-23 17:03:15'),
+(7, 'jonathan rendon', 'jonathanivanrendonbermeo@gmail.com', '', 1, 2, '2025-09-25 17:06:05', '2025-09-25 17:06:05'),
+(8, 'jonathan0123', 'jonathan_bermeo0123@hotmail.com', '$2a$10$ojRqYmSkGMGf7YXkBFJOa.5/FWLIuxsRNOdh3I5R0XITNT3f/k7yC', 1, 2, '2025-09-28 16:27:26', '2025-09-28 16:27:26'),
+(9, 'jonathan0125', 'jonathan0125@hotmail.com', '$2a$10$lUDjfV8rgRrtOr4QYv8MtuXRgYlgl1/fssdy3KE8FgJkiWhLIzk7O', 1, 2, '2025-09-28 18:28:07', '2025-09-28 18:28:07');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `platform_user_status`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `platform_user_status`;
 CREATE TABLE `platform_user_status` (
   `Platform_user_status_id` int(11) NOT NULL,
   `User_status_name` varchar(50) NOT NULL,
@@ -950,6 +1298,11 @@ CREATE TABLE `platform_user_status` (
 --
 
 --
+-- Truncar tablas antes de insertar `platform_user_status`
+--
+
+TRUNCATE TABLE `platform_user_status`;
+--
 -- Volcado de datos para la tabla `platform_user_status`
 --
 
@@ -961,7 +1314,10 @@ INSERT INTO `platform_user_status` (`Platform_user_status_id`, `User_status_name
 --
 -- Estructura de tabla para la tabla `politica_de_privacidad`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `politica_de_privacidad`;
 CREATE TABLE `politica_de_privacidad` (
   `id` int(11) NOT NULL,
   `titulo` varchar(255) NOT NULL,
@@ -976,12 +1332,27 @@ CREATE TABLE `politica_de_privacidad` (
 -- RELACIONES PARA LA TABLA `politica_de_privacidad`:
 --
 
+--
+-- Truncar tablas antes de insertar `politica_de_privacidad`
+--
+
+TRUNCATE TABLE `politica_de_privacidad`;
+--
+-- Volcado de datos para la tabla `politica_de_privacidad`
+--
+
+INSERT INTO `politica_de_privacidad` (`id`, `titulo`, `descripcion`, `version`, `fecha_creacion`, `fecha_actualizacion`, `activo`) VALUES
+(1, 'ya tu sabes', 'ya tu sabe sabiendo bien sabido', '1.0', '2025-09-21 13:01:53', '2025-09-21 13:01:53', 1);
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `porque_elegirnos`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `porque_elegirnos`;
 CREATE TABLE `porque_elegirnos` (
   `id` int(11) NOT NULL,
   `titulo` varchar(255) NOT NULL,
@@ -997,12 +1368,31 @@ CREATE TABLE `porque_elegirnos` (
 -- RELACIONES PARA LA TABLA `porque_elegirnos`:
 --
 
+--
+-- Truncar tablas antes de insertar `porque_elegirnos`
+--
+
+TRUNCATE TABLE `porque_elegirnos`;
+--
+-- Volcado de datos para la tabla `porque_elegirnos`
+--
+
+INSERT INTO `porque_elegirnos` (`id`, `titulo`, `descripcion`, `icono`, `orden`, `activo`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(1, 'elegirnos pq si', 'si esa es la descripcion', 'FaFacebookF', 1, 1, '2025-09-21 13:00:31', '2025-09-21 13:00:31'),
+(2, '¿Qué es Lorem Ipsum? Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la impren', '¿Qué es Lorem Ipsum?\nLorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas \"Letraset\", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.\n\n¿Por qué lo usamos?\nEs un hecho establecido hace demasiado tiempo que un lector se distraerá con el contenido del texto de un sitio mientras que mira su diseño. El punto de usar Lorem Ipsum es que tiene una distribución más o menos normal de las letras, al contrario de usar textos como por ejemplo \"Contenido aquí, contenido aquí\". Estos textos hacen parecerlo un español que se puede leer. Muchos paquetes de autoedición y editores de páginas web usan el Lorem Ipsum como su texto por defecto, y al hacer una búsqueda de \"Lorem Ipsum\" va a dar por resultado muchos sitios web que usan este texto si se encuentran en estado de desarrollo. Muchas versiones han evolucionado a través de los años, algunas veces por accidente, otras veces a propósito (por ejemplo insertándole humor y cosas por el estilo).\n\n\n¿De dónde viene?\nAl contrario del pensamiento popular, el texto de Lorem Ipsum no es simplemente texto aleatorio. Tiene sus raices en una pieza cl´sica de la literatura del Latin, que data del año 45 antes de Cristo, haciendo que este adquiera mas de 2000 años de antiguedad. Richard McClintock, un profesor de Latin de la Universidad de Hampden-Sydney en Virginia, encontró una de las palabras más oscuras de la lengua del latín, \"consecteur\", en un pasaje de Lorem Ipsum, y al seguir leyendo distintos textos del latín, descubrió la fuente indudable. Lorem Ipsum viene de las secciones 1.10.32 y 1.10.33 de \"de Finnibus Bonorum et Malorum\" (Los Extremos del Bien y El Mal) por Cicero, escrito en el año 45 antes de Cristo. Este libro es un tratado de teoría de éticas, muy popular durante el Renacimiento. La primera linea del Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", viene de una linea en la sección 1.10.32\n\nEl trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproducido debajo para aquellos interesados. Las secciones 1.10.32 y 1.10.33 de \"de Finibus Bonorum et Malorum\" por Cicero son también reproducidas en su forma original exacta, acompañadas por versiones en Inglés de la traducción realizada en 1914 por H. Rackham.\n\n¿Dónde puedo conseguirlo?\nHay muchas variaciones de los pasajes de Lorem Ipsum disponibles, pero la mayoría sufrió alteraciones en alguna manera, ya sea porque se le agregó humor, o palabras aleatorias que no parecen ni un poco creíbles. Si vas a utilizar un pasaje de Lorem Ipsum, necesitás estar seguro de que no hay nada avergonzante escondido en el medio del texto. Todos los generadores de Lorem Ipsum que se encuentran en Internet tienden a repetir trozos predefinidos cuando sea necesario, haciendo a este el único generador verdadero (válido) en la Internet. Usa un diccionario de mas de 200 palabras provenientes del latín, combinadas con estructuras muy útiles de sentencias, para generar texto de Lorem Ipsum que parezca razonable. Este Lorem Ipsum generado siempre estará libre de repeticiones, humor agregado o palabras no características del lenguaje, etc.', 'FaBan', 2, 1, '2025-09-30 13:26:33', '2025-09-30 13:26:33'),
+(3, 'msi', '¿Qué es Lorem Ipsum? Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas \"Letraset\", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum. ¿Por qué lo usamos? Es un hecho establecido hace demasiado tiempo que un lector se distraerá con el contenido del texto de un sitio mientras que mira su diseño. El punto de usar Lorem Ipsum es que tiene una distribución más o menos normal de las letras, al contrario de usar textos como por ejemplo \"Contenido aquí, contenido aquí\". Estos textos hacen parecerlo un español que se puede leer. Muchos paquetes de autoedición y editores de páginas web usan el Lorem Ipsum como su texto por defecto, y al hacer una búsqueda de \"Lorem Ipsum\" va a dar por resultado muchos sitios web que usan este texto si se encuentran en estado de desarrollo. Muchas versiones han evolucionado a través de los años, algunas veces por accidente, otras veces a propósito (por ejemplo insertándole humor y cosas por el estilo). ¿De dónde viene? Al contrario del pensamiento popular, el texto de Lorem Ipsum no es simplemente texto aleatorio. Tiene sus raices en una pieza cl´sica de la literatura del Latin, que data del año 45 antes de Cristo, haciendo que este adquiera mas de 2000 años de antiguedad. Richard McClintock, un profesor de Latin de la Universidad de Hampden-Sydney en Virginia, encontró una de las palabras más oscuras de la lengua del latín, \"consecteur\", en un pasaje de Lorem Ipsum, y al seguir leyendo distintos textos del latín, ', 'FaAmazonPay', 3, 1, '2025-09-30 18:36:36', '2025-09-30 18:36:36'),
+(4, 'wqerrt', '¿Qué es Lorem Ipsum? Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas \"Letraset\", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum. ¿Por qué lo usamos? Es un hecho establecido hace demasiado tiempo que un lector se distraerá con el contenido del texto de un sitio mientras que mira su diseño. El punto de usar Lorem Ipsum es que tiene una distribución más o menos normal de las letras, al contrario de usar textos como por ejemplo \"Contenido aquí, contenido aquí\". Estos textos hacen parecerlo un español que se puede leer. Muchos paquetes de autoedición y editores de páginas web usan el Lorem Ipsum como su texto por defecto, y al hacer una búsqueda de \"Lorem Ipsum\" va a dar por resultado muchos sitios web que usan este texto si se encuentran en estado de desarrollo. Muchas versiones han evolucionado a través de los años, algunas veces por accidente, otras veces a propósito (por ejemplo insertándole humor y cosas por el estilo). ¿De dónde viene? Al contrario del pensamiento popular, el texto de Lorem Ipsum no es simplemente texto aleatorio. Tiene sus raices en una pieza cl´sica de la literatura del Latin, que data del año 45 antes de Cristo, haciendo que este adquiera mas de 2000 años de antiguedad. Richard McClintock, un profesor de Latin de la Universidad de Hampden-Sydney en Virginia, encontró una de las palabras más oscuras de la lengua del latín, \"consecteur\", en un pasaje de Lorem Ipsum, y al seguir leyendo distintos textos del latín, ', 'FaBehanceSquare', 4, 1, '2025-09-30 18:36:54', '2025-09-30 18:36:54'),
+(5, 'cvbnm', '¿Qué es Lorem Ipsum? Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas \"Letraset\", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum. ¿Por qué lo usamos? Es un hecho establecido hace demasiado tiempo que un lector se distraerá con el contenido del texto de un sitio mientras que mira su diseño. El punto de usar Lorem Ipsum es que tiene una distribución más o menos normal de las letras, al contrario de usar textos como por ejemplo \"Contenido aquí, contenido aquí\". Estos textos hacen parecerlo un español que se puede leer. Muchos paquetes de autoedición y editores de páginas web usan el Lorem Ipsum como su texto por defecto, y al hacer una búsqueda de \"Lorem Ipsum\" va a dar por resultado muchos sitios web que usan este texto si se encuentran en estado de desarrollo. Muchas versiones han evolucionado a través de los años, algunas veces por accidente, otras veces a propósito (por ejemplo insertándole humor y cosas por el estilo). ¿De dónde viene? Al contrario del pensamiento popular, el texto de Lorem Ipsum no es simplemente texto aleatorio. Tiene sus raices en una pieza cl´sica de la literatura del Latin, que data del año 45 antes de Cristo, haciendo que este adquiera mas de 2000 años de antiguedad. Richard McClintock, un profesor de Latin de la Universidad de Hampden-Sydney en Virginia, encontró una de las palabras más oscuras de la lengua del latín, \"consecteur\", en un pasaje de Lorem Ipsum, y al seguir leyendo distintos textos del latín, ', 'FaRegFileWord', 5, 1, '2025-09-30 18:37:26', '2025-09-30 18:37:26');
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `preguntas_frecuentes`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `preguntas_frecuentes`;
 CREATE TABLE `preguntas_frecuentes` (
   `id` int(11) NOT NULL,
   `pregunta` varchar(255) NOT NULL,
@@ -1018,12 +1408,27 @@ CREATE TABLE `preguntas_frecuentes` (
 -- RELACIONES PARA LA TABLA `preguntas_frecuentes`:
 --
 
+--
+-- Truncar tablas antes de insertar `preguntas_frecuentes`
+--
+
+TRUNCATE TABLE `preguntas_frecuentes`;
+--
+-- Volcado de datos para la tabla `preguntas_frecuentes`
+--
+
+INSERT INTO `preguntas_frecuentes` (`id`, `pregunta`, `respuesta`, `categoria`, `orden`, `activo`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(1, 'esto es una pregunta', 'si definitivamente es un a pregunta', 'tipo pregunta', 1, 1, '2025-09-20 21:17:02', '2025-09-20 21:17:02');
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `resolucion_factura`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `resolucion_factura`;
 CREATE TABLE `resolucion_factura` (
   `Resolucion_factura_id` int(10) NOT NULL,
   `Resolucion_facturacion_NO` int(20) NOT NULL,
@@ -1035,12 +1440,20 @@ CREATE TABLE `resolucion_factura` (
 -- RELACIONES PARA LA TABLA `resolucion_factura`:
 --
 
+--
+-- Truncar tablas antes de insertar `resolucion_factura`
+--
+
+TRUNCATE TABLE `resolucion_factura`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `retenedor_iva`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `retenedor_iva`;
 CREATE TABLE `retenedor_iva` (
   `Retenedor_IVA_id` int(10) NOT NULL,
   `Porcentaje_retencion` decimal(5,2) NOT NULL,
@@ -1053,12 +1466,20 @@ CREATE TABLE `retenedor_iva` (
 -- RELACIONES PARA LA TABLA `retenedor_iva`:
 --
 
+--
+-- Truncar tablas antes de insertar `retenedor_iva`
+--
+
+TRUNCATE TABLE `retenedor_iva`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `role`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `Role_id` int(11) NOT NULL,
   `Role_name` varchar(50) NOT NULL,
@@ -1073,12 +1494,20 @@ CREATE TABLE `role` (
 -- RELACIONES PARA LA TABLA `role`:
 --
 
+--
+-- Truncar tablas antes de insertar `role`
+--
+
+TRUNCATE TABLE `role`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `sobre_nosotros`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `sobre_nosotros`;
 CREATE TABLE `sobre_nosotros` (
   `id` int(11) NOT NULL,
   `titulo` varchar(255) NOT NULL,
@@ -1093,12 +1522,28 @@ CREATE TABLE `sobre_nosotros` (
 -- RELACIONES PARA LA TABLA `sobre_nosotros`:
 --
 
+--
+-- Truncar tablas antes de insertar `sobre_nosotros`
+--
+
+TRUNCATE TABLE `sobre_nosotros`;
+--
+-- Volcado de datos para la tabla `sobre_nosotros`
+--
+
+INSERT INTO `sobre_nosotros` (`id`, `titulo`, `descripcion`, `imagen_url`, `fecha_creacion`, `fecha_actualizacion`, `activo`) VALUES
+(1, 'hola', 'esto es un saludo', '/assets/images/sobrenosotros/1758403072120-301510981.jpg', '2025-09-20 21:17:52', '2025-09-20 21:17:52', 1),
+(2, 'adsfsaddsafasdfdasfdasfdsfsdafdsafsafsdfdsfdsfsdfsdfdsafsdafasdfsadsafsd', '¿Qué es Lorem Ipsum?\nLorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas \"Letraset\", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.\n\n¿Por qué lo usamos?\nEs un hecho establecido hace demasiado tiempo que un lector se distraerá con el contenido del texto de un sitio mientras que mira su diseño. El punto de usar Lorem Ipsum es que tiene una distribución más o menos normal de las letras, al contrario de usar textos como por ejemplo \"Contenido aquí, contenido aquí\". Estos textos hacen parecerlo un español que se puede leer. Muchos paquetes de autoedición y editores de páginas web usan el Lorem Ipsum como su texto por defecto, y al hacer una búsqueda de \"Lorem Ipsum\" va a dar por resultado muchos sitios web que usan este texto si se encuentran en estado de desarrollo. Muchas versiones han evolucionado a través de los años, algunas veces por accidente, otras veces a propósito (por ejemplo insertándole humor y cosas por el estilo).\n\n\n¿De dónde viene?\nAl contrario del pensamiento popular, el texto de Lorem Ipsum no es simplemente texto aleatorio. Tiene sus raices en una pieza cl´sica de la literatura del Latin, que data del año 45 antes de Cristo, haciendo que este adquiera mas de 2000 años de antiguedad. Richard McClintock, un profesor de Latin de la Universidad de Hampden-Sydney en Virginia, encontró una de las palabras más oscuras de la lengua del latín, \"consecteur\", en un pasaje de Lorem Ipsum, y al seguir leyendo distintos textos del latín, descubrió la fuente indudable. Lorem Ipsum viene de las secciones 1.10.32 y 1.10.33 de \"de Finnibus Bonorum et Malorum\" (Los Extremos del Bien y El Mal) por Cicero, escrito en el año 45 antes de Cristo. Este libro es un tratado de teoría de éticas, muy popular durante el Renacimiento. La primera linea del Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", viene de una linea en la sección 1.10.32\n\nEl trozo de texto estándar de Lorem Ipsum usado desde el año 1500 es reproducido debajo para aquellos interesados. Las secciones 1.10.32 y 1.10.33 de \"de Finibus Bonorum et Malorum\" por Cicero son también reproducidas en su forma original exacta, acompañadas por versiones en Inglés de la traducción realizada en 1914 por H. Rackham.\n\n¿Dónde puedo conseguirlo?\nHay muchas variaciones de los pasajes de Lorem Ipsum disponibles, pero la mayoría sufrió alteraciones en alguna manera, ya sea porque se le agregó humor, o palabras aleatorias que no parecen ni un poco creíbles. Si vas a utilizar un pasaje de Lorem Ipsum, necesitás estar seguro de que no hay nada avergonzante escondido en el medio del texto. Todos los generadores de Lorem Ipsum que se encuentran en Internet tienden a repetir trozos predefinidos cuando sea necesario, haciendo a este el único generador verdadero (válido) en la Internet. Usa un diccionario de mas de 200 palabras provenientes del latín, combinadas con estructuras muy útiles de sentencias, para generar texto de Lorem Ipsum que parezca razonable. Este Lorem Ipsum generado siempre estará libre de repeticiones, humor agregado o palabras no características del lenguaje, etc.', '/assets/images/sobrenosotros/1759238706570-229568276.jpg', '2025-09-30 13:25:07', '2025-09-30 13:25:07', 1);
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `suscripcion`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `suscripcion`;
 CREATE TABLE `suscripcion` (
   `Suscripcion_id` int(10) NOT NULL,
   `Platform_user_FK` int(11) NOT NULL,
@@ -1117,12 +1562,20 @@ CREATE TABLE `suscripcion` (
 --       `factura` -> `Factura_id`
 --
 
+--
+-- Truncar tablas antes de insertar `suscripcion`
+--
+
+TRUNCATE TABLE `suscripcion`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `terminos_y_condiciones`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `terminos_y_condiciones`;
 CREATE TABLE `terminos_y_condiciones` (
   `Terminos_id` int(11) NOT NULL,
   `Titulo` varchar(255) NOT NULL,
@@ -1134,12 +1587,27 @@ CREATE TABLE `terminos_y_condiciones` (
 -- RELACIONES PARA LA TABLA `terminos_y_condiciones`:
 --
 
+--
+-- Truncar tablas antes de insertar `terminos_y_condiciones`
+--
+
+TRUNCATE TABLE `terminos_y_condiciones`;
+--
+-- Volcado de datos para la tabla `terminos_y_condiciones`
+--
+
+INSERT INTO `terminos_y_condiciones` (`Terminos_id`, `Titulo`, `Descripcion`, `Fecha_creacion`) VALUES
+(1, 'asdfh', 'asdfhasdasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhasdfhfhasdfhasdfhasdfh', '2025-09-20 21:21:35');
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `tipo_edificacion`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `tipo_edificacion`;
 CREATE TABLE `tipo_edificacion` (
   `Tipo_edificacion_id` int(11) NOT NULL,
   `Tipo_edificacion_categoria` varchar(50) DEFAULT NULL,
@@ -1155,18 +1623,29 @@ CREATE TABLE `tipo_edificacion` (
 --
 
 --
+-- Truncar tablas antes de insertar `tipo_edificacion`
+--
+
+TRUNCATE TABLE `tipo_edificacion`;
+--
 -- Volcado de datos para la tabla `tipo_edificacion`
 --
 
 INSERT INTO `tipo_edificacion` (`Tipo_edificacion_id`, `Tipo_edificacion_categoria`, `Tipo_edificacion_descripcion`, `Tipo_edificacion_niveles`, `Tipo_edificacion_activo`, `Created_at`, `Updated_at`) VALUES
-(3, 'Residencial', 'Apartamento en edificio de propiedad horizontal', 15, 1, '2025-08-13 19:45:54', '2025-08-13 19:45:54');
+(1, 'Residencial', 'Apartamento en edificio de propiedad horizontal', 15, 1, '2025-09-02 16:18:25', '2025-09-02 16:18:25'),
+(5, 'Residencial', 'Apartamento', NULL, 1, '2025-10-01 13:18:02', '2025-10-01 13:18:02'),
+(6, 'Residencial', 'Apartamento', 5, 1, '2025-10-01 18:37:17', '2025-10-01 18:37:17'),
+(7, '1', 'Apartamento en edificio de propiedad horizontal', 8, 1, '2025-10-01 19:52:57', '2025-10-01 19:52:57');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `users`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `User_id` int(11) NOT NULL,
   `User_user` varchar(100) NOT NULL,
@@ -1185,12 +1664,20 @@ CREATE TABLE `users` (
 --       `role` -> `Role_id`
 --
 
+--
+-- Truncar tablas antes de insertar `users`
+--
+
+TRUNCATE TABLE `users`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `user_status`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `user_status`;
 CREATE TABLE `user_status` (
   `User_status_id` int(11) NOT NULL,
   `User_status_name` varchar(50) NOT NULL,
@@ -1203,12 +1690,20 @@ CREATE TABLE `user_status` (
 -- RELACIONES PARA LA TABLA `user_status`:
 --
 
+--
+-- Truncar tablas antes de insertar `user_status`
+--
+
+TRUNCATE TABLE `user_status`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `valor`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `valor`;
 CREATE TABLE `valor` (
   `Valor_id` int(11) NOT NULL,
   `Monto_IVA` decimal(19,0) NOT NULL,
@@ -1220,12 +1715,20 @@ CREATE TABLE `valor` (
 -- RELACIONES PARA LA TABLA `valor`:
 --
 
+--
+-- Truncar tablas antes de insertar `valor`
+--
+
+TRUNCATE TABLE `valor`;
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `vereda`
 --
+-- Creación: 08-08-2025 a las 18:09:17
+--
 
+DROP TABLE IF EXISTS `vereda`;
 CREATE TABLE `vereda` (
   `Vereda_id` int(11) NOT NULL,
   `Vereda_nombre` varchar(50) NOT NULL,
@@ -1241,6 +1744,11 @@ CREATE TABLE `vereda` (
 --       `municipio` -> `Municipio_id`
 --
 
+--
+-- Truncar tablas antes de insertar `vereda`
+--
+
+TRUNCATE TABLE `vereda`;
 --
 -- Índices para tablas volcadas
 --
@@ -1491,6 +1999,7 @@ ALTER TABLE `platform_role`
 --
 ALTER TABLE `platform_user`
   ADD PRIMARY KEY (`Platform_user_id`),
+  ADD UNIQUE KEY `email` (`email`),
   ADD KEY `platform_user_status_fk` (`Platform_user_status_FK`),
   ADD KEY `platform_user_role_fk` (`Platform_role_FK`);
 
@@ -1597,19 +2106,19 @@ ALTER TABLE `vereda`
 -- AUTO_INCREMENT de la tabla `acerca_edificacion`
 --
 ALTER TABLE `acerca_edificacion`
-  MODIFY `Acerca_edificacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Acerca_edificacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion`
 --
 ALTER TABLE `asignacion`
-  MODIFY `Asignacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Asignacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `carrusel`
 --
 ALTER TABLE `carrusel`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `contacto`
@@ -1621,37 +2130,37 @@ ALTER TABLE `contacto`
 -- AUTO_INCREMENT de la tabla `designador_cardinal`
 --
 ALTER TABLE `designador_cardinal`
-  MODIFY `Designador_cardinal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Designador_cardinal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `direccion`
 --
 ALTER TABLE `direccion`
-  MODIFY `Direccion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Direccion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `division`
 --
 ALTER TABLE `division`
-  MODIFY `Division_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Division_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `imagenes_inmueble`
 --
 ALTER TABLE `imagenes_inmueble`
-  MODIFY `Imagenes_inmueble_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `Imagenes_inmueble_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `inmueble`
 --
 ALTER TABLE `inmueble`
-  MODIFY `Inmueble_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Inmueble_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `localizacion`
 --
 ALTER TABLE `localizacion`
-  MODIFY `Localizacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Localizacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `module`
@@ -1666,16 +2175,22 @@ ALTER TABLE `module_role`
   MODIFY `Module_role_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `ndap`
+--
+ALTER TABLE `ndap`
+  MODIFY `Ndap_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT de la tabla `organizacion_parqueadero`
 --
 ALTER TABLE `organizacion_parqueadero`
-  MODIFY `Organizacion_parqueadero_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Organizacion_parqueadero_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `otras_caracteristicas`
 --
 ALTER TABLE `otras_caracteristicas`
-  MODIFY `Otras_caracteristicas_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Otras_caracteristicas_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `permitions`
@@ -1723,7 +2238,7 @@ ALTER TABLE `platform_permitions_module_role`
 -- AUTO_INCREMENT de la tabla `platform_profile`
 --
 ALTER TABLE `platform_profile`
-  MODIFY `Profile_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Profile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `platform_role`
@@ -1735,7 +2250,7 @@ ALTER TABLE `platform_role`
 -- AUTO_INCREMENT de la tabla `platform_user`
 --
 ALTER TABLE `platform_user`
-  MODIFY `Platform_user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Platform_user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `platform_user_status`
@@ -1747,19 +2262,19 @@ ALTER TABLE `platform_user_status`
 -- AUTO_INCREMENT de la tabla `politica_de_privacidad`
 --
 ALTER TABLE `politica_de_privacidad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `porque_elegirnos`
 --
 ALTER TABLE `porque_elegirnos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `preguntas_frecuentes`
 --
 ALTER TABLE `preguntas_frecuentes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `role`
@@ -1771,19 +2286,19 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT de la tabla `sobre_nosotros`
 --
 ALTER TABLE `sobre_nosotros`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `terminos_y_condiciones`
 --
 ALTER TABLE `terminos_y_condiciones`
-  MODIFY `Terminos_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Terminos_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_edificacion`
 --
 ALTER TABLE `tipo_edificacion`
-  MODIFY `Tipo_edificacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Tipo_edificacion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
@@ -1966,205 +2481,970 @@ USE `phpmyadmin`;
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla asignacion
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla barrio
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla barrio_ciudad_corregimiento_vereda
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla carrusel
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla ciudad
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla contacto
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla corregimiento
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla designador_cardinal
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla direccion
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla division
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla estado_pago
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla factura
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla imagenes_inmueble
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla impuesto
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla impuesto_valor
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla inmueble
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla localizacion
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla module
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla module_role
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla municipio
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla ndap
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla organizacion_parqueadero
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla otras_caracteristicas
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla pago
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla permitions
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla permitions_module_role
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla platform_identity_document
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla platform_module
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla platform_module_role
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla platform_permitions
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla platform_permitions_module_role
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla platform_profile
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla platform_role
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla platform_user
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla platform_user_status
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla politica_de_privacidad
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla porque_elegirnos
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla preguntas_frecuentes
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla resolucion_factura
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla retenedor_iva
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla role
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla sobre_nosotros
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla suscripcion
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla terminos_y_condiciones
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla tipo_edificacion
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla users
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla user_status
 --
 
+--
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
 --
 -- Metadatos para la tabla valor
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la tabla vereda
 --
 
 --
+-- Truncar tablas antes de insertar `pma__column_info`
+--
+
+TRUNCATE TABLE `pma__column_info`;
+--
+-- Truncar tablas antes de insertar `pma__table_uiprefs`
+--
+
+TRUNCATE TABLE `pma__table_uiprefs`;
+--
+-- Truncar tablas antes de insertar `pma__tracking`
+--
+
+TRUNCATE TABLE `pma__tracking`;
+--
 -- Metadatos para la base de datos inmotech_fs_development
 --
 
+--
+-- Truncar tablas antes de insertar `pma__bookmark`
+--
+
+TRUNCATE TABLE `pma__bookmark`;
+--
+-- Truncar tablas antes de insertar `pma__relation`
+--
+
+TRUNCATE TABLE `pma__relation`;
+--
+-- Truncar tablas antes de insertar `pma__pdf_pages`
+--
+
+TRUNCATE TABLE `pma__pdf_pages`;
 --
 -- Volcado de datos para la tabla `pma__pdf_pages`
 --
@@ -2174,6 +3454,11 @@ INSERT INTO `pma__pdf_pages` (`db_name`, `page_descr`) VALUES
 
 SET @LAST_PAGE = LAST_INSERT_ID();
 
+--
+-- Truncar tablas antes de insertar `pma__table_coords`
+--
+
+TRUNCATE TABLE `pma__table_coords`;
 --
 -- Volcado de datos para la tabla `pma__table_coords`
 --
@@ -2231,6 +3516,11 @@ INSERT INTO `pma__table_coords` (`db_name`, `table_name`, `pdf_page_number`, `x`
 ('inmotech_fs_development', 'vereda', @LAST_PAGE, 1733, 2573);
 
 --
+-- Truncar tablas antes de insertar `pma__pdf_pages`
+--
+
+TRUNCATE TABLE `pma__pdf_pages`;
+--
 -- Volcado de datos para la tabla `pma__pdf_pages`
 --
 
@@ -2239,6 +3529,16 @@ INSERT INTO `pma__pdf_pages` (`db_name`, `page_descr`) VALUES
 
 SET @LAST_PAGE = LAST_INSERT_ID();
 
+--
+-- Truncar tablas antes de insertar `pma__table_coords`
+--
+
+TRUNCATE TABLE `pma__table_coords`;
+--
+-- Truncar tablas antes de insertar `pma__pdf_pages`
+--
+
+TRUNCATE TABLE `pma__pdf_pages`;
 --
 -- Volcado de datos para la tabla `pma__pdf_pages`
 --
@@ -2249,6 +3549,16 @@ INSERT INTO `pma__pdf_pages` (`db_name`, `page_descr`) VALUES
 SET @LAST_PAGE = LAST_INSERT_ID();
 
 --
+-- Truncar tablas antes de insertar `pma__table_coords`
+--
+
+TRUNCATE TABLE `pma__table_coords`;
+--
+-- Truncar tablas antes de insertar `pma__pdf_pages`
+--
+
+TRUNCATE TABLE `pma__pdf_pages`;
+--
 -- Volcado de datos para la tabla `pma__pdf_pages`
 --
 
@@ -2256,7 +3566,154 @@ INSERT INTO `pma__pdf_pages` (`db_name`, `page_descr`) VALUES
 ('inmotech_fs_development', 'falta facturacion y suscripcion');
 
 SET @LAST_PAGE = LAST_INSERT_ID();
-COMMIT;
+
+--
+-- Truncar tablas antes de insertar `pma__table_coords`
+--
+
+TRUNCATE TABLE `pma__table_coords`;
+--
+-- Truncar tablas antes de insertar `pma__pdf_pages`
+--
+
+TRUNCATE TABLE `pma__pdf_pages`;
+--
+-- Volcado de datos para la tabla `pma__pdf_pages`
+--
+
+INSERT INTO `pma__pdf_pages` (`db_name`, `page_descr`) VALUES
+('inmotech_fs_development', 'inmotech');
+
+SET @LAST_PAGE = LAST_INSERT_ID();
+
+--
+-- Truncar tablas antes de insertar `pma__table_coords`
+--
+
+TRUNCATE TABLE `pma__table_coords`;
+--
+-- Volcado de datos para la tabla `pma__table_coords`
+--
+
+INSERT INTO `pma__table_coords` (`db_name`, `table_name`, `pdf_page_number`, `x`, `y`) VALUES
+('inmotech_fs_development', 'acerca_edificacion', @LAST_PAGE, 1634, 1458),
+('inmotech_fs_development', 'asignacion', @LAST_PAGE, 1594, 1219),
+('inmotech_fs_development', 'barrio', @LAST_PAGE, 1319, 1979),
+('inmotech_fs_development', 'barrio_ciudad_corregimiento_vereda', @LAST_PAGE, 769, 2209),
+('inmotech_fs_development', 'carrusel', @LAST_PAGE, 134, 2479),
+('inmotech_fs_development', 'ciudad', @LAST_PAGE, 1513, 2140),
+('inmotech_fs_development', 'contacto', @LAST_PAGE, 102, 704),
+('inmotech_fs_development', 'corregimiento', @LAST_PAGE, 1751, 2366),
+('inmotech_fs_development', 'designador_cardinal', @LAST_PAGE, 827, 1965),
+('inmotech_fs_development', 'direccion', @LAST_PAGE, 386, 2045),
+('inmotech_fs_development', 'division', @LAST_PAGE, 1263, 1479),
+('inmotech_fs_development', 'estado_pago', @LAST_PAGE, 1727, 421),
+('inmotech_fs_development', 'factura', @LAST_PAGE, 1717, 554),
+('inmotech_fs_development', 'imagenes_inmueble', @LAST_PAGE, 845, 1714),
+('inmotech_fs_development', 'impuesto', @LAST_PAGE, 2587, 753),
+('inmotech_fs_development', 'impuesto_valor', @LAST_PAGE, 2259, 711),
+('inmotech_fs_development', 'inmueble', @LAST_PAGE, 452, 1100),
+('inmotech_fs_development', 'localizacion', @LAST_PAGE, 27, 2099),
+('inmotech_fs_development', 'module', @LAST_PAGE, 1227, 132),
+('inmotech_fs_development', 'module_role', @LAST_PAGE, 902, 32),
+('inmotech_fs_development', 'municipio', @LAST_PAGE, 2173, 2387),
+('inmotech_fs_development', 'ndap', @LAST_PAGE, 2536, 2407),
+('inmotech_fs_development', 'organizacion_parqueadero', @LAST_PAGE, 2058, 1210),
+('inmotech_fs_development', 'otras_caracteristicas', @LAST_PAGE, 1175, 1092),
+('inmotech_fs_development', 'pago', @LAST_PAGE, 2033, 325),
+('inmotech_fs_development', 'permitions', @LAST_PAGE, 1917, 60),
+('inmotech_fs_development', 'permitions_module_role', @LAST_PAGE, 1515, 36),
+('inmotech_fs_development', 'platform_identity_document', @LAST_PAGE, 1243, 360),
+('inmotech_fs_development', 'platform_module', @LAST_PAGE, 1660, 972),
+('inmotech_fs_development', 'platform_module_role', @LAST_PAGE, 1247, 882),
+('inmotech_fs_development', 'platform_permitions', @LAST_PAGE, 2303, 881),
+('inmotech_fs_development', 'platform_permitions_module_role', @LAST_PAGE, 1752, 764),
+('inmotech_fs_development', 'platform_profile', @LAST_PAGE, 790, 327),
+('inmotech_fs_development', 'platform_role', @LAST_PAGE, 880, 848),
+('inmotech_fs_development', 'platform_user', @LAST_PAGE, 441, 726),
+('inmotech_fs_development', 'platform_user_status', @LAST_PAGE, 51, 352),
+('inmotech_fs_development', 'politica_de_privacidad', @LAST_PAGE, 459, 2684),
+('inmotech_fs_development', 'porque_elegirnos', @LAST_PAGE, 880, 2579),
+('inmotech_fs_development', 'preguntas_frecuentes', @LAST_PAGE, 949, 2817),
+('inmotech_fs_development', 'resolucion_factura', @LAST_PAGE, 2222, 537),
+('inmotech_fs_development', 'retenedor_iva', @LAST_PAGE, 2560, 587),
+('inmotech_fs_development', 'role', @LAST_PAGE, 650, 78),
+('inmotech_fs_development', 'sobre_nosotros', @LAST_PAGE, 131, 2723),
+('inmotech_fs_development', 'suscripcion', @LAST_PAGE, 1221, 660),
+('inmotech_fs_development', 'terminos_y_condiciones', @LAST_PAGE, 462, 2500),
+('inmotech_fs_development', 'tipo_edificacion', @LAST_PAGE, 796, 1041),
+('inmotech_fs_development', 'user_status', @LAST_PAGE, 46, 62),
+('inmotech_fs_development', 'users', @LAST_PAGE, 372, 0),
+('inmotech_fs_development', 'valor', @LAST_PAGE, 2590, 436),
+('inmotech_fs_development', 'vereda', @LAST_PAGE, 1733, 2573);
+
+--
+-- Truncar tablas antes de insertar `pma__pdf_pages`
+--
+
+TRUNCATE TABLE `pma__pdf_pages`;
+--
+-- Volcado de datos para la tabla `pma__pdf_pages`
+--
+
+INSERT INTO `pma__pdf_pages` (`db_name`, `page_descr`) VALUES
+('inmotech_fs_development', 'sa');
+
+SET @LAST_PAGE = LAST_INSERT_ID();
+
+--
+-- Truncar tablas antes de insertar `pma__table_coords`
+--
+
+TRUNCATE TABLE `pma__table_coords`;
+--
+-- Truncar tablas antes de insertar `pma__pdf_pages`
+--
+
+TRUNCATE TABLE `pma__pdf_pages`;
+--
+-- Volcado de datos para la tabla `pma__pdf_pages`
+--
+
+INSERT INTO `pma__pdf_pages` (`db_name`, `page_descr`) VALUES
+('inmotech_fs_development', 'inmotech v1.1');
+
+SET @LAST_PAGE = LAST_INSERT_ID();
+
+--
+-- Truncar tablas antes de insertar `pma__table_coords`
+--
+
+TRUNCATE TABLE `pma__table_coords`;
+--
+-- Truncar tablas antes de insertar `pma__pdf_pages`
+--
+
+TRUNCATE TABLE `pma__pdf_pages`;
+--
+-- Volcado de datos para la tabla `pma__pdf_pages`
+--
+
+INSERT INTO `pma__pdf_pages` (`db_name`, `page_descr`) VALUES
+('inmotech_fs_development', 'falta facturacion y suscripcion');
+
+SET @LAST_PAGE = LAST_INSERT_ID();
+
+--
+-- Truncar tablas antes de insertar `pma__table_coords`
+--
+
+TRUNCATE TABLE `pma__table_coords`;
+--
+-- Truncar tablas antes de insertar `pma__savedsearches`
+--
+
+TRUNCATE TABLE `pma__savedsearches`;
+--
+-- Truncar tablas antes de insertar `pma__central_columns`
+--
+
+TRUNCATE TABLE `pma__central_columns`;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
