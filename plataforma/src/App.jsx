@@ -18,6 +18,7 @@ import AdminProperties from './pages/admin/AdminProperties';
 import CreateProperty from './pages/admin/CreateProperty';
 import VenderInmueble from './pages/VenderInmueble';
 import EditProperty from './pages/admin/EditProperty';
+import InmuebleDetail from './pages/admin/InmuebleDetail'; // ← AGREGAR ESTE IMPORT
 import Visualizations from './pages/admin/Visualizations';
 import Usuarios from './pages/admin/Usuarios';
 import CarruselAdmin from './pages/admin/CarruselAdmin';
@@ -78,6 +79,7 @@ function App() {
             <Route path="perfil" element={<PerfilAdmin />} />
             <Route path="inmuebles/crear" element={<CreateProperty />} />
             <Route path="inmuebles/editar/:id" element={<EditProperty />} />
+            <Route path="inmuebles/detalle/:id" element={<InmuebleDetail />} /> {/* ← AGREGAR ESTA RUTA */}
             <Route path="visualizaciones" element={<Visualizations />} />
             <Route path="usuarios" element={<Usuarios />} />
             <Route path="carrusel" element={<CarruselAdmin />} />

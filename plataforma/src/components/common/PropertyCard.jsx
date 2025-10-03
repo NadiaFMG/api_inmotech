@@ -148,7 +148,8 @@ const PropertyCard = ({ property, isAdminView, onEdit, onDelete, onViewDetails }
                                     className="admin-btn admin-btn-view"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        onViewDetails && onViewDetails();
+                                        // ← CAMBIAR ESTA LÍNEA PARA IR A INMUEBLE DETAIL:
+                                        navigate(`/admin/inmuebles/detalle/${property.Inmueble_id}`);
                                     }}
                                 >
                                     <FaEye />
