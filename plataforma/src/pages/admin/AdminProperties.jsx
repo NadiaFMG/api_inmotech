@@ -8,6 +8,8 @@ import Ordenamiento from '../../components/search/Ordenamiento';
 import Paginacion from '../../components/search/Paginacion';
 import PropertyCard from '../../components/common/PropertyCard';
 import { busquedaInmuebleService, inmuebleService } from '../../services/propertyService';
+// AGREGAR IMPORT DEL SERVICIO DE API
+import { propertyService } from '../../services/api';
 
 const AdminProperties = () => {
     const navigate = useNavigate();
@@ -107,11 +109,14 @@ const AdminProperties = () => {
         navigate(`/admin/inmuebles/editar/${inmuebleId}`);
     };
 
+    // ACTUALIZAR la función handleDelete para usar eliminación anidada
     const handleDelete = async (inmuebleId) => {
         if (window.confirm('¿Estás seguro de que deseas eliminar este inmueble? Esta acción no se puede deshacer.')) {
             try {
                 setLoading(true);
-                await inmuebleService.delete(inmuebleId);
+                
+                // CAMBIAR a eliminación anidada
+                await propertyService.deleteAnidado(inmuebleId);
                 
                 // Actualizar la lista local
                 setInmuebles(prev => prev.filter(inmueble => inmueble.Inmueble_id !== inmuebleId));
@@ -119,11 +124,27 @@ const AdminProperties = () => {
                 alert('Inmueble eliminado exitosamente');
             } catch (error) {
                 console.error('Error al eliminar inmueble:', error);
-                alert('Error al eliminar el inmueble: ' + (error.response?.data?.message || error.message));
+                
+                // Mejorar manejo de errores
+                if (error.response?.data?.mensaje) {
+                    alert(`Error al eliminar: ${error.response.data.mensaje}`);
+                } else if (error.response?.data?.error) {
+                    alert(`Error: ${error.response.data.error}`);
+                } else {
+                    alert('Error al eliminar el inmueble: ' + (error.response?.data?.message || error.message));
+                }
             } finally {
                 setLoading(false);
             }
         }
+    };
+
+    // AGREGAR función para manejar eliminación desde PropertyCard (callback)
+    const handlePropertyDeleted = (deletedPropertyId) => {
+        // Actualizar el estado local removiendo la propiedad eliminada
+        setInmuebles(prev => 
+            prev.filter(inmueble => inmueble.Inmueble_id !== deletedPropertyId)
+        );
     };
 
     const handleViewDetails = (inmuebleId) => {
@@ -187,6 +208,8 @@ const AdminProperties = () => {
                                 onEdit={() => handleEdit(inmueble.Inmueble_id)}
                                 onDelete={() => handleDelete(inmueble.Inmueble_id)}
                                 onViewDetails={() => handleViewDetails(inmueble.Inmueble_id)}
+                                // AGREGAR callback para que PropertyCard pueda notificar eliminación
+                                onPropertyDeleted={handlePropertyDeleted}
                             />
                         </div>
                     </Col>

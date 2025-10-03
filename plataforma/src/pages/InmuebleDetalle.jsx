@@ -231,86 +231,76 @@ const InmuebleDetalle = () => {
                 <>
                     {Object.keys(d).length > 0 ? (
                         <>
-                            {d.Division && (
-                                <div className="detalle-item">
-                                    <strong>División:</strong> {d.Division}
-                                </div>
-                            )}
-                            {d.Habitaciones && (
-                                <div className="detalle-item">
-                                    <strong>Habitaciones:</strong> {d.Habitaciones}
-                                </div>
-                            )}
-                            {d.Baños && (
-                                <div className="detalle-item">
-                                    <strong>Baños:</strong> {d.Baños}
-                                </div>
-                            )}
-                            {d.Balcon && (
-                                <div className="detalle-item">
-                                    <strong>Balcón:</strong> {d.Balcon}
-                                </div>
-                            )}
-                            {d.Terraza && (
-                                <div className="detalle-item">
-                                    <strong>Terraza:</strong> {d.Terraza}
-                                </div>
-                            )}
-                            {d.Garaje && (
-                                <div className="detalle-item">
-                                    <strong>Garaje:</strong> {d.Garaje}
-                                </div>
-                            )}
-                            {d.Ascensores && (
-                                <div className="detalle-item">
-                                    <strong>Ascensores:</strong> {d.Ascensores}
-                                </div>
-                            )}
-                            {d.Area && (
-                                <div className="detalle-item">
-                                    <strong>Área División:</strong> {d.Area} m²
-                                </div>
-                            )}
-                            {d.Closets && (
-                                <div className="detalle-item">
-                                    <strong>Closets:</strong> {d.Closets}
-                                </div>
-                            )}
-                            {d.Estudio && (
-                                <div className="detalle-item">
-                                    <strong>Estudio:</strong> {d.Estudio}
-                                </div>
-                            )}
-                            {d.Sala && (
-                                <div className="detalle-item">
-                                    <strong>Sala:</strong> {d.Sala}
-                                </div>
-                            )}
-                            {d.Comedor && (
-                                <div className="detalle-item">
-                                    <strong>Comedor:</strong> {d.Comedor}
-                                </div>
-                            )}
-                            {d.Cocina && (
-                                <div className="detalle-item">
-                                    <strong>Cocina:</strong> {d.Cocina}
-                                </div>
-                            )}
-                            {d.Zona_lavanderia && (
-                                <div className="detalle-item">
-                                    <strong>Zona lavandería:</strong> {d.Zona_lavanderia}
-                                </div>
-                            )}
-                            {d.Deposito && (
-                                <div className="detalle-item">
-                                    <strong>Depósito:</strong> {d.Deposito}
-                                </div>
-                            )}
-                            {d.Descripcion_adicional && (
-                                <div className="detalle-item">
-                                    <strong>Descripción adicional:</strong> {d.Descripcion_adicional}
-                                </div>
-                            )}
+                            {/* MOSTRAR TODOS LOS CAMPOS, INCLUSO CON VALOR 0 */}
+                            <div className="detalle-item">
+                                <strong>División:</strong> {d.Division || 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Habitaciones:</strong> {d.Habitaciones !== undefined ? d.Habitaciones : 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Baños:</strong> {d.Baños !== undefined ? d.Baños : 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Balcón:</strong> {d.Balcon || 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Terraza:</strong> {d.Terraza !== undefined ? d.Terraza : 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Garaje:</strong> {d.Garaje !== undefined ? d.Garaje : 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Ascensores:</strong> {d.Ascensores || 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Área División:</strong> {d.Area ? `${d.Area} m²` : 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Closets:</strong> {d.Closets !== undefined ? d.Closets : 'N/D'}
+                            </div>
+                            {/* CAMPOS BOOLEANOS - CONVERTIR A SÍ/NO */}
+                            <div className="detalle-item">
+                                <strong>Estudio:</strong> {
+                                    d.Estudio !== undefined 
+                                        ? (d.Estudio === 1 || d.Estudio === '1' || d.Estudio === 'Si' || d.Estudio === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Sala:</strong> {
+                                    d.Sala !== undefined 
+                                        ? (d.Sala === 1 || d.Sala === '1' || d.Sala === 'Si' || d.Sala === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Comedor:</strong> {
+                                    d.Comedor !== undefined 
+                                        ? (d.Comedor === 1 || d.Comedor === '1' || d.Comedor === 'Si' || d.Comedor === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Cocina:</strong> {d.Cocina || 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Zona lavandería:</strong> {
+                                    d.Zona_lavanderia !== undefined 
+                                        ? (d.Zona_lavanderia === 1 || d.Zona_lavanderia === '1' || d.Zona_lavanderia === 'Si' || d.Zona_lavanderia === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Depósito:</strong> {
+                                    d.Deposito !== undefined 
+                                        ? (d.Deposito === 1 || d.Deposito === '1' || d.Deposito === 'Si' || d.Deposito === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Descripción adicional:</strong> {d.Descripcion_adicional || 'N/D'}
+                            </div>
                         </>
                     ) : (
                         <div className="detalle-item text-muted">
@@ -326,41 +316,32 @@ const InmuebleDetalle = () => {
                 <>
                     {Object.keys(a).length > 0 ? (
                         <>
-                            {a.AcercaDeLaEdificacion && (
-                                <div className="detalle-item">
-                                    <strong>Acerca de la Edificación:</strong> {a.AcercaDeLaEdificacion}
-                                </div>
-                            )}
-                            {a.Estrato && (
-                                <div className="detalle-item">
-                                    <strong>Estrato:</strong> {a.Estrato}
-                                </div>
-                            )}
-                            {a.Tipo_construccion && (
-                                <div className="detalle-item">
-                                    <strong>Tipo construcción:</strong> {a.Tipo_construccion}
-                                </div>
-                            )}
-                            {a.Anio_construccion && (
-                                <div className="detalle-item">
-                                    <strong>Año construcción:</strong> {a.Anio_construccion}
-                                </div>
-                            )}
-                            {a.Estado_conservacion && (
-                                <div className="detalle-item">
-                                    <strong>Estado conservación:</strong> {a.Estado_conservacion}
-                                </div>
-                            )}
-                            {a.Zona_comun && (
-                                <div className="detalle-item">
-                                    <strong>Zonas comunes:</strong> {a.Zona_comun}
-                                </div>
-                            )}
-                            {a.Descripcion_adicional && (
-                                <div className="detalle-item">
-                                    <strong>Descripción adicional:</strong> {a.Descripcion_adicional}
-                                </div>
-                            )}
+                            <div className="detalle-item">
+                                <strong>Acerca de la Edificación:</strong> {a.AcercaDeLaEdificacion || 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Estrato:</strong> {a.Estrato !== undefined ? a.Estrato : 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Tipo construcción:</strong> {a.Tipo_construccion || 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Año construcción:</strong> {a.Anio_construccion !== undefined ? a.Anio_construccion : 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Estado conservación:</strong> {a.Estado_conservacion || 'N/D'}
+                            </div>
+                            {/* CAMPO BOOLEANO - CONVERTIR A SÍ/NO */}
+                            <div className="detalle-item">
+                                <strong>Zonas comunes:</strong> {
+                                    a.Zona_comun !== undefined 
+                                        ? (a.Zona_comun === 1 || a.Zona_comun === '1' || a.Zona_comun === 'Si' || a.Zona_comun === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Descripción adicional:</strong> {a.Descripcion_adicional || 'N/D'}
+                            </div>
                         </>
                     ) : (
                         <div className="detalle-item text-muted">
@@ -406,51 +387,50 @@ const InmuebleDetalle = () => {
                 <>
                     {Object.keys(o).length > 0 ? (
                         <>
-                            {o.Caracteristicas_descripcion && (
-                                <div className="detalle-item">
-                                    <strong>Descripción características:</strong> {o.Caracteristicas_descripcion}
-                                </div>
-                            )}
-                            {o.Tipo_inmueble && (
-                                <div className="detalle-item">
-                                    <strong>Tipo inmueble:</strong> {o.Tipo_inmueble}
-                                </div>
-                            )}
-                            {o.Amoblado && (
-                                <div className="detalle-item">
-                                    <strong>Amoblado:</strong> {o.Amoblado === '1' || o.Amoblado === 1 ? 'Sí' : 'No'}
-                                </div>
-                            )}
-                            {o.Mascotas_permitidas && (
-                                <div className="detalle-item">
-                                    <strong>Mascotas permitidas:</strong> {o.Mascotas_permitidas === '1' || o.Mascotas_permitidas === 1 ? 'Sí' : 'No'}
-                                </div>
-                            )}
-                            {o.Gas && (
-                                <div className="detalle-item">
-                                    <strong>Gas:</strong> {o.Gas}
-                                </div>
-                            )}
-                            {o.Piso && (
-                                <div className="detalle-item">
-                                    <strong>Piso:</strong> {o.Piso}
-                                </div>
-                            )}
-                            {o.Deposito && (
-                                <div className="detalle-item">
-                                    <strong>Depósito:</strong> {o.Deposito}
-                                </div>
-                            )}
-                            {o.Lavanderia && (
-                                <div className="detalle-item">
-                                    <strong>Lavandería:</strong> {o.Lavanderia}
-                                </div>
-                            )}
-                            {o.Descripcion_adicional && (
-                                <div className="detalle-item">
-                                    <strong>Descripción adicional:</strong> {o.Descripcion_adicional}
-                                </div>
-                            )}
+                            <div className="detalle-item">
+                                <strong>Descripción características:</strong> {o.Caracteristicas_descripcion || 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Tipo inmueble:</strong> {o.Tipo_inmueble || 'N/D'}
+                            </div>
+                            {/* CAMPOS BOOLEANOS - CONVERTIR A SÍ/NO */}
+                            <div className="detalle-item">
+                                <strong>Amoblado:</strong> {
+                                    o.Amoblado !== undefined 
+                                        ? (o.Amoblado === 1 || o.Amoblado === '1' || o.Amoblado === 'Si' || o.Amoblado === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Mascotas permitidas:</strong> {
+                                    o.Mascotas_permitidas !== undefined 
+                                        ? (o.Mascotas_permitidas === 1 || o.Mascotas_permitidas === '1' || o.Mascotas_permitidas === 'Si' || o.Mascotas_permitidas === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Gas:</strong> {
+                                    o.Gas !== undefined 
+                                        ? (o.Gas === 1 || o.Gas === '1' || o.Gas === 'Si' || o.Gas === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Lavandería:</strong> {
+                                    o.Lavanderia !== undefined 
+                                        ? (o.Lavanderia === 1 || o.Lavanderia === '1' || o.Lavanderia === 'Si' || o.Lavanderia === true ? 'Sí' : 'No')
+                                        : 'N/D'
+                                }
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Piso:</strong> {o.Piso !== undefined ? o.Piso : 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Depósito:</strong> {o.Deposito !== undefined ? o.Deposito : 'N/D'}
+                            </div>
+                            <div className="detalle-item">
+                                <strong>Descripción adicional:</strong> {o.Descripcion_adicional || 'N/D'}
+                            </div>
                         </>
                     ) : (
                         <div className="detalle-item text-muted">

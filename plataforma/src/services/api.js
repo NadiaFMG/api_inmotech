@@ -67,8 +67,10 @@ export const propertyService = {
     getById: (id) => api.get(`/inmuebles/${id}`),
     create: (data) => api.post('/inmuebles', data), // Para inmueble simple
     createAnidado: (data) => api.post('/inmuebles/anidado', data), // Para inmueble anidado
-    update: (id, data) => api.put(`/inmuebles/${id}`, data),
-    delete: (id) => api.delete(`/inmuebles/${id}`),
+    update: (id, data) => api.put(`/inmuebles/${id}`, data), // Para inmueble simple
+    updateAnidado: (id, data) => api.put(`/inmuebles/anidado/${id}`, data), // Para inmueble anidado
+    delete: (id) => api.delete(`/inmuebles/${id}`), // Para inmueble simple
+    deleteAnidado: (id) => api.delete(`/inmuebles/anidado/${id}`), // Para inmueble anidado (elimina todas las relaciones)
     // Servicio para subir una imagen y obtener la URL pública y nombre
     uploadImage: (file) => {
         const formData = new FormData();

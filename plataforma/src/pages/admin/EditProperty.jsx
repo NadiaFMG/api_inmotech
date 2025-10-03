@@ -124,10 +124,11 @@ const EditProperty = () => {
         const response = await propertyService.getById(id);
         console.log('Datos del inmueble cargados:', response);
         
-        // Adaptar los datos recibidos al formato esperado
-        const propertyData = response.data || response;
+        const propertyData = response.data?.data || response.data || response;
         
-        // Mapear los datos al formato del formulario
+        console.log('PropertyData después del mapeo:', propertyData);
+
+        // Mapear los datos al formato del formulario (CORREGIDO PARA BOOLEANOS)
         setProperty({
           Valor: propertyData.Valor || '',
           Area: propertyData.Area || '',
@@ -140,48 +141,74 @@ const EditProperty = () => {
           Observaciones: propertyData.Observaciones || '',
           Platform_user_FK: propertyData.Platform_user_FK || '',
           
-          // Direccion con valores por defecto
           direccion: {
-            Direccion: propertyData.direccion?.Direccion || '',
-            Tipo_via: propertyData.direccion?.Tipo_via || '',
-            Numero_via_principal: propertyData.direccion?.Numero_via_principal || '',
-            Numero_calle_transversal: propertyData.direccion?.Numero_calle_transversal || '',
-            Numero_edificacion: propertyData.direccion?.Numero_edificacion || '',
-            Descripcion_adicional: propertyData.direccion?.Descripcion_adicional || '',
+            Direccion: propertyData.Direccion?.Direccion || '',
+            Tipo_via: propertyData.Direccion?.Tipo_via || '',
+            Numero_via_principal: propertyData.Direccion?.Numero_via_principal || '',
+            Numero_calle_transversal: propertyData.Direccion?.Numero_calle_transversal || '',
+            Numero_edificacion: propertyData.Direccion?.Numero_edificacion || '',
+            Descripcion_adicional: propertyData.Direccion?.Descripcion_adicional || '',
             Activo: 1,
             
             ndap: {
-              Ndap_descripcion: propertyData.direccion?.ndap?.Ndap_descripcion || '',
+              Ndap_descripcion: 
+                propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Ciudad?.Municipio?.Ndap?.Ndap_descripcion ||
+                propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Corregimiento?.Municipio?.Ndap?.Ndap_descripcion ||
+                propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Vereda?.Municipio?.Ndap?.Ndap_descripcion ||
+                '',
               Activo: 1
             },
+            
             municipio: {
-              Municipio_nombre: propertyData.direccion?.municipio?.Municipio_nombre || '',
-              Municipio_descripcion: propertyData.direccion?.municipio?.Municipio_descripcion || '',
+              Municipio_nombre: 
+                propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Ciudad?.Municipio_nombre ||
+                propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Corregimiento?.Municipio?.Municipio_nombre ||
+                propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Vereda?.Municipio?.Municipio_nombre ||
+                '',
+              Municipio_descripcion: 
+                propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Ciudad?.Municipio?.Municipio_descripcion ||
+                propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Corregimiento?.Municipio?.Municipio_descripcion ||
+                propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Vereda?.Municipio?.Municipio_descripcion ||
+                '',
               Activo: 1
             },
+            
             barrio_ciudad_corregimiento_vereda: {
-              barrio: { Nombre_barrio: propertyData.direccion?.barrio_ciudad_corregimiento_vereda?.barrio?.Nombre_barrio || '' },
-              ciudad: { Ciudad: propertyData.direccion?.barrio_ciudad_corregimiento_vereda?.ciudad?.Ciudad || '', Activo: 1 },
-              corregimiento: { Corregimiento: propertyData.direccion?.barrio_ciudad_corregimiento_vereda?.corregimiento?.Corregimiento || '', Activo: 1 },
-              vereda: { Vereda_nombre: propertyData.direccion?.barrio_ciudad_corregimiento_vereda?.vereda?.Vereda_nombre || '', Activo: 1 }
+              barrio: { 
+                Nombre_barrio: propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Barrio?.Nombre_barrio || '' 
+              },
+              ciudad: { 
+                Ciudad: propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Ciudad?.Ciudad || '', 
+                Activo: 1 
+              },
+              corregimiento: { 
+                Corregimiento: propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Corregimiento?.Corregimiento || '', 
+                Activo: 1 
+              },
+              vereda: { 
+                Vereda_nombre: propertyData.Direccion?.BarrioCiudadCorregimientoVereda?.Vereda?.Vereda_nombre || '', 
+                Activo: 1 
+              }
             },
+            
             localizacion: {
-              Localizacion_descripcion: propertyData.direccion?.localizacion?.Localizacion_descripcion || '',
-              Latitud: propertyData.direccion?.localizacion?.Latitud || '',
-              Longitud: propertyData.direccion?.localizacion?.Longitud || '',
+              Localizacion_descripcion: propertyData.Direccion?.Localizacion?.Localizacion_descripcion || '',
+              Latitud: propertyData.Direccion?.Localizacion?.Latitud || '',
+              Longitud: propertyData.Direccion?.Localizacion?.Longitud || '',
               Activo: 1
             },
+            
             designador_cardinal: {
-              Cardinalidad: propertyData.direccion?.designador_cardinal?.Cardinalidad || '',
-              Abreviacion: propertyData.direccion?.designador_cardinal?.Abreviacion || '',
+              Cardinalidad: propertyData.Direccion?.DesignadorCardinal?.Cardinalidad || '',
+              Abreviacion: propertyData.Direccion?.DesignadorCardinal?.Abreviacion || '',
               Activo: 1
             }
           },
           
-          // Imágenes
-          imagenes_inmueble: propertyData.imagenes_inmueble || propertyData.imagenesInmueble || [],
+          imagenes_inmueble: Array.isArray(propertyData.ImagenesInmueble) ? [propertyData.ImagenesInmueble] : 
+                            (propertyData.ImagenesInmueble ? [propertyData.ImagenesInmueble] : []),
           
-          // División
+          // División (CON CONVERSIÓN DE BOOLEANOS)
           division: {
             Division: propertyData.division?.Division || '',
             Balcon: propertyData.division?.Balcon || '',
@@ -192,59 +219,71 @@ const EditProperty = () => {
             Ascensores: propertyData.division?.Ascensores || '',
             Area: propertyData.division?.Area || '',
             Closets: propertyData.division?.Closets || '',
-            Estudio: propertyData.division?.Estudio || '',
-            Sala: propertyData.division?.Sala || '',
-            Comedor: propertyData.division?.Comedor || '',
+            // CONVERTIR BOOLEANOS A STRINGS
+            Estudio: propertyData.division?.Estudio === 1 || propertyData.division?.Estudio === true ? 'Si' : 'No',
+            Sala: propertyData.division?.Sala === 1 || propertyData.division?.Sala === true ? 'Si' : 'No',
+            Comedor: propertyData.division?.Comedor === 1 || propertyData.division?.Comedor === true ? 'Si' : 'No',
             Cocina: propertyData.division?.Cocina || '',
-            Zona_lavanderia: propertyData.division?.Zona_lavanderia || '',
-            Deposito: propertyData.division?.Deposito || '',
+            // CONVERTIR BOOLEANOS A STRINGS
+            Zona_lavanderia: propertyData.division?.Zona_lavanderia === 1 || propertyData.division?.Zona_lavanderia === true ? 'Si' : 'No',
+            Deposito: propertyData.division?.Deposito === 1 || propertyData.division?.Deposito === true ? 'Si' : 'No',
             Descripcion_adicional: propertyData.division?.Descripcion_adicional || ''
           },
           
-          // Acerca edificacion
+          // Acerca Edificación (CON CONVERSIÓN DE BOOLEANOS)
           acerca_edificacion: {
-            AcercaDeLaEdificacion: propertyData.acerca_edificacion?.AcercaDeLaEdificacion || '',
-            Estrato: propertyData.acerca_edificacion?.Estrato || '',
-            Tipo_construccion: propertyData.acerca_edificacion?.Tipo_construccion || '',
-            Anio_construccion: propertyData.acerca_edificacion?.Anio_construccion || '',
-            Estado_conservacion: propertyData.acerca_edificacion?.Estado_conservacion || '',
-            Zona_comun: propertyData.acerca_edificacion?.Zona_comun || '',
-            Descripcion_adicional: propertyData.acerca_edificacion?.Descripcion_adicional || ''
+            AcercaDeLaEdificacion: propertyData.acercaEdificacion?.AcercaDeLaEdificacion || '',
+            Estrato: propertyData.acercaEdificacion?.Estrato || '',
+            Tipo_construccion: propertyData.acercaEdificacion?.Tipo_construccion || '',
+            Anio_construccion: propertyData.acercaEdificacion?.Anio_construccion || '',
+            Estado_conservacion: propertyData.acercaEdificacion?.Estado_conservacion || '',
+            // CONVERTIR BOOLEANO A STRING
+            Zona_comun: propertyData.acercaEdificacion?.Zona_comun === 1 || propertyData.acercaEdificacion?.Zona_comun === true ? 'Si' : 'No',
+            Descripcion_adicional: propertyData.acercaEdificacion?.Descripcion_adicional || ''
           },
           
-          // Tipo edificacion
           tipo_edificacion: {
-            Tipo_edificacion_categoria: propertyData.tipo_edificacion?.Tipo_edificacion_categoria || '',
-            Tipo_edificacion_descripcion: propertyData.tipo_edificacion?.Tipo_edificacion_descripcion || '',
-            Tipo_edificacion_niveles: propertyData.tipo_edificacion?.Tipo_edificacion_niveles || '',
+            Tipo_edificacion_categoria: propertyData.tipoEdificacion?.Tipo_edificacion_categoria || '',
+            Tipo_edificacion_descripcion: propertyData.tipoEdificacion?.Tipo_edificacion_descripcion || '',
+            Tipo_edificacion_niveles: propertyData.tipoEdificacion?.Tipo_edificacion_niveles || '',
             Tipo_edificacion_activo: 1
           },
           
-          // Otras caracteristicas
+          // Otras Características (CON CONVERSIÓN DE BOOLEANOS)
           otras_caracteristicas: {
-            Caracteristicas_descripcion: propertyData.otras_caracteristicas?.Caracteristicas_descripcion || '',
-            Deposito: propertyData.otras_caracteristicas?.Deposito || '',
-            Lavanderia: propertyData.otras_caracteristicas?.Lavanderia || '',
-            Gas: propertyData.otras_caracteristicas?.Gas || '',
-            Piso: propertyData.otras_caracteristicas?.Piso || '',
-            Mascotas_permitidas: propertyData.otras_caracteristicas?.Mascotas_permitidas || '',
-            Tipo_inmueble: propertyData.otras_caracteristicas?.Tipo_inmueble || '',
-            Amoblado: propertyData.otras_caracteristicas?.Amoblado || '',
-            Descripcion_adicional: propertyData.otras_caracteristicas?.Descripcion_adicional || '',
+            Caracteristicas_descripcion: propertyData.otrasCaracteristicas?.Caracteristicas_descripcion || '',
+            Deposito: propertyData.otrasCaracteristicas?.Deposito || '',
+            // CONVERTIR BOOLEANOS A STRINGS
+            Lavanderia: propertyData.otrasCaracteristicas?.Lavanderia === 1 || propertyData.otrasCaracteristicas?.Lavanderia === true ? 'Si' : 'No',
+            Gas: propertyData.otrasCaracteristicas?.Gas === 1 || propertyData.otrasCaracteristicas?.Gas === true ? 'Si' : 'No',
+            Piso: propertyData.otrasCaracteristicas?.Piso || '',
+            Mascotas_permitidas: propertyData.otrasCaracteristicas?.Mascotas_permitidas === 1 || propertyData.otrasCaracteristicas?.Mascotas_permitidas === true ? 'Si' : 'No',
+            Tipo_inmueble: propertyData.otrasCaracteristicas?.Tipo_inmueble || '',
+            Amoblado: propertyData.otrasCaracteristicas?.Amoblado === 1 || propertyData.otrasCaracteristicas?.Amoblado === true ? 'Si' : 'No',
+            Descripcion_adicional: propertyData.otrasCaracteristicas?.Descripcion_adicional || '',
             asignacion: {
-              Parqueaderos_asignados: propertyData.otras_caracteristicas?.asignacion?.Parqueaderos_asignados || [],
-              Organizacion_parqueadero_FK: propertyData.otras_caracteristicas?.asignacion?.Organizacion_parqueadero_FK || '',
-              Disponible: propertyData.otras_caracteristicas?.asignacion?.Disponible || '',
-              Descripcion: propertyData.otras_caracteristicas?.asignacion?.Descripcion || ''
+              Parqueaderos_asignados: (() => {
+                try {
+                  const parsed = JSON.parse(propertyData.otrasCaracteristicas?.asignacion?.Parqueaderos_asignados || '[]');
+                  return Array.isArray(parsed) ? parsed : JSON.parse(parsed);
+                } catch {
+                  return [];
+                }
+              })(),
+              Organizacion_parqueadero_FK: propertyData.otrasCaracteristicas?.asignacion?.Organizacion_parqueadero_FK || '',
+              Disponible: propertyData.otrasCaracteristicas?.asignacion?.Disponible || '',
+              Descripcion: propertyData.otrasCaracteristicas?.asignacion?.Descripcion || ''
             },
             organizacion_parqueadero: {
-              Tipo_parqueadero: propertyData.otras_caracteristicas?.organizacion_parqueadero?.Tipo_parqueadero || '',
-              Cantidad: propertyData.otras_caracteristicas?.organizacion_parqueadero?.Cantidad || '',
-              Cubierto: propertyData.otras_caracteristicas?.organizacion_parqueadero?.Cubierto || '',
-              Disponible: propertyData.otras_caracteristicas?.organizacion_parqueadero?.Disponible || ''
+              Tipo_parqueadero: propertyData.otrasCaracteristicas?.asignacion?.organizacionParqueadero?.Tipo_parqueadero || '',
+              Cantidad: propertyData.otrasCaracteristicas?.asignacion?.organizacionParqueadero?.Cantidad || '',
+              Cubierto: propertyData.otrasCaracteristicas?.asignacion?.organizacionParqueadero?.Cubierto || '',
+              Disponible: propertyData.otrasCaracteristicas?.asignacion?.organizacionParqueadero?.Disponible || ''
             }
           }
         });
+        
+        console.log('Estado property después del setProperty actualizado');
         
       } catch (error) {
         console.error('Error al cargar inmueble:', error);
@@ -353,7 +392,8 @@ const EditProperty = () => {
       return {
         Imagenes: data.archivo,
         Nombre: data.nombre,
-        URL: data.url
+        URL: data.url,
+        isNewUpload: true // Marcar como nueva imagen
       };
     }));
     setProperty(prev => ({
@@ -443,16 +483,16 @@ const EditProperty = () => {
         direccion: {
           ...property.direccion,
           Tipo_via: property.direccion.Tipo_via || 'Calle',
-          Numero_via_principal: property.direccion.Numero_via_principal || '1',
-          Numero_calle_transversal: property.direccion.Numero_calle_transversal || '1',
-          Numero_edificacion: property.direccion.Numero_edificacion || '1',
+          Numero_via_principal: Number(property.direccion.Numero_via_principal) || 1,
+          Numero_calle_transversal: Number(property.direccion.Numero_calle_transversal) || 1,
+          Numero_edificacion: Number(property.direccion.Numero_edificacion) || 1,
           Descripcion_adicional: property.direccion.Descripcion_adicional || 'Sin descripción adicional',
           
           localizacion: {
             ...property.direccion.localizacion,
             Localizacion_descripcion: property.direccion.localizacion.Localizacion_descripcion || 'Ubicación no especificada',
-            Latitud: property.direccion.localizacion.Latitud || '4.6',
-            Longitud: property.direccion.localizacion.Longitud || '-74.0'
+            Latitud: Number(property.direccion.localizacion.Latitud) || 4.6,
+            Longitud: Number(property.direccion.localizacion.Longitud) || -74.0
           },
           
           ndap: property.direccion.ndap.Ndap_descripcion ? 
@@ -473,31 +513,31 @@ const EditProperty = () => {
         division: {
           ...property.division,
           Division: property.division.Division || 'Apartamento',
-          Baños: property.division.Baños || '1',
-          Terraza: property.division.Terraza || 'No',
-          Habitaciones: property.division.Habitaciones || '1',
-          Garaje: property.division.Garaje || 'No',
-          Ascensores: property.division.Ascensores || '1',
+          Baños: Number(property.division.Baños) || 1,
+          Terraza: Number(property.division.Terraza) || 0,
+          Habitaciones: Number(property.division.Habitaciones) || 1,
+          Garaje: Number(property.division.Garaje) || 0,
+          Ascensores: property.division.Ascensores || 'No',
           Area: property.division.Area || String(property.Area),
           Balcon: property.division.Balcon || 'No',
-          Closets: property.division.Closets || '1',
-          Estudio: property.division.Estudio || 'No',
-          Sala: property.division.Sala || 'Si',
-          Comedor: property.division.Comedor || 'Si',
+          Closets: Number(property.division.Closets) || 1,
+          Estudio: property.division.Estudio === 'Si' || property.division.Estudio === true,
+          Sala: property.division.Sala === 'Si' || property.division.Sala === true || true,
+          Comedor: property.division.Comedor === 'Si' || property.division.Comedor === true || true,
           Cocina: property.division.Cocina || 'Si',
-          Zona_lavanderia: property.division.Zona_lavanderia || 'No',
-          Deposito: property.division.Deposito || 'No',
+          Zona_lavanderia: property.division.Zona_lavanderia === 'Si' || property.division.Zona_lavanderia === true,
+          Deposito: property.division.Deposito === 'Si' || property.division.Deposito === true,
           Descripcion_adicional: property.division.Descripcion_adicional || 'Distribución estándar'
         },
         
         acerca_edificacion: {
           ...property.acerca_edificacion,
           AcercaDeLaEdificacion: property.acerca_edificacion.AcercaDeLaEdificacion || 'Edificio residencial',
-          Estrato: property.acerca_edificacion.Estrato || '3',
+          Estrato: Number(property.acerca_edificacion.Estrato) || 3,
           Tipo_construccion: property.acerca_edificacion.Tipo_construccion || 'Concreto',
-          Anio_construccion: property.acerca_edificacion.Anio_construccion || '2020',
+          Anio_construccion: Number(property.acerca_edificacion.Anio_construccion) || 2020,
           Estado_conservacion: property.acerca_edificacion.Estado_conservacion || 'Bueno',
-          Zona_comun: property.acerca_edificacion.Zona_comun || 'Portería',
+          Zona_comun: property.acerca_edificacion.Zona_comun === 'Si' || property.acerca_edificacion.Zona_comun === true,
           Descripcion_adicional: property.acerca_edificacion.Descripcion_adicional || 'Edificio estándar'
         },
         
@@ -505,46 +545,46 @@ const EditProperty = () => {
           ...property.tipo_edificacion,
           Tipo_edificacion_categoria: property.tipo_edificacion.Tipo_edificacion_categoria || 'Residencial',
           Tipo_edificacion_descripcion: property.tipo_edificacion.Tipo_edificacion_descripcion || 'Apartamento',
-          Tipo_edificacion_niveles: property.tipo_edificacion.Tipo_edificacion_niveles || '5'
+          Tipo_edificacion_niveles: Number(property.tipo_edificacion.Tipo_edificacion_niveles) || 5
         },
         
         otras_caracteristicas: {
           ...property.otras_caracteristicas,
           Caracteristicas_descripcion: property.otras_caracteristicas.Caracteristicas_descripcion || 'Características básicas',
-          Deposito: property.otras_caracteristicas.Deposito || 'No',
-          Lavanderia: property.otras_caracteristicas.Lavanderia || 'Si',
-          Gas: property.otras_caracteristicas.Gas || 'Natural',
-          Piso: property.otras_caracteristicas.Piso || 'Cerámica',
-          Mascotas_permitidas: property.otras_caracteristicas.Mascotas_permitidas || 'Si',
+          Deposito: Number(property.otras_caracteristicas.Deposito) || 0,
+          Lavanderia: property.otras_caracteristicas.Lavanderia === 'Si' || property.otras_caracteristicas.Lavanderia === true || true,
+          Gas: property.otras_caracteristicas.Gas === 'Si' || property.otras_caracteristicas.Gas === true || true,
+          Piso: Number(property.otras_caracteristicas.Piso) || 1,
+          Mascotas_permitidas: property.otras_caracteristicas.Mascotas_permitidas === 'Si' || property.otras_caracteristicas.Mascotas_permitidas === true || true,
           Tipo_inmueble: property.otras_caracteristicas.Tipo_inmueble || 'Apartamento',
-          Amoblado: property.otras_caracteristicas.Amoblado || 'No',
+          Amoblado: property.otras_caracteristicas.Amoblado === 'Si' || property.otras_caracteristicas.Amoblado === true,
           Descripcion_adicional: property.otras_caracteristicas.Descripcion_adicional || 'Sin características adicionales',
           
           asignacion: {
-            Parqueaderos_asignados: property.otras_caracteristicas.asignacion.Parqueaderos_asignados || ['P-1'],
+            Parqueaderos_asignados: property.otras_caracteristicas.asignacion.Parqueaderos_asignados.length > 0 ? 
+              property.otras_caracteristicas.asignacion.Parqueaderos_asignados : ['P-1'],
             Organizacion_parqueadero_FK: property.otras_caracteristicas.asignacion.Organizacion_parqueadero_FK || '',
-            Disponible: property.otras_caracteristicas.asignacion.Disponible || 'Si',
+            Disponible: property.otras_caracteristicas.asignacion.Disponible === 'Si' || property.otras_caracteristicas.asignacion.Disponible === true || true,
             Descripcion: property.otras_caracteristicas.asignacion.Descripcion || 'Parqueadero estándar'
           },
           organizacion_parqueadero: {
             Tipo_parqueadero: property.otras_caracteristicas.organizacion_parqueadero.Tipo_parqueadero || 'Cubierto',
-            Cantidad: property.otras_caracteristicas.organizacion_parqueadero.Cantidad || '1',
-            Cubierto: property.otras_caracteristicas.organizacion_parqueadero.Cubierto || 'Si',
-            Disponible: property.otras_caracteristicas.organizacion_parqueadero.Disponible || 'Si'
+            Cantidad: Number(property.otras_caracteristicas.organizacion_parqueadero.Cantidad) || 1,
+            Cubierto: property.otras_caracteristicas.organizacion_parqueadero.Cubierto === 'Si' || property.otras_caracteristicas.organizacion_parqueadero.Cubierto === true || true,
+            Disponible: property.otras_caracteristicas.organizacion_parqueadero.Disponible === 'Si' || property.otras_caracteristicas.organizacion_parqueadero.Disponible === true || true
           }
         },
         
-        imagenes_inmueble: property.imagenes_inmueble.length > 0 ? property.imagenes_inmueble : [{
-          Imagenes: "default.jpg",
-          Nombre: "Imagen por defecto",
-          URL: "http://localhost:3000/assets/images/inmuebles/default.jpg"
-        }]
+        // Actualizar la sección de imágenes en el handleSubmit
+        imagenes_inmueble: property.imagenes_inmueble.filter(img => 
+          // Excluir imágenes que ya existen (que tienen un ID específico de la BD)
+          !img.Imagenes_inmueble_id || img.isNewUpload
+        )
       };
 
       console.log('Payload final a enviar para actualizar:', JSON.stringify(payload, null, 2));
       
-      // USAR UPDATE EN LUGAR DE CREATE
-      const response = await propertyService.update(id, payload);
+      const response = await propertyService.updateAnidado(id, payload);
       console.log('Respuesta del servidor:', response);
       
       alert('Inmueble actualizado exitosamente!');
@@ -786,28 +826,143 @@ const EditProperty = () => {
       titulo: 'División',
       contenido: (
         <>
-          {Object.keys(initialProperty.division).map(key => (
-            <Form.Group className="mb-3" key={key}>
-              <Form.Label className="card-label">{key}</Form.Label>
-              <Form.Control type="text" name={key} value={property.division[key]} onChange={handleDivisionChange} />
-            </Form.Group>
-          ))}
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Division</Form.Label>
+            <Form.Control type="text" name="Division" value={property.division.Division} onChange={handleDivisionChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Balcon</Form.Label>
+            <Form.Control type="text" name="Balcon" value={property.division.Balcon} onChange={handleDivisionChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Baños</Form.Label>
+            <Form.Control type="number" name="Baños" value={property.division.Baños} onChange={handleDivisionChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Terraza</Form.Label>
+            <Form.Control type="number" name="Terraza" value={property.division.Terraza} onChange={handleDivisionChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Habitaciones</Form.Label>
+            <Form.Control type="number" name="Habitaciones" value={property.division.Habitaciones} onChange={handleDivisionChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Garaje</Form.Label>
+            <Form.Control type="number" name="Garaje" value={property.division.Garaje} onChange={handleDivisionChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Ascensores</Form.Label>
+            <Form.Control type="text" name="Ascensores" value={property.division.Ascensores} onChange={handleDivisionChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Area</Form.Label>
+            <Form.Control type="text" name="Area" value={property.division.Area} onChange={handleDivisionChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Closets</Form.Label>
+            <Form.Control type="number" name="Closets" value={property.division.Closets} onChange={handleDivisionChange} />
+          </Form.Group>
+          
+          {/* CAMPOS BOOLEANOS CON DROPDOWN */}
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Estudio</Form.Label>
+            <Form.Select name="Estudio" value={property.division.Estudio} onChange={handleDivisionChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Sala</Form.Label>
+            <Form.Select name="Sala" value={property.division.Sala} onChange={handleDivisionChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Comedor</Form.Label>
+            <Form.Select name="Comedor" value={property.division.Comedor} onChange={handleDivisionChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Cocina</Form.Label>
+            <Form.Control type="text" name="Cocina" value={property.division.Cocina} onChange={handleDivisionChange} />
+          </Form.Group>
+          
+          {/* CAMPOS BOOLEANOS CON DROPDOWN */}
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Zona_lavanderia</Form.Label>
+            <Form.Select name="Zona_lavanderia" value={property.division.Zona_lavanderia} onChange={handleDivisionChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Deposito</Form.Label>
+            <Form.Select name="Deposito" value={property.division.Deposito} onChange={handleDivisionChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Descripcion_adicional</Form.Label>
+            <Form.Control type="text" name="Descripcion_adicional" value={property.division.Descripcion_adicional} onChange={handleDivisionChange} />
+          </Form.Group>
         </>
       )
     },
+    
     {
       titulo: 'Acerca de la Edificación',
       contenido: (
         <>
-          {Object.keys(initialProperty.acerca_edificacion).map(key => (
-            <Form.Group className="mb-3" key={key}>
-              <Form.Label className="card-label">{key}</Form.Label>
-              <Form.Control type="text" name={key} value={property.acerca_edificacion[key]} onChange={handleAcercaChange} />
-            </Form.Group>
-          ))}
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">AcercaDeLaEdificacion</Form.Label>
+            <Form.Control type="text" name="AcercaDeLaEdificacion" value={property.acerca_edificacion.AcercaDeLaEdificacion} onChange={handleAcercaChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Estrato</Form.Label>
+            <Form.Control type="number" name="Estrato" value={property.acerca_edificacion.Estrato} onChange={handleAcercaChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Tipo_construccion</Form.Label>
+            <Form.Control type="text" name="Tipo_construccion" value={property.acerca_edificacion.Tipo_construccion} onChange={handleAcercaChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Anio_construccion</Form.Label>
+            <Form.Control type="number" name="Anio_construccion" value={property.acerca_edificacion.Anio_construccion} onChange={handleAcercaChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Estado_conservacion</Form.Label>
+            <Form.Control type="text" name="Estado_conservacion" value={property.acerca_edificacion.Estado_conservacion} onChange={handleAcercaChange} />
+          </Form.Group>
+          
+          {/* CAMPO BOOLEANO CON DROPDOWN */}
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Zona_comun</Form.Label>
+            <Form.Select name="Zona_comun" value={property.acerca_edificacion.Zona_comun} onChange={handleAcercaChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Descripcion_adicional</Form.Label>
+            <Form.Control type="text" name="Descripcion_adicional" value={property.acerca_edificacion.Descripcion_adicional} onChange={handleAcercaChange} />
+          </Form.Group>
         </>
       )
     },
+    
     {
       titulo: 'Tipo Edificación',
       contenido: (
@@ -825,12 +980,67 @@ const EditProperty = () => {
       titulo: 'Otras Características',
       contenido: (
         <>
-          {Object.keys(initialProperty.otras_caracteristicas).filter(key => key !== 'asignacion' && key !== 'organizacion_parqueadero').map(key => (
-            <Form.Group className="mb-3" key={key}>
-              <Form.Label className="card-label">{key}</Form.Label>
-              <Form.Control type="text" name={key} value={property.otras_caracteristicas[key]} onChange={handleOtrasCaracteristicasChange} />
-            </Form.Group>
-          ))}
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Caracteristicas_descripcion</Form.Label>
+            <Form.Control type="text" name="Caracteristicas_descripcion" value={property.otras_caracteristicas.Caracteristicas_descripcion} onChange={handleOtrasCaracteristicasChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Deposito</Form.Label>
+            <Form.Control type="number" name="Deposito" value={property.otras_caracteristicas.Deposito} onChange={handleOtrasCaracteristicasChange} />
+          </Form.Group>
+          
+          {/* CAMPOS BOOLEANOS CON DROPDOWN */}
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Lavanderia</Form.Label>
+            <Form.Select name="Lavanderia" value={property.otras_caracteristicas.Lavanderia} onChange={handleOtrasCaracteristicasChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Gas</Form.Label>
+            <Form.Select name="Gas" value={property.otras_caracteristicas.Gas} onChange={handleOtrasCaracteristicasChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Piso</Form.Label>
+            <Form.Control type="number" name="Piso" value={property.otras_caracteristicas.Piso} onChange={handleOtrasCaracteristicasChange} />
+          </Form.Group>
+          
+          {/* CAMPOS BOOLEANOS CON DROPDOWN */}
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Mascotas_permitidas</Form.Label>
+            <Form.Select name="Mascotas_permitidas" value={property.otras_caracteristicas.Mascotas_permitidas} onChange={handleOtrasCaracteristicasChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Tipo_inmueble</Form.Label>
+            <Form.Control type="text" name="Tipo_inmueble" value={property.otras_caracteristicas.Tipo_inmueble} onChange={handleOtrasCaracteristicasChange} />
+          </Form.Group>
+          
+          {/* CAMPO BOOLEANO CON DROPDOWN */}
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Amoblado</Form.Label>
+            <Form.Select name="Amoblado" value={property.otras_caracteristicas.Amoblado} onChange={handleOtrasCaracteristicasChange}>
+              <option value="">Seleccionar...</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Form.Group>
+          
+          <Form.Group className="mb-3">
+            <Form.Label className="card-label">Descripcion_adicional</Form.Label>
+            <Form.Control type="text" name="Descripcion_adicional" value={property.otras_caracteristicas.Descripcion_adicional} onChange={handleOtrasCaracteristicasChange} />
+          </Form.Group>
         </>
       )
     },

@@ -793,6 +793,197 @@ const InmuebleController = {
     }
   },
 
+   async actualizarInmuebleAnidado(req, res) {
+    const transaction = await db.sequelize.transaction();
+    
+    try {
+      const id = req.params.id;
+      const datosInmueble = req.body;
+      
+      console.log('Datos recibidos para actualización:', JSON.stringify(datosInmueble, null, 2));
+
+      // 1. Buscar inmueble existente con todas sus relaciones
+      const inmuebleExistente = await Inmueble.findByPk(id, {
+        include: [
+          { model: Direccion },
+          { model: Division, as: 'division' },
+          { model: AcercaEdificacion, as: 'acercaEdificacion' },
+          { model: TipoEdificacion, as: 'tipoEdificacion' },
+          { model: OtrasCaracteristicas, as: 'otrasCaracteristicas' },
+          { model: ImagenesInmueble }
+        ],
+        transaction
+      });
+
+      if (!inmuebleExistente) {
+        await transaction.rollback();
+        return res.status(404).json({
+          error: 'Inmueble no encontrado',
+          mensaje: `No se encontró un inmueble con ID ${id}`
+        });
+      }
+
+      // 2. Actualizar datos principales del inmueble
+      await inmuebleExistente.update({
+        Valor: datosInmueble.Valor,
+        Area: datosInmueble.Area,
+        Descripcion_General: datosInmueble.Descripcion_General,
+        Antiguedad: datosInmueble.Antiguedad,
+        Motivo_VoA: datosInmueble.Motivo_VoA,
+        Situacion_inmueble: datosInmueble.Situacion_inmueble,
+        Codigo_interno: datosInmueble.Codigo_interno,
+        Estado: datosInmueble.Estado,
+        Observaciones: datosInmueble.Observaciones,
+        Platform_user_FK: datosInmueble.Platform_user_FK,
+        Fecha_actualizacion: new Date()
+      }, { transaction });
+
+      console.log('Inmueble principal actualizado');
+
+      // 3. Actualizar DIRECCION si existe
+      if (datosInmueble.direccion && inmuebleExistente.Direccion_FK) {
+        const direccionExistente = await Direccion.findByPk(inmuebleExistente.Direccion_FK, { transaction });
+        if (direccionExistente) {
+          await direccionExistente.update({
+            Direccion: datosInmueble.direccion.Direccion,
+            Tipo_via: datosInmueble.direccion.Tipo_via,
+            Numero_via_principal: datosInmueble.direccion.Numero_via_principal,
+            Numero_calle_transversal: datosInmueble.direccion.Numero_calle_transversal,
+            Numero_edificacion: datosInmueble.direccion.Numero_edificacion,
+            Descripcion_adicional: datosInmueble.direccion.Descripcion_adicional,
+            Updated_at: new Date()
+          }, { transaction });
+          console.log('Dirección actualizada');
+        }
+      }
+
+      // 4. Actualizar DIVISION si existe
+      if (datosInmueble.division && inmuebleExistente.Division_FK) {
+        const divisionExistente = await Division.findByPk(inmuebleExistente.Division_FK, { transaction });
+        if (divisionExistente) {
+          await divisionExistente.update({
+            Division: datosInmueble.division.Division,
+            Balcon: datosInmueble.division.Balcon,
+            Baños: datosInmueble.division.Baños,
+            Terraza: datosInmueble.division.Terraza,
+            Habitaciones: datosInmueble.division.Habitaciones,
+            Garaje: datosInmueble.division.Garaje,
+            Ascensores: datosInmueble.division.Ascensores,
+            Area: datosInmueble.division.Area,
+            Closets: datosInmueble.division.Closets,
+            Estudio: datosInmueble.division.Estudio,
+            Sala: datosInmueble.division.Sala,
+            Comedor: datosInmueble.division.Comedor,
+            Cocina: datosInmueble.division.Cocina,
+            Zona_lavanderia: datosInmueble.division.Zona_lavanderia,
+            Deposito: datosInmueble.division.Deposito,
+            Descripcion_adicional: datosInmueble.division.Descripcion_adicional,
+            Updated_at: new Date()
+          }, { transaction });
+          console.log('División actualizada');
+        }
+      }
+
+      // 5. Actualizar ACERCA_EDIFICACION si existe
+      if (datosInmueble.acerca_edificacion && inmuebleExistente.Acerca_edificacion_FK) {
+        const acercaExistente = await AcercaEdificacion.findByPk(inmuebleExistente.Acerca_edificacion_FK, { transaction });
+        if (acercaExistente) {
+          await acercaExistente.update({
+            AcercaDeLaEdificacion: datosInmueble.acerca_edificacion.AcercaDeLaEdificacion,
+            Estrato: datosInmueble.acerca_edificacion.Estrato,
+            Tipo_construccion: datosInmueble.acerca_edificacion.Tipo_construccion,
+            Anio_construccion: datosInmueble.acerca_edificacion.Anio_construccion,
+            Estado_conservacion: datosInmueble.acerca_edificacion.Estado_conservacion,
+            Zona_comun: datosInmueble.acerca_edificacion.Zona_comun,
+            Descripcion_adicional: datosInmueble.acerca_edificacion.Descripcion_adicional,
+            Updated_at: new Date()
+          }, { transaction });
+          console.log('AcercaEdificacion actualizada');
+        }
+      }
+
+      // 6. Actualizar TIPO_EDIFICACION si existe
+      if (datosInmueble.tipo_edificacion && inmuebleExistente.Tipo_edificacion_FK) {
+        const tipoExistente = await TipoEdificacion.findByPk(inmuebleExistente.Tipo_edificacion_FK, { transaction });
+        if (tipoExistente) {
+          await tipoExistente.update({
+            Tipo_edificacion_categoria: datosInmueble.tipo_edificacion.Tipo_edificacion_categoria,
+            Tipo_edificacion_descripcion: datosInmueble.tipo_edificacion.Tipo_edificacion_descripcion,
+            Tipo_edificacion_niveles: datosInmueble.tipo_edificacion.Tipo_edificacion_niveles,
+            Updated_at: new Date()
+          }, { transaction });
+          console.log('TipoEdificacion actualizada');
+        }
+      }
+
+      // 7. Actualizar OTRAS_CARACTERISTICAS y ASIGNACION si existe
+      if (datosInmueble.otras_caracteristicas && inmuebleExistente.Otras_caracteristicas_FK) {
+        const otrasExistente = await OtrasCaracteristicas.findByPk(inmuebleExistente.Otras_caracteristicas_FK, { transaction });
+        if (otrasExistente) {
+          // Actualizar asignación primero si existe
+          if (datosInmueble.otras_caracteristicas.asignacion && otrasExistente.Asignacion_FK) {
+            const asignacionExistente = await Asignacion.findByPk(otrasExistente.Asignacion_FK, { transaction });
+            if (asignacionExistente) {
+              await asignacionExistente.update({
+                Parqueaderos_asignados: JSON.stringify(datosInmueble.otras_caracteristicas.asignacion.Parqueaderos_asignados),
+                Disponible: datosInmueble.otras_caracteristicas.asignacion.Disponible,
+                Descripcion: datosInmueble.otras_caracteristicas.asignacion.Descripcion,
+                Updated_at: new Date()
+              }, { transaction });
+              console.log('Asignación actualizada con ID:', asignacionExistente.Asignacion_id);
+            }
+          }
+
+          // Actualizar otras características
+          await otrasExistente.update({
+            Caracteristicas_descripcion: datosInmueble.otras_caracteristicas.Caracteristicas_descripcion,
+            Deposito: datosInmueble.otras_caracteristicas.Deposito,
+            Lavanderia: datosInmueble.otras_caracteristicas.Lavanderia,
+            Gas: datosInmueble.otras_caracteristicas.Gas,
+            Piso: datosInmueble.otras_caracteristicas.Piso,
+            Mascotas_permitidas: datosInmueble.otras_caracteristicas.Mascotas_permitidas,
+            Tipo_inmueble: datosInmueble.otras_caracteristicas.Tipo_inmueble,
+            Amoblado: datosInmueble.otras_caracteristicas.Amoblado,
+            Descripcion_adicional: datosInmueble.otras_caracteristicas.Descripcion_adicional,
+            Updated_at: new Date()
+          }, { transaction });
+          console.log('OtrasCaracteristicas actualizada');
+        }
+      }
+
+      // 8. Actualizar IMAGENES_INMUEBLE si existe (NO CREAR NUEVA)
+      if (datosInmueble.imagenes_inmueble && datosInmueble.imagenes_inmueble.length > 0 && inmuebleExistente.Imagenes_inmueble_FK) {
+        const imagenExistente = await ImagenesInmueble.findByPk(inmuebleExistente.Imagenes_inmueble_FK, { transaction });
+        if (imagenExistente) {
+          const nuevaImagen = datosInmueble.imagenes_inmueble[0]; // Tomar la primera imagen
+          await imagenExistente.update({
+            Imagenes: nuevaImagen.Imagenes,
+            Nombre: nuevaImagen.Nombre,
+            URL: nuevaImagen.URL
+          }, { transaction });
+          console.log('Imagen actualizada con ID:', imagenExistente.Imagenes_inmueble_id);
+        }
+      }
+
+      await transaction.commit();
+
+      res.json({
+        success: true,
+        mensaje: 'Inmueble actualizado exitosamente',
+        id: inmuebleExistente.Inmueble_id
+      });
+
+    } catch (error) {
+      await transaction.rollback();
+      console.error('Error general en actualización:', error);
+      res.status(500).json({
+        error: 'Error al actualizar inmueble',
+        mensaje: error.message,
+        detalles: error
+      });
+    }
+  },
+
   async findAll(req, res) {
     try {
       const inmuebles = await Inmueble.findAll();
@@ -804,13 +995,594 @@ const InmuebleController = {
 
   async findById(req, res) {
     try {
-      const inmueble = await Inmueble.findByPk(req.params.id);
-      if (!inmueble) return res.status(404).json({ error: 'No encontrado' });
-      res.json(inmueble);
+      const id = req.params.id;
+      console.log('Buscando inmueble por ID:', id);
+      
+      const inmueble = await Inmueble.findByPk(id, {
+        include: [
+          {
+            model: Direccion,
+            // SIN ALIAS - no está definido en el modelo
+            include: [
+              {
+                model: Localizacion,
+                // SIN ALIAS - no está definido en el modelo
+              },
+              {
+                model: DesignadorCardinal,
+                // SIN ALIAS - no está definido en el modelo
+              },
+              {
+                model: BarrioCiudadCorregimientoVereda,
+                // SIN ALIAS - no está definido en el modelo
+                include: [
+                  { 
+                    model: Barrio, 
+                    // SIN ALIAS - no está definido en el modelo
+                  },
+                  { 
+                    model: Ciudad, 
+                    // SIN ALIAS - no está definido en el modelo
+                    include: [
+                      {
+                        model: Municipio,
+                        // SIN ALIAS - no está definido en el modelo
+                        include: [
+                          {
+                            model: Ndap,
+                            // SIN ALIAS - no está definido en el modelo
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  { 
+                    model: Corregimiento, 
+                    // SIN ALIAS - no está definido en el modelo
+                    include: [
+                      {
+                        model: Municipio,
+                        // SIN ALIAS - no está definido en el modelo
+                        include: [
+                          {
+                            model: Ndap,
+                            // SIN ALIAS - no está definido en el modelo
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  { 
+                    model: Vereda, 
+                    // SIN ALIAS - no está definido en el modelo
+                    include: [
+                      {
+                        model: Municipio,
+                        // SIN ALIAS - no está definido en el modelo
+                        include: [
+                          {
+                            model: Ndap,
+                            // SIN ALIAS - no está definido en el modelo
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            model: Division,
+            as: 'division' // ✅ Usar el alias correcto
+          },
+          {
+            model: AcercaEdificacion,
+            as: 'acercaEdificacion' // ✅ Usar el alias correcto
+          },
+          {
+            model: TipoEdificacion,
+            as: 'tipoEdificacion' // ✅ Usar el alias correcto
+          },
+          {
+            model: OtrasCaracteristicas,
+            as: 'otrasCaracteristicas', // ✅ Usar el alias correcto
+            include: [
+              {
+                model: Asignacion,
+                as: 'asignacion', // ✅ Usar el alias correcto
+                include: [
+                  {
+                    model: OrganizacionParqueadero,
+                    as: 'organizacionParqueadero' // ✅ Usar el alias correcto
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            model: ImagenesInmueble,
+            // SIN ALIAS - no está definido en el modelo
+          }
+        ]
+      });
+
+      if (!inmueble) {
+        return res.status(404).json({ error: 'Inmueble no encontrado' });
+      }
+
+      console.log('Inmueble encontrado con todas las relaciones:', JSON.stringify(inmueble, null, 2));
+
+      res.json({
+        success: true,
+        data: inmueble
+      });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.error('Error al buscar inmueble:', error);
+      res.status(500).json({ 
+        error: 'Error interno del servidor',
+        detalles: error.message 
+      });
     }
   },
+
+  async eliminarInmuebleAnidado(req, res) {
+    const transaction = await db.sequelize.transaction();
+    
+    try {
+        const id = req.params.id;
+        console.log('=== INICIANDO ELIMINACIÓN ANIDADA DEL INMUEBLE ID:', id, '===');
+
+        // 1. BUSCAR EL INMUEBLE CON TODAS SUS RELACIONES
+        const inmuebleExistente = await Inmueble.findByPk(id, {
+            include: [
+                {
+                    model: Direccion,
+                    include: [
+                        { model: Localizacion },
+                        { model: DesignadorCardinal },
+                        {
+                            model: BarrioCiudadCorregimientoVereda,
+                            include: [
+                                { model: Barrio },
+                                { 
+                                    model: Ciudad, 
+                                    include: [{ model: Municipio, include: [{ model: Ndap }] }]
+                                },
+                                { 
+                                    model: Corregimiento, 
+                                    include: [{ model: Municipio, include: [{ model: Ndap }] }]
+                                },
+                                { 
+                                    model: Vereda, 
+                                    include: [{ model: Municipio, include: [{ model: Ndap }] }]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                { model: Division, as: 'division' },
+                { model: AcercaEdificacion, as: 'acercaEdificacion' },
+                { model: TipoEdificacion, as: 'tipoEdificacion' },
+                {
+                    model: OtrasCaracteristicas,
+                    as: 'otrasCaracteristicas',
+                    include: [
+                        {
+                            model: Asignacion,
+                            as: 'asignacion',
+                            include: [{ model: OrganizacionParqueadero, as: 'organizacionParqueadero' }]
+                        }
+                    ]
+                },
+                { model: ImagenesInmueble }
+            ],
+            transaction
+        });
+
+        if (!inmuebleExistente) {
+            await transaction.rollback();
+            return res.status(404).json({
+                error: 'Inmueble no encontrado',
+                mensaje: `No se encontró un inmueble con ID ${id}`
+            });
+        }
+
+        console.log('Inmueble encontrado, iniciando eliminación en cascada...');
+
+        // Recopilar IDs
+        const idsRecolectados = {
+            inmueble_id: inmuebleExistente.Inmueble_id,
+            direccion_id: inmuebleExistente.Direccion_FK,
+            localizacion_id: inmuebleExistente.Direccion?.Localizacion_FK,
+            designador_cardinal_id: inmuebleExistente.Direccion?.Designador_cardinal_FK,
+            bccv_id: inmuebleExistente.Direccion?.Barrio_ciudad_corregimiento_vereda_FK,
+            barrio_id: inmuebleExistente.Direccion?.BarrioCiudadCorregimientoVereda?.Barrio_FK,
+            ciudad_id: inmuebleExistente.Direccion?.BarrioCiudadCorregimientoVereda?.Ciudad_FK,
+            corregimiento_id: inmuebleExistente.Direccion?.BarrioCiudadCorregimientoVereda?.Corregimiento_FK,
+            vereda_id: inmuebleExistente.Direccion?.BarrioCiudadCorregimientoVereda?.Vereda_Fk,
+            municipio_id: null,
+            ndap_id: null,
+            division_id: inmuebleExistente.Division_FK,
+            acerca_edificacion_id: inmuebleExistente.Acerca_edificacion_FK,
+            tipo_edificacion_id: inmuebleExistente.Tipo_edificacion_FK,
+            otras_caracteristicas_id: inmuebleExistente.Otras_caracteristicas_FK,
+            asignacion_id: inmuebleExistente.otrasCaracteristicas?.Asignacion_FK,
+            organizacion_parqueadero_id: inmuebleExistente.otrasCaracteristicas?.asignacion?.Organizacion_parqueadero_FK,
+            imagenes_id: inmuebleExistente.Imagenes_inmueble_FK
+        };
+
+        // Determinar municipio_id y ndap_id dinámicamente
+        if (inmuebleExistente.Direccion?.BarrioCiudadCorregimientoVereda?.Ciudad?.Municipio_FK) {
+            idsRecolectados.municipio_id = inmuebleExistente.Direccion.BarrioCiudadCorregimientoVereda.Ciudad.Municipio_FK;
+            idsRecolectados.ndap_id = inmuebleExistente.Direccion.BarrioCiudadCorregimientoVereda.Ciudad.Municipio?.Ndap_FK;
+        } else if (inmuebleExistente.Direccion?.BarrioCiudadCorregimientoVereda?.Corregimiento?.Municipio_FK) {
+            idsRecolectados.municipio_id = inmuebleExistente.Direccion.BarrioCiudadCorregimientoVereda.Corregimiento.Municipio_FK;
+            idsRecolectados.ndap_id = inmuebleExistente.Direccion.BarrioCiudadCorregimientoVereda.Corregimiento.Municipio?.Ndap_FK;
+        } else if (inmuebleExistente.Direccion?.BarrioCiudadCorregimientoVereda?.Vereda?.Municipio_FK) {
+            idsRecolectados.municipio_id = inmuebleExistente.Direccion.BarrioCiudadCorregimientoVereda.Vereda.Municipio_FK;
+            idsRecolectados.ndap_id = inmuebleExistente.Direccion.BarrioCiudadCorregimientoVereda.Vereda.Municipio?.Ndap_FK;
+        }
+
+        console.log('IDs recolectados para eliminación:', idsRecolectados);
+
+        // 2. ELIMINAR EN ORDEN CORRECTO (CORREGIDO)
+
+        // PASO 1: Eliminar INMUEBLE (principal)
+        console.log('=== ELIMINANDO INMUEBLE PRINCIPAL ===');
+        await Inmueble.destroy({
+            where: { Inmueble_id: idsRecolectados.inmueble_id },
+            transaction
+        });
+        console.log('Inmueble principal eliminado');
+
+        // PASO 2: Eliminar OTRAS_CARACTERISTICAS PRIMERO (que tiene FK a Asignacion)
+        if (idsRecolectados.otras_caracteristicas_id) {
+            console.log('=== VERIFICANDO OTRAS_CARACTERISTICAS ===');
+            const otrasReferenciasCar = await Inmueble.count({
+                where: { Otras_caracteristicas_FK: idsRecolectados.otras_caracteristicas_id },
+                transaction
+            });
+            
+            if (otrasReferenciasCar === 0) {
+                await OtrasCaracteristicas.destroy({
+                    where: { Otras_caracteristicas_id: idsRecolectados.otras_caracteristicas_id },
+                    transaction
+                });
+                console.log('OtrasCaracteristicas eliminada (ID:', idsRecolectados.otras_caracteristicas_id, ')');
+            } else {
+                console.log('OtrasCaracteristicas conservada (tiene', otrasReferenciasCar, 'referencias)');
+            }
+        }
+
+        // PASO 3: AHORA eliminar ASIGNACION (después de eliminar otras_caracteristicas)
+        if (idsRecolectados.asignacion_id) {
+            console.log('=== VERIFICANDO ASIGNACION ===');
+            const otrasReferenciasAsig = await OtrasCaracteristicas.count({
+                where: { Asignacion_FK: idsRecolectados.asignacion_id },
+                transaction
+            });
+            
+            if (otrasReferenciasAsig === 0) {
+                await Asignacion.destroy({
+                    where: { Asignacion_id: idsRecolectados.asignacion_id },
+                    transaction
+                });
+                console.log('Asignacion eliminada (ID:', idsRecolectados.asignacion_id, ')');
+            } else {
+                console.log('Asignacion conservada (tiene', otrasReferenciasAsig, 'referencias)');
+            }
+        }
+
+        // PASO 4: Eliminar ORGANIZACION_PARQUEADERO si no hay referencias
+        if (idsRecolectados.organizacion_parqueadero_id) {
+            console.log('=== VERIFICANDO ORGANIZACION_PARQUEADERO ===');
+            const otrasReferenciasOrg = await Asignacion.count({
+                where: { Organizacion_parqueadero_FK: idsRecolectados.organizacion_parqueadero_id },
+                transaction
+            });
+            
+            if (otrasReferenciasOrg === 0) {
+                await OrganizacionParqueadero.destroy({
+                    where: { Organizacion_parqueadero_id: idsRecolectados.organizacion_parqueadero_id },
+                    transaction
+                });
+                console.log('OrganizacionParqueadero eliminada (ID:', idsRecolectados.organizacion_parqueadero_id, ')');
+            } else {
+                console.log('OrganizacionParqueadero conservada (tiene', otrasReferenciasOrg, 'referencias)');
+            }
+        }
+
+        // PASO 5: Eliminar IMAGENES_INMUEBLE si no hay otras referencias
+        if (idsRecolectados.imagenes_id) {
+            console.log('=== VERIFICANDO IMAGENES_INMUEBLE ===');
+            const otrosInmueblesConEstaImagen = await Inmueble.count({
+                where: { Imagenes_inmueble_FK: idsRecolectados.imagenes_id },
+                transaction
+            });
+            
+            if (otrosInmueblesConEstaImagen === 0) {
+                await ImagenesInmueble.destroy({
+                    where: { Imagenes_inmueble_id: idsRecolectados.imagenes_id },
+                    transaction
+                });
+                console.log('ImagenesInmueble eliminada (ID:', idsRecolectados.imagenes_id, ')');
+            } else {
+                console.log('ImagenesInmueble conservada (tiene', otrosInmueblesConEstaImagen, 'referencias)');
+            }
+        }
+
+        // PASO 6: Eliminar TIPO_EDIFICACION si no hay referencias
+        if (idsRecolectados.tipo_edificacion_id) {
+            console.log('=== VERIFICANDO TIPO_EDIFICACION ===');
+            const otrasReferenciasTipo = await Inmueble.count({
+                where: { Tipo_edificacion_FK: idsRecolectados.tipo_edificacion_id },
+                transaction
+            });
+            
+            if (otrasReferenciasTipo === 0) {
+                await TipoEdificacion.destroy({
+                    where: { Tipo_edificacion_id: idsRecolectados.tipo_edificacion_id },
+                    transaction
+                });
+                console.log('TipoEdificacion eliminado (ID:', idsRecolectados.tipo_edificacion_id, ')');
+            } else {
+                console.log('TipoEdificacion conservado (tiene', otrasReferenciasTipo, 'referencias)');
+            }
+        }
+
+        // PASO 7: Eliminar ACERCA_EDIFICACION si no hay referencias
+        if (idsRecolectados.acerca_edificacion_id) {
+            console.log('=== VERIFICANDO ACERCA_EDIFICACION ===');
+            const otrasReferenciasAcerca = await Inmueble.count({
+                where: { Acerca_edificacion_FK: idsRecolectados.acerca_edificacion_id },
+                transaction
+            });
+            
+            if (otrasReferenciasAcerca === 0) {
+                await AcercaEdificacion.destroy({
+                    where: { Acerca_edificacion_id: idsRecolectados.acerca_edificacion_id },
+                    transaction
+                });
+                console.log('AcercaEdificacion eliminado (ID:', idsRecolectados.acerca_edificacion_id, ')');
+            } else {
+                console.log('AcercaEdificacion conservado (tiene', otrasReferenciasAcerca, 'referencias)');
+            }
+        }
+
+        // PASO 8: Eliminar DIVISION si no hay referencias
+        if (idsRecolectados.division_id) {
+            console.log('=== VERIFICANDO DIVISION ===');
+            const otrasReferenciasDivision = await Inmueble.count({
+                where: { Division_FK: idsRecolectados.division_id },
+                transaction
+            });
+            
+            if (otrasReferenciasDivision === 0) {
+                await Division.destroy({
+                    where: { Division_id: idsRecolectados.division_id },
+                    transaction
+                });
+                console.log('Division eliminada (ID:', idsRecolectados.division_id, ')');
+            } else {
+                console.log('Division conservada (tiene', otrasReferenciasDivision, 'referencias)');
+            }
+        }
+
+        // PASO 9: Eliminar DIRECCION si no hay referencias
+        if (idsRecolectados.direccion_id) {
+            console.log('=== VERIFICANDO DIRECCION ===');
+            const otrasReferenciasDireccion = await Inmueble.count({
+                where: { Direccion_FK: idsRecolectados.direccion_id },
+                transaction
+            });
+            
+            if (otrasReferenciasDireccion === 0) {
+                await Direccion.destroy({
+                    where: { Direccion_id: idsRecolectados.direccion_id },
+                    transaction
+                });
+                console.log('Direccion eliminada (ID:', idsRecolectados.direccion_id, ')');
+            } else {
+                console.log('Direccion conservada (tiene', otrasReferenciasDireccion, 'referencias)');
+            }
+        }
+
+        // PASO 10: Eliminar BARRIO_CIUDAD_CORREGIMIENTO_VEREDA si no hay referencias
+      if (idsRecolectados.bccv_id) {
+        console.log('=== VERIFICANDO BARRIO_CIUDAD_CORREGIMIENTO_VEREDA ===');
+        const otrasReferenciasBCCV = await Direccion.count({
+          where: { Barrio_ciudad_corregimiento_vereda_FK: idsRecolectados.bccv_id },
+          transaction
+        });
+        
+        if (otrasReferenciasBCCV === 0) {
+          await BarrioCiudadCorregimientoVereda.destroy({
+            where: { Barrio_ciudad_corregimiento_vereda_id: idsRecolectados.bccv_id },
+            transaction
+          });
+          console.log('BarrioCiudadCorregimientoVereda eliminado (ID:', idsRecolectados.bccv_id, ')');
+        } else {
+          console.log('BarrioCiudadCorregimientoVereda conservado (tiene', otrasReferenciasBCCV, 'referencias)');
+        }
+      }
+
+      // PASO 11: Eliminar BARRIO si no hay referencias
+      if (idsRecolectados.barrio_id) {
+        console.log('=== VERIFICANDO BARRIO ===');
+        const otrasReferenciasBarrio = await BarrioCiudadCorregimientoVereda.count({
+          where: { Barrio_FK: idsRecolectados.barrio_id },
+          transaction
+        });
+        
+        if (otrasReferenciasBarrio === 0) {
+          await Barrio.destroy({
+            where: { Barrio_id: idsRecolectados.barrio_id },
+            transaction
+          });
+          console.log('Barrio eliminado (ID:', idsRecolectados.barrio_id, ')');
+        } else {
+          console.log('Barrio conservado (tiene', otrasReferenciasBarrio, 'referencias)');
+        }
+      }
+
+      // PASO 12: Eliminar CIUDAD si no hay referencias
+      if (idsRecolectados.ciudad_id) {
+        console.log('=== VERIFICANDO CIUDAD ===');
+        const otrasReferenciasCiudad = await BarrioCiudadCorregimientoVereda.count({
+          where: { Ciudad_FK: idsRecolectados.ciudad_id },
+          transaction
+        });
+        
+        if (otrasReferenciasCiudad === 0) {
+          await Ciudad.destroy({
+            where: { Ciudad_id: idsRecolectados.ciudad_id },
+            transaction
+          });
+          console.log('Ciudad eliminada (ID:', idsRecolectados.ciudad_id, ')');
+        } else {
+          console.log('Ciudad conservada (tiene', otrasReferenciasCiudad, 'referencias)');
+        }
+      }
+
+      // PASO 13: Eliminar CORREGIMIENTO si no hay referencias
+      if (idsRecolectados.corregimiento_id) {
+        console.log('=== VERIFICANDO CORREGIMIENTO ===');
+        const otrasReferenciasCorregimiento = await BarrioCiudadCorregimientoVereda.count({
+          where: { Corregimiento_FK: idsRecolectados.corregimiento_id },
+          transaction
+        });
+        
+        if (otrasReferenciasCorregimiento === 0) {
+          await Corregimiento.destroy({
+            where: { Corregimiento_id: idsRecolectados.corregimiento_id },
+            transaction
+          });
+          console.log('Corregimiento eliminado (ID:', idsRecolectados.corregimiento_id, ')');
+        } else {
+          console.log('Corregimiento conservado (tiene', otrasReferenciasCorregimiento, 'referencias)');
+        }
+      }
+
+      // PASO 14: Eliminar VEREDA si no hay referencias
+      if (idsRecolectados.vereda_id) {
+        console.log('=== VERIFICANDO VEREDA ===');
+        const otrasReferenciasVereda = await BarrioCiudadCorregimientoVereda.count({
+          where: { Vereda_Fk: idsRecolectados.vereda_id }, // Nota: Fk con minúscula
+          transaction
+        });
+        
+        if (otrasReferenciasVereda === 0) {
+          await Vereda.destroy({
+            where: { Vereda_id: idsRecolectados.vereda_id },
+            transaction
+          });
+          console.log('Vereda eliminada (ID:', idsRecolectados.vereda_id, ')');
+        } else {
+          console.log('Vereda conservada (tiene', otrasReferenciasVereda, 'referencias)');
+        }
+      }
+
+      // PASO 15: Eliminar MUNICIPIO si no hay referencias
+      if (idsRecolectados.municipio_id) {
+        console.log('=== VERIFICANDO MUNICIPIO ===');
+        const otrasReferenciasMunicipio = await Promise.all([
+          Ciudad.count({ where: { Municipio_FK: idsRecolectados.municipio_id }, transaction }),
+          Corregimiento.count({ where: { Municipio_FK: idsRecolectados.municipio_id }, transaction }),
+          Vereda.count({ where: { Municipio_FK: idsRecolectados.municipio_id }, transaction })
+        ]);
+        
+        const totalReferenciasMunicipio = otrasReferenciasMunicipio.reduce((a, b) => a + b, 0);
+        
+        if (totalReferenciasMunicipio === 0) {
+          await Municipio.destroy({
+            where: { Municipio_id: idsRecolectados.municipio_id },
+            transaction
+          });
+          console.log('Municipio eliminado (ID:', idsRecolectados.municipio_id, ')');
+        } else {
+          console.log('Municipio conservado (tiene', totalReferenciasMunicipio, 'referencias)');
+        }
+      }
+
+      // PASO 16: Eliminar NDAP si no hay referencias
+      if (idsRecolectados.ndap_id) {
+        console.log('=== VERIFICANDO NDAP ===');
+        const otrasReferenciasNdap = await Municipio.count({
+          where: { Ndap_FK: idsRecolectados.ndap_id },
+          transaction
+        });
+        
+        if (otrasReferenciasNdap === 0) {
+          await Ndap.destroy({
+            where: { Ndap_id: idsRecolectados.ndap_id },
+            transaction
+          });
+          console.log('Ndap eliminado (ID:', idsRecolectados.ndap_id, ')');
+        } else {
+          console.log('Ndap conservado (tiene', otrasReferenciasNdap, 'referencias)');
+        }
+      }
+
+      // PASO 17: Eliminar LOCALIZACION si no hay referencias
+      if (idsRecolectados.localizacion_id) {
+        console.log('=== VERIFICANDO LOCALIZACION ===');
+        const otrasReferenciasLocalizacion = await Direccion.count({
+          where: { Localizacion_FK: idsRecolectados.localizacion_id },
+          transaction
+        });
+        
+        if (otrasReferenciasLocalizacion === 0) {
+          await Localizacion.destroy({
+            where: { Localizacion_id: idsRecolectados.localizacion_id },
+            transaction
+          });
+          console.log('Localizacion eliminada (ID:', idsRecolectados.localizacion_id, ')');
+        } else {
+          console.log('Localizacion conservada (tiene', otrasReferenciasLocalizacion, 'referencias)');
+        }
+      }
+
+      // PASO 18: Eliminar DESIGNADOR_CARDINAL si no hay referencias
+      if (idsRecolectados.designador_cardinal_id) {
+        console.log('=== VERIFICANDO DESIGNADOR_CARDINAL ===');
+        const otrasReferenciasDesignador = await Direccion.count({
+          where: { Designador_cardinal_FK: idsRecolectados.designador_cardinal_id },
+          transaction
+        });
+        
+        if (otrasReferenciasDesignador === 0) {
+          await DesignadorCardinal.destroy({
+            where: { Designador_cardinal_id: idsRecolectados.designador_cardinal_id },
+            transaction
+          });
+          console.log('DesignadorCardinal eliminado (ID:', idsRecolectados.designador_cardinal_id, ')');
+        } else {
+          console.log('DesignadorCardinal conservado (tiene', otrasReferenciasDesignador, 'referencias)');
+        }
+      }
+
+      await transaction.commit();
+
+      console.log('=== ELIMINACIÓN ANIDADA COMPLETADA EXITOSAMENTE ===');
+
+      res.json({
+          success: true,
+          mensaje: 'Inmueble y relaciones asociadas eliminados exitosamente',
+          inmueble_id: id,
+          elementos_eliminados: idsRecolectados
+      });
+
+    } catch (error) {
+        await transaction.rollback();
+        console.error('Error general en eliminación anidada:', error);
+        res.status(500).json({
+            error: 'Error al eliminar inmueble y sus relaciones',
+            mensaje: error.message,
+            detalles: error
+        });
+    }
+},
 
   async update1(req, res) {
     try {

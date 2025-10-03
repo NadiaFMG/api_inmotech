@@ -1,34 +1,20 @@
 const express = require('express');
-const InmuebleController = require('../controllers/InmuebleController');
-const verifyToken = require('../middlewares/verifyToken');
-
 const router = express.Router();
+const InmuebleController = require('../controllers/InmuebleController');
 
-// Ruta para subir imágenes
+// ✅ RUTAS ESPECÍFICAS PRIMERO (muy importante el orden)
+router.post('/anidado', InmuebleController.crearInmuebleAnidado);
+router.put('/anidado/:id', InmuebleController.actualizarInmuebleAnidado); // ← Esta debe estar aquí
+router.delete('/anidado/:id', InmuebleController.eliminarInmuebleAnidado);
+
+// ✅ RUTA DE UPLOAD ESPECÍFICA
 router.post('/upload-imagen', InmuebleController.uploadImagen);
 
-// 1. Obtener todos los inmuebles
-router.get('/', verifyToken, InmuebleController.findAll);
-
-// 2. Obtener un inmueble por ID
-router.get('/:id', verifyToken, InmuebleController.findById);
-
-// 3. Crear inmueble simple
-router.post('/', verifyToken, InmuebleController.create);
-
-// 4. Crear inmueble anidado (con todas las relaciones)
-router.post('/anidado', /*verifyToken,*/ InmuebleController.crearInmuebleAnidado);
-
-// 5. Actualizar inmueble simple
-router.put('/update1/:id', verifyToken, InmuebleController.update1);
-
-// 6. Eliminar inmueble simple
-router.delete('/delete1/:id', verifyToken, InmuebleController.delete1);
-
-// 7. Actualizar inmueble anidado (con todas las relaciones)
-router.put('/:id', /*verifyToken,*/ InmuebleController.update1);
-
-// 8. Eliminar inmueble anidado (con todas las relaciones)
-router.delete('/:id', /*verifyToken,*/ InmuebleController.delete1);
+// ✅ RUTAS GENÉRICAS AL FINAL (para evitar que /:id capture 'anidado')
+router.post('/', InmuebleController.create);
+router.get('/', InmuebleController.findAll);
+router.get('/:id', InmuebleController.findById);
+router.put('/:id', InmuebleController.update1);
+router.delete('/:id', InmuebleController.delete1);
 
 module.exports = router;
