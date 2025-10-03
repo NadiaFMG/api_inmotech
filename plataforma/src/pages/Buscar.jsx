@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import DetailedSearchForm from '../components/search/DetailedSearchForm';
 import ResultadoBusqueda from '../components/search/ResultadoBusqueda';
@@ -8,30 +8,36 @@ const Buscar = () => {
     const [resultados, setResultados] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        console.log('👤 Usuario desde localStorage:', user);
+        setCurrentUser(user);
+    }, []);
 
     const handleSearch = async (searchParams) => {
-    setLoading(true);
-    setError(null);
-    try {
-        // Filtra los parámetros vacíos, null, false o -1
-        const cleanParams = Object.fromEntries(
-            Object.entries(searchParams).filter(
-                ([_, v]) =>
-                    v !== '' &&
-                    v !== null &&
-                    v !== undefined &&
-                    v !== false &&
-                    v !== -1
-            )
-        );
-        const response = await busquedaInmuebleService.buscar(cleanParams);
-        setResultados(response.data);
-    } catch (err) {
-        setError('Error al realizar la búsqueda');
-    } finally {
-        setLoading(false);
-    }
-};
+        setLoading(true);
+        setError(null);
+        try {
+            const cleanParams = Object.fromEntries(
+                Object.entries(searchParams).filter(
+                    ([_, v]) =>
+                        v !== '' &&
+                        v !== null &&
+                        v !== undefined &&
+                        v !== false &&
+                        v !== -1
+                )
+            );
+            const response = await busquedaInmuebleService.buscar(cleanParams);
+            setResultados(response.data);
+        } catch (err) {
+            setError('Error al realizar la búsqueda');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Container className="py-4">
@@ -41,6 +47,7 @@ const Buscar = () => {
                 inmuebles={resultados}
                 loading={loading}
                 error={error}
+                currentUserId={currentUser?.id || null}
             />
         </Container>
     );

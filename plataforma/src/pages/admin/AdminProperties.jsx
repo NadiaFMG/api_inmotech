@@ -8,7 +8,6 @@ import Ordenamiento from '../../components/search/Ordenamiento';
 import Paginacion from '../../components/search/Paginacion';
 import PropertyCard from '../../components/common/PropertyCard';
 import { busquedaInmuebleService, inmuebleService } from '../../services/propertyService';
-// AGREGAR IMPORT DEL SERVICIO DE API
 import { propertyService } from '../../services/api';
 
 const AdminProperties = () => {
@@ -21,69 +20,74 @@ const AdminProperties = () => {
     const [ordenamiento, setOrdenamiento] = useState(null);
     const [paginaActual, setPaginaActual] = useState(1);
     const [totalPaginas, setTotalPaginas] = useState(1);
-    const inmueblesPorPagina = 12; // Menos por página para admin
+    const [currentUser, setCurrentUser] = useState(null);
+    const inmueblesPorPagina = 12;
 
-    // Función para obtener inmuebles (IGUAL QUE Inmuebles.jsx)
-    useEffect(() => {
-        const fetchInmuebles = async () => {
-            setLoading(true);
-            setError(null);
+    // ✅ DEFINIR fetchInmuebles FUERA DE useEffect
+    const fetchInmuebles = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            console.log('Admin: Fetching inmuebles...');
+            
+            let response;
             try {
-                console.log('Admin: Fetching inmuebles...');
-                
-                // Intentar primero con busquedaInmuebleService, si falla usar inmuebleService
-                let response;
-                try {
-                    const params = {
-                        page: paginaActual,
-                        limit: inmueblesPorPagina,
-                        ...(searchParams || {}),
-                        ...(filtrosAvanzados || {}),
-                        ...(ordenamiento || {})
-                    };
-                    response = await busquedaInmuebleService.buscar(params);
-                } catch (searchError) {
-                    console.log('Error con busquedaInmuebleService, intentando con inmuebleService:', searchError);
-                    response = await inmuebleService.getAllProperties();
-                }
-
-                console.log('Admin Response:', response);
-                
-                // Manejar diferentes estructuras de respuesta
-                let inmueblesData = [];
-                let total = 0;
-
-                if (response?.data?.inmuebles) {
-                    inmueblesData = response.data.inmuebles;
-                    total = response.data.total || inmueblesData.length;
-                } else if (response?.propiedades) {
-                    inmueblesData = response.propiedades;
-                    total = inmueblesData.length;
-                } else if (Array.isArray(response)) {
-                    inmueblesData = response;
-                    total = response.length;
-                } else if (response?.data && Array.isArray(response.data)) {
-                    inmueblesData = response.data;
-                    total = response.data.length;
-                }
-
-                setInmuebles(inmueblesData);
-                setTotalPaginas(Math.ceil(total / inmueblesPorPagina));
-                
-                console.log('Admin: Inmuebles loaded:', inmueblesData.length);
-                
-            } catch (err) {
-                console.error('Admin: Error completo al cargar inmuebles:', err);
-                setError(`Error al cargar los inmuebles: ${err.message}`);
-            } finally {
-                setLoading(false);
+                const params = {
+                    page: paginaActual,
+                    limit: inmueblesPorPagina,
+                    ...(searchParams || {}),
+                    ...(filtrosAvanzados || {}),
+                    ...(ordenamiento || {})
+                };
+                response = await busquedaInmuebleService.buscar(params);
+            } catch (searchError) {
+                console.log('Error con busquedaInmuebleService, intentando con inmuebleService:', searchError);
+                response = await inmuebleService.getAllProperties();
             }
-        };
 
+            console.log('Admin Response:', response);
+            
+            let inmueblesData = [];
+            let total = 0;
+
+            if (response?.data?.inmuebles) {
+                inmueblesData = response.data.inmuebles;
+                total = response.data.total || inmueblesData.length;
+            } else if (response?.propiedades) {
+                inmueblesData = response.propiedades;
+                total = inmueblesData.length;
+            } else if (Array.isArray(response)) {
+                inmueblesData = response;
+                total = response.length;
+            } else if (response?.data && Array.isArray(response.data)) {
+                inmueblesData = response.data;
+                total = response.data.length;
+            }
+
+            setInmuebles(inmueblesData);
+            setTotalPaginas(Math.ceil(total / inmueblesPorPagina));
+            
+            console.log('Admin: Inmuebles loaded:', inmueblesData.length);
+            
+        } catch (err) {
+            console.error('Admin: Error completo al cargar inmuebles:', err);
+            setError(`Error al cargar los inmuebles: ${err.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ✅ useEffect para cargar datos cuando cambien los parámetros
+    useEffect(() => {
         fetchInmuebles();
     }, [paginaActual, searchParams, filtrosAvanzados, ordenamiento]);
 
-    // Handlers (IGUALES QUE Inmuebles.jsx)
+    // ✅ useEffect para obtener usuario actual (SOLO UNA VEZ)
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        setCurrentUser(user);
+    }, []); // ← Sin dependencias, solo se ejecuta una vez
+
     const handlePageChange = (newPage) => {
         setPaginaActual(newPage);
         window.scrollTo(0, 0);
@@ -104,28 +108,19 @@ const AdminProperties = () => {
         setPaginaActual(1);
     };
 
-    // Funciones específicas de ADMIN
     const handleEdit = (inmuebleId) => {
         navigate(`/admin/inmuebles/editar/${inmuebleId}`);
     };
 
-    // ACTUALIZAR la función handleDelete para usar eliminación anidada
     const handleDelete = async (inmuebleId) => {
         if (window.confirm('¿Estás seguro de que deseas eliminar este inmueble? Esta acción no se puede deshacer.')) {
             try {
                 setLoading(true);
-                
-                // CAMBIAR a eliminación anidada
                 await propertyService.deleteAnidado(inmuebleId);
-                
-                // Actualizar la lista local
                 setInmuebles(prev => prev.filter(inmueble => inmueble.Inmueble_id !== inmuebleId));
-                
                 alert('Inmueble eliminado exitosamente');
             } catch (error) {
                 console.error('Error al eliminar inmueble:', error);
-                
-                // Mejorar manejo de errores
                 if (error.response?.data?.mensaje) {
                     alert(`Error al eliminar: ${error.response.data.mensaje}`);
                 } else if (error.response?.data?.error) {
@@ -139,9 +134,7 @@ const AdminProperties = () => {
         }
     };
 
-    // AGREGAR función para manejar eliminación desde PropertyCard (callback)
     const handlePropertyDeleted = (deletedPropertyId) => {
-        // Actualizar el estado local removiendo la propiedad eliminada
         setInmuebles(prev => 
             prev.filter(inmueble => inmueble.Inmueble_id !== deletedPropertyId)
         );
@@ -205,10 +198,10 @@ const AdminProperties = () => {
                             <PropertyCard
                                 property={inmueble}
                                 isAdminView={true}
+                                currentUserId={currentUser?.id || null}
                                 onEdit={() => handleEdit(inmueble.Inmueble_id)}
                                 onDelete={() => handleDelete(inmueble.Inmueble_id)}
                                 onViewDetails={() => handleViewDetails(inmueble.Inmueble_id)}
-                                // AGREGAR callback para que PropertyCard pueda notificar eliminación
                                 onPropertyDeleted={handlePropertyDeleted}
                             />
                         </div>
@@ -329,7 +322,6 @@ const AdminProperties = () => {
                     backdrop-filter: blur(5px);
                 }
 
-                /* Animaciones de entrada stagger */
                 .admin-property-card:nth-child(1) { animation-delay: 0.1s; }
                 .admin-property-card:nth-child(2) { animation-delay: 0.15s; }
                 .admin-property-card:nth-child(3) { animation-delay: 0.2s; }
@@ -356,7 +348,6 @@ const AdminProperties = () => {
                     }
                 }
 
-                /* Responsive */
                 @media (max-width: 1200px) {
                     .inmuebles-grid .col-xl-3 {
                         flex: 0 0 33.333333%;
@@ -417,7 +408,6 @@ const AdminProperties = () => {
                     }
                 }
 
-                /* Reducir efectos en dispositivos de menor rendimiento */
                 @media (prefers-reduced-motion: reduce) {
                     .admin-property-card,
                     .btn-crear-inmueble {

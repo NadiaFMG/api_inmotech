@@ -15,6 +15,7 @@ import '../styles/home.css';
 const Inicio = () => {
     const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentUser, setCurrentUser] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,6 +34,9 @@ const Inicio = () => {
                 setLoading(false);
             }
         };
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        setCurrentUser(user);
 
         fetchProperties();
     }, []);

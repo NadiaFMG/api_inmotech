@@ -9,7 +9,7 @@ import VistaMapa from '../components/map/VistaMapa';
 import '../styles/VistaMapa.css';
 import { busquedaInmuebleService, inmuebleService } from '../services/propertyService';
 
-function Inmuebles() {
+const Inmuebles = () => {
     const [inmuebles, setInmuebles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -20,8 +20,13 @@ function Inmuebles() {
     const [totalPaginas, setTotalPaginas] = useState(1);
     const inmueblesPorPagina = 30;
     const [vistaActual, setVistaActual] = useState('lista');
+    const [currentUser, setCurrentUser] = useState(null); // ← AGREGAR
 
     useEffect(() => {
+        // ✅ OBTENER USUARIO ACTUAL
+        const user = JSON.parse(localStorage.getItem('user'));
+        setCurrentUser(user);
+        
         const fetchInmuebles = async () => {
             setLoading(true);
             setError(null);
@@ -147,6 +152,7 @@ function Inmuebles() {
                         inmuebles={inmuebles}
                         loading={loading}
                         error={error}
+                        currentUserId={currentUser?.id || null} // ← AGREGAR ESTA LÍNEA
                     />
                     <Paginacion 
                         paginaActual={paginaActual}

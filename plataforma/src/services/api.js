@@ -62,6 +62,25 @@ export const platformProfileService = {
     delete: (id) => api.delete(`/platformprofile/${id}`)
 };
 
+// export const propertyService = {
+//     getAll: (params) => api.get('/inmuebles', { params }),
+//     getById: (id) => api.get(`/inmuebles/${id}`),
+//     create: (data) => api.post('/inmuebles', data), // Para inmueble simple
+//     createAnidado: (data) => api.post('/inmuebles/anidado', data), // Para inmueble anidado
+//     update: (id, data) => api.put(`/inmuebles/${id}`, data), // Para inmueble simple
+//     updateAnidado: (id, data) => api.put(`/inmuebles/anidado/${id}`, data), // Para inmueble anidado
+//     delete: (id) => api.delete(`/inmuebles/${id}`), // Para inmueble simple
+//     deleteAnidado: (id) => api.delete(`/inmuebles/anidado/${id}`), // Para inmueble anidado (elimina todas las relaciones)
+//     // Servicio para subir una imagen y obtener la URL pública y nombre
+//     uploadImage: (file) => {
+//         const formData = new FormData();
+//         formData.append('imagen', file);
+//         return api.post('/inmuebles/upload-imagen', formData, {
+//             headers: { 'Content-Type': 'multipart/form-data' }
+//         });
+//     }
+// };
+
 export const propertyService = {
     getAll: (params) => api.get('/inmuebles', { params }),
     getById: (id) => api.get(`/inmuebles/${id}`),
@@ -71,6 +90,13 @@ export const propertyService = {
     updateAnidado: (id, data) => api.put(`/inmuebles/anidado/${id}`, data), // Para inmueble anidado
     delete: (id) => api.delete(`/inmuebles/${id}`), // Para inmueble simple
     deleteAnidado: (id) => api.delete(`/inmuebles/anidado/${id}`), // Para inmueble anidado (elimina todas las relaciones)
+    
+    // ✅ NUEVOS MÉTODOS PARA FAVORITOS
+    getFavorito: (id) => api.get(`/inmuebles/${id}/favorito`),
+    toggleFavorito: (id) => api.patch(`/inmuebles/${id}/favorito/toggle`),
+    setFavorito: (id, favorito) => api.put(`/inmuebles/${id}/favorito`, { favorito }),
+    getFavoritos: () => api.get('/inmuebles/favoritos'),
+    
     // Servicio para subir una imagen y obtener la URL pública y nombre
     uploadImage: (file) => {
         const formData = new FormData();
@@ -154,6 +180,18 @@ export const usersService = {
     getById: (id) => api.get(`/platformuser/${id}`),
     update: (id, data) => api.put(`/platformuser/${id}`, data),
     delete: (id) => api.delete(`/platformuser/${id}`)
+};
+
+export const favoritoService = {
+  esFavorito: (userId, inmuebleId) => api.get(`/favoritos/usuario/${userId}/inmueble/${inmuebleId}`),
+  
+  toggleFavorito: (userId, inmuebleId) => api.patch(`/favoritos/usuario/${userId}/inmueble/${inmuebleId}/toggle`),
+  
+  getFavoritosUsuario: (userId) => api.get(`/favoritos/usuario/${userId}`),
+  
+  getInmueblesConFavoritos: (userId) => api.get(`/favoritos/usuario/${userId}/inmuebles-con-favoritos`),
+  
+  eliminarFavorito: (userId, inmuebleId) => api.delete(`/favoritos/usuario/${userId}/inmueble/${inmuebleId}`)
 };
 
 export default api;

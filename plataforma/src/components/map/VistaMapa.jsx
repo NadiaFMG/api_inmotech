@@ -2,7 +2,7 @@ import React from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import { useState } from 'react';
 
-const VistaMapa = ({ inmuebles }) => {
+const VistaMapa = ({ inmuebles, currentUserId }) => { // ← AGREGAR currentUserId
     const [selectedInmueble, setSelectedInmueble] = useState(null);
 
     const mapStyles = {

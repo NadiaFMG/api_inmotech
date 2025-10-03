@@ -1,51 +1,54 @@
 import React from 'react';
-import { Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
+import { Row, Col, Alert, Spinner } from 'react-bootstrap';
 import PropertyCard from '../common/PropertyCard';
 
-const ResultadoBusqueda = ({ inmuebles, loading, error }) => {
+const ResultadoBusqueda = ({ inmuebles, loading, error, currentUserId }) => {
     if (loading) {
         return (
-            <Container className="text-center my-5">
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                </Spinner>
-            </Container>
+            <div className="text-center py-5">
+                <Spinner animation="border" variant="primary" />
+                <p className="mt-2">Cargando inmuebles...</p>
+            </div>
         );
     }
 
     if (error) {
         return (
-            <Container className="text-center my-5">
-                <Alert variant="danger">{error}</Alert>
-            </Container>
+            <Alert variant="danger" className="my-4">
+                {error}
+            </Alert>
         );
     }
 
     if (!inmuebles || inmuebles.length === 0) {
         return (
-            <Container className="text-center my-5">
-                <Alert variant="info">No se encontraron inmuebles con los criterios especificados.</Alert>
-            </Container>
+            <Alert variant="info" className="my-4">
+                <h5>No se encontraron inmuebles</h5>
+                <p>Intenta ajustar tus criterios de búsqueda.</p>
+            </Alert>
         );
     }
 
     return (
-        <Container className="my-5">
-            <h2 className="mb-4">
-                Resultados de búsqueda
-                <span className="text-muted ms-2">({inmuebles.length} encontrados)</span>
-            </h2>
+        <div className="resultados-busqueda">
+            <div className="mb-3">
+                <small className="text-muted">
+                    {inmuebles.length} inmueble{inmuebles.length !== 1 ? 's' : ''} encontrado{inmuebles.length !== 1 ? 's' : ''}
+                </small>
+            </div>
+            
             <Row>
                 {inmuebles.map((inmueble) => (
-                    <Col key={inmueble._id || inmueble.id} xs={12} md={6} lg={4} className="mb-4">
-                        <PropertyCard 
+                    <Col key={inmueble.Inmueble_id || inmueble.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
+                        <PropertyCard
                             property={inmueble}
                             isAdminView={false}
+                            currentUserId={currentUserId}
                         />
                     </Col>
                 ))}
             </Row>
-        </Container>
+        </div>
     );
 };
 

@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       Inmueble.belongsTo(models.ImagenesInmueble, { foreignKey: 'Imagenes_inmueble_FK', targetKey: 'Imagenes_inmueble_id' });
       Inmueble.belongsTo(models.PlatformUser, { foreignKey: 'Platform_user_FK', targetKey: 'Platform_user_id' });
       Inmueble.belongsTo(models.Direccion, { foreignKey: 'Direccion_FK', targetKey: 'Direccion_id' });
+      Inmueble.hasMany(models.UserFavorito, { 
+        foreignKey: 'Inmueble_FK',
+        as: 'usuariosFavoritos'
+      });
     }
   }
   Inmueble.init({
@@ -99,6 +103,11 @@ module.exports = (sequelize, DataTypes) => {
     Direccion_FK: {
       type: DataTypes.INTEGER(11),
       allowNull: true,
+    },
+    favorito: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: null,
     }
   }, {
     sequelize,

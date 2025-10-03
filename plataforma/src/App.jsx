@@ -33,6 +33,7 @@ import './styles/Navigation.css';
 import './styles/admin.css';
 import Footer from './components/common/Footer';
 import './styles/Footer.css';
+import Favoritos from './pages/Favoritos'; // ← AGREGAR IMPORT
 
 const GOOGLE_CLIENT_ID = "441927923403-u594ve5sook0pp5openu0igkqknll1o8.apps.googleusercontent.com";
 
@@ -60,6 +61,7 @@ function App() {
             <Route path="inicio" element={<Inicio />} />
             <Route path="inmuebles" element={<Inmuebles />} />
             <Route path="buscar" element={<Buscar />} />
+            <Route path="favoritos" element={<Favoritos />} /> {/* ← AGREGAR RUTA */}
             <Route path="venderinmueble" element={<VenderInmueble />} />
             <Route path="contacto" element={<Contacto />} />
             <Route path="sobrenosotros" element={<SobreNosotros />} />

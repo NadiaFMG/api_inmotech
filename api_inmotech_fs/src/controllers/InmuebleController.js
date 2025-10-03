@@ -984,12 +984,221 @@ const InmuebleController = {
     }
   },
 
+  // ✅ NUEVO: Obtener estado de favorito
+  async getFavorito(req, res) {
+    try {
+      const id = req.params.id;
+      
+      const inmueble = await Inmueble.findByPk(id, {
+        attributes: ['Inmueble_id', 'favorito']
+      });
+
+      if (!inmueble) {
+        return res.status(404).json({
+          error: 'Inmueble no encontrado',
+          mensaje: `No se encontró un inmueble con ID ${id}`
+        });
+      }
+
+      res.json({
+        success: true,
+        inmueble_id: inmueble.Inmueble_id,
+        favorito: inmueble.favorito
+      });
+    } catch (error) {
+      console.error('Error al obtener estado favorito:', error);
+      res.status(500).json({
+        error: 'Error interno del servidor',
+        mensaje: error.message
+      });
+    }
+  },
+
+  // ✅ NUEVO: Toggle favorito (cambiar estado)
+  async toggleFavorito(req, res) {
+    try {
+      const id = req.params.id;
+      
+      // Buscar el inmueble
+      const inmueble = await Inmueble.findByPk(id);
+
+      if (!inmueble) {
+        return res.status(404).json({
+          error: 'Inmueble no encontrado',
+          mensaje: `No se encontró un inmueble con ID ${id}`
+        });
+      }
+
+      // Determinar el nuevo valor
+      let nuevoValorFavorito;
+      if (inmueble.favorito === null || inmueble.favorito === false || inmueble.favorito === 0) {
+        nuevoValorFavorito = true; // Marcar como favorito
+      } else {
+        nuevoValorFavorito = false; // Quitar de favoritos
+      }
+
+      // Actualizar el inmueble
+      await inmueble.update({
+        favorito: nuevoValorFavorito,
+        Fecha_actualizacion: new Date()
+      });
+
+      console.log(`Inmueble ${id} ${nuevoValorFavorito ? 'marcado como favorito' : 'removido de favoritos'}`);
+
+      res.json({
+        success: true,
+        mensaje: `Inmueble ${nuevoValorFavorito ? 'marcado como favorito' : 'removido de favoritos'}`,
+        inmueble_id: inmueble.Inmueble_id,
+        favorito: nuevoValorFavorito
+      });
+    } catch (error) {
+      console.error('Error al cambiar estado favorito:', error);
+      res.status(500).json({
+        error: 'Error interno del servidor',
+        mensaje: error.message
+      });
+    }
+  },
+
+  // ✅ NUEVO: Establecer favorito con valor específico
+  async setFavorito(req, res) {
+    try {
+      const id = req.params.id;
+      const { favorito } = req.body;
+
+      // Validar que favorito sea un booleano válido
+      if (favorito !== true && favorito !== false && favorito !== 0 && favorito !== 1) {
+        return res.status(400).json({
+          error: 'Valor inválido',
+          mensaje: 'El campo favorito debe ser true, false, 0 o 1'
+        });
+      }
+
+      // Buscar el inmueble
+      const inmueble = await Inmueble.findByPk(id);
+
+      if (!inmueble) {
+        return res.status(404).json({
+          error: 'Inmueble no encontrado',
+          mensaje: `No se encontró un inmueble con ID ${id}`
+        });
+      }
+
+      // Convertir a booleano
+      const valorFavorito = favorito === true || favorito === 1;
+
+      // Actualizar el inmueble
+      await inmueble.update({
+        favorito: valorFavorito,
+        Fecha_actualizacion: new Date()
+      });
+
+      console.log(`Inmueble ${id} favorito establecido a: ${valorFavorito}`);
+
+      res.json({
+        success: true,
+        mensaje: `Favorito establecido a ${valorFavorito}`,
+        inmueble_id: inmueble.Inmueble_id,
+        favorito: valorFavorito
+      });
+    } catch (error) {
+      console.error('Error al establecer favorito:', error);
+      res.status(500).json({
+        error: 'Error interno del servidor',
+        mensaje: error.message
+      });
+    }
+  },
+
+  // ✅ NUEVO: Obtener todos los inmuebles favoritos
+  async getFavoritos(req, res) {
+    try {
+      const favoritos = await Inmueble.findAll({
+        where: {
+          favorito: true
+        },
+        include: [
+          {
+            model: Direccion,
+            include: [
+              { model: Localizacion },
+              { model: DesignadorCardinal },
+              {
+                model: BarrioCiudadCorregimientoVereda,
+                include: [
+                  { model: Barrio },
+                  { model: Ciudad },
+                  { model: Corregimiento },
+                  { model: Vereda }
+                ]
+              }
+            ]
+          },
+          { model: Division, as: 'division' },
+          { model: AcercaEdificacion, as: 'acercaEdificacion' },
+          { model: TipoEdificacion, as: 'tipoEdificacion' },
+          { model: OtrasCaracteristicas, as: 'otrasCaracteristicas' },
+          { model: ImagenesInmueble }
+        ],
+        order: [['Fecha_actualizacion', 'DESC']]
+      });
+
+      res.json({
+        success: true,
+        count: favoritos.length,
+        message: `Se encontraron ${favoritos.length} inmuebles favoritos`,
+        data: favoritos
+      });
+    } catch (error) {
+      console.error('Error al obtener favoritos:', error);
+      res.status(500).json({
+        error: 'Error interno del servidor',
+        mensaje: error.message
+      });
+    }
+  },
+
+  // ✅ MODIFICAR: Actualizar findAll para incluir favorito
   async findAll(req, res) {
     try {
-      const inmuebles = await Inmueble.findAll();
-      res.json(inmuebles);
+      const inmuebles = await Inmueble.findAll({
+        include: [
+          {
+            model: Direccion,
+            include: [
+              { model: Localizacion },
+              { model: DesignadorCardinal },
+              {
+                model: BarrioCiudadCorregimientoVereda,
+                include: [
+                  { model: Barrio },
+                  { model: Ciudad },
+                  { model: Corregimiento },
+                  { model: Vereda }
+                ]
+              }
+            ]
+          },
+          { model: Division, as: 'division' },
+          { model: AcercaEdificacion, as: 'acercaEdificacion' },
+          { model: TipoEdificacion, as: 'tipoEdificacion' },
+          { model: OtrasCaracteristicas, as: 'otrasCaracteristicas' },
+          { model: ImagenesInmueble }
+        ],
+        order: [['Fecha_publicacion', 'DESC']]
+      });
+      
+      res.json({
+        success: true,
+        count: inmuebles.length,
+        data: inmuebles
+      });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.error('Error al obtener inmuebles:', error);
+      res.status(500).json({ 
+        error: 'Error interno del servidor',
+        mensaje: error.message 
+      });
     }
   },
 

@@ -57,5 +57,6 @@ router.use('/api/porqueelegirnos', require('./PorqueElegirnosRoutes'));
 router.use('/api/preguntasfrecuentes', require('./PreguntasFrecuentesRoutes'));
 router.use('/api/sobrenosotros', require('./SobreNosotrosRoutes'));
 router.use('/api/terminosycondiciones', require('./TerminosYCondicionesRoutes'));
+router.use('/api/favoritos', require('./favoritoRoutes'));
 
 module.exports = router;

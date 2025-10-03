@@ -64,6 +64,8 @@ if (isDevelopment) {
     cors({
       origin: ['http://localhost:3001', 'http://127.0.0.1:3001'],
       credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // ← AGREGAR PATCH
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     })
   );
   console.log('🔧 Modo desarrollo: CORS configurado para localhost');
@@ -73,7 +75,7 @@ if (isDevelopment) {
     cors({
       origin: true, // Permitir cualquier origen
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // ← AGREGAR PATCH
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     })
   );
@@ -103,16 +105,6 @@ app.use(
     path.resolve(__dirname, '../../plataforma/src/assets/images/carrusel')
   )
 );
-
-// Descomentar si tienes estas rutas también
-// app.use(
-//   '/assets/images/perfiles',
-//   express.static(
-//     path.resolve(__dirname, '../../plataforma/src/assets/images/perfiles')
-//   )
-// );
-
-// console.log('Sirviendo imágenes desde:', path.resolve(__dirname, '../../plataforma/src/assets/images/sobrenosotros'));
 
 // Todas las rutas de tu API
 app.use('/', allRoutes);

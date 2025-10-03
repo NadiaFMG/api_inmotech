@@ -47,6 +47,9 @@ const Navigation = () => {
                                 <span className="me-1">{item.icon}</span> {item.label}
                             </Nav.Link>
                         ))}
+                        <Nav.Link as={Link} to="/favoritos">
+                            ❤️ Favoritos
+                        </Nav.Link>
                         {user && (
                             <Dropdown align="end" className="ms-3">
                                 <Dropdown.Toggle variant="" id="dropdown-user" className="custom-dropdown-toggle">

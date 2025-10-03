@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'Platform_user_status_FK',
         as: 'platform_user_status'
       });
+      PlatformUser.hasMany(models.UserFavorito, { 
+        foreignKey: 'Platform_user_FK',
+        as: 'favoritos'
+      });
     }
   }
 
