@@ -34,6 +34,9 @@ router.get('/:id/favorito', InmuebleController.getFavorito); // Obtener estado f
 router.patch('/:id/favorito/toggle', InmuebleController.toggleFavorito); // Toggle favorito (cambiar estado)
 router.put('/:id/favorito', InmuebleController.setFavorito); // Establecer favorito con valor específico
 
+// ✅ NUEVA RUTA PARA INMUEBLES POR USUARIO
+router.get('/usuario/:userId', InmuebleController.findByUserId); // Obtener inmuebles por ID de usuario
+
 // ✅ RUTA DE UPLOAD
 router.post('/upload-imagen', InmuebleController.uploadImagen);
 

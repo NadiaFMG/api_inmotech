@@ -1816,7 +1816,60 @@ const InmuebleController = {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  }
+  },
+
+  // ✅ NUEVO: Método específico para obtener inmuebles por usuario
+  async findByUserId(req, res) {
+    try {
+      const userId = req.params.userId;
+      
+      console.log('Buscando inmuebles para el usuario ID:', userId);
+      
+      const inmuebles = await Inmueble.findAll({
+        where: {
+          Platform_user_FK: userId
+        },
+        include: [
+          {
+            model: Direccion,
+            include: [
+              { model: Localizacion },
+              { model: DesignadorCardinal },
+              {
+                model: BarrioCiudadCorregimientoVereda,
+                include: [
+                  { model: Barrio },
+                  { model: Ciudad },
+                  { model: Corregimiento },
+                  { model: Vereda }
+                ]
+              }
+            ]
+          },
+                   { model: Division, as: 'division' },
+          { model: AcercaEdificacion, as: 'acercaEdificacion' },
+          { model: TipoEdificacion, as: 'tipoEdificacion' },
+          { model: OtrasCaracteristicas, as: 'otrasCaracteristicas' },
+          { model: ImagenesInmueble }
+        ],
+        order: [['Fecha_publicacion', 'DESC']]
+      });
+      
+      res.json({
+        success: true,
+        user_id: userId,
+        count: inmuebles.length,
+        message: `Se encontraron ${inmuebles.length} inmuebles para el usuario ${userId}`,
+        data: inmuebles
+      });
+    } catch (error) {
+      console.error('Error al obtener inmuebles por usuario:', error);
+      res.status(500).json({ 
+        error: 'Error interno del servidor',
+        mensaje: error.message 
+      });
+    }
+  },
 };
 
 module.exports = {...InmuebleController, uploadImagen};
